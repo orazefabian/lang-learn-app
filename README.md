@@ -47,12 +47,17 @@ cp .env.example .env          # fill in SESSION_SECRET and DATABASE_URL
 pnpm db:migrate               # or let the app migrate itself on startup
 pnpm seed:users               # creates the two accounts
 pnpm seed:content             # imports the deck and the curriculum as drafts
+pnpm cards:generate           # only needed if you seeded with --activate
 pnpm dev
 ```
 
 `SESSION_SECRET` needs at least 32 characters — `openssl rand -base64 48`. The
 server refuses to start without it; CLI scripts that only touch the database
 need `DATABASE_URL` alone.
+
+Every command reads `.env` (`--env-file-if-exists`), so the file is the single
+place configuration lives. Blank values in it mean "not set", which is what lets
+a copied `.env.example` be a working configuration.
 
 ### Seeding content
 
@@ -74,7 +79,28 @@ them. There is no public signup, by design.
 `pnpm dev:db` starts a wire-protocol-compatible Postgres in-process (PGlite) on
 port 5432, so the app can run on a machine with no database installed. It is a
 development convenience only — deploy against real PostgreSQL. It serves one
-connection at a time, so set `DB_POOL_MAX=1` when the app points at it.
+connection at a time, so set `DB_POOL_MAX=1` when the app points at it, and
+stop the app before running a CLI script against the same database.
+
+The full sequence on a machine with neither Docker nor Postgres:
+
+```bash
+cp .env.example .env
+# DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5432/postgres
+# DB_POOL_MAX=1
+# SESSION_SECRET=$(openssl rand -base64 48)
+# LEARNER_EMAIL / TEACHER_EMAIL (passwords are generated and printed)
+
+pnpm dev:db                   # terminal 1, leave running
+pnpm db:migrate               # terminal 2
+pnpm seed:users
+pnpm seed:content --activate  # ~6s; without --activate everything stays draft
+pnpm cards:generate
+pnpm dev                      # http://localhost:3000
+```
+
+No Piper and no Whisper in this mode: listening exercises disappear and
+speaking falls back to self-assessment, which is the intended degradation.
 
 ## Deployment
 

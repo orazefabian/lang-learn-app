@@ -18,18 +18,26 @@ if (!url) {
 
 const ARGON2_OPTIONS = { memoryCost: 19456, timeCost: 2, parallelism: 1 };
 
+/**
+ * An empty variable means unset, not "an empty value".
+ *
+ * .env.example lists every key with a blank value, so copying it verbatim used
+ * to hand both accounts a password of "" — `??` only guards against undefined.
+ */
+const set = (value) => (value?.trim() ? value : undefined);
+
 const specs = [
   {
     role: "learner",
-    email: process.env.LEARNER_EMAIL,
-    password: process.env.LEARNER_PASSWORD,
-    displayName: process.env.LEARNER_NAME ?? "Lernende",
+    email: set(process.env.LEARNER_EMAIL),
+    password: set(process.env.LEARNER_PASSWORD),
+    displayName: set(process.env.LEARNER_NAME) ?? "Lernende",
   },
   {
     role: "teacher",
-    email: process.env.TEACHER_EMAIL,
-    password: process.env.TEACHER_PASSWORD,
-    displayName: process.env.TEACHER_NAME ?? "Lehrer",
+    email: set(process.env.TEACHER_EMAIL),
+    password: set(process.env.TEACHER_PASSWORD),
+    displayName: set(process.env.TEACHER_NAME) ?? "Lehrer",
   },
 ];
 
