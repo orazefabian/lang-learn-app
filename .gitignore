@@ -14,3 +14,7 @@ next-env.d.ts
 /.devdb/
 
 /.seed-cache/
+
+# Written by next dev on every start.
+AGENTS.md
+CLAUDE.md

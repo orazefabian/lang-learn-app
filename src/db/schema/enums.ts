@@ -89,3 +89,24 @@ export const studySessionStatusEnum = pgEnum("study_session_status", [
   "completed",
   "abandoned",
 ]);
+
+/** What a generation run was asked to produce. */
+export const generationKindEnum = pgEnum("generation_kind", [
+  "mixed",
+  "phrases",
+  "lexemes",
+  "cloze",
+]);
+
+export const generationRunStatusEnum = pgEnum("generation_run_status", [
+  "pending",
+  "succeeded",
+  "failed",
+]);
+
+/** A proposal is pending until the teacher looks at it. Nothing auto-approves. */
+export const generationDecisionEnum = pgEnum("generation_decision", [
+  "pending",
+  "approved",
+  "rejected",
+]);

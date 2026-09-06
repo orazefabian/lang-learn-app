@@ -1,8 +1,10 @@
-import { Inbox, Library } from "lucide-react";
+import { FileCheck2, Inbox, Library, Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { db } from "@/db/client";
 import { Link } from "@/i18n/navigation";
+import { countPendingProposals } from "@/lib/ai/review";
 import { requireTeacher } from "@/lib/auth";
+import { isAiConfigured } from "@/lib/env";
 import { getInboxCounts } from "@/lib/questions/service";
 import { searchContent } from "@/lib/teacher/content";
 import { QuickCapture } from "./quick-capture";
@@ -20,9 +22,10 @@ export default async function TeacherPage({
 
   // The working list: what she will hear in a computer voice until someone
   // records it.
-  const [missingVoice, inbox] = await Promise.all([
+  const [missingVoice, inbox, pendingDrafts] = await Promise.all([
     searchContent(db, { status: "active", missingHumanAudio: true, limit: 5 }),
     getInboxCounts(db),
+    countPendingProposals(db),
   ]);
 
   return (
@@ -37,7 +40,7 @@ export default async function TeacherPage({
         <h2 className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
           {t("capture.title")}
         </h2>
-        <QuickCapture />
+        <QuickCapture assistAvailable={isAiConfigured()} />
       </section>
 
       <section className="flex flex-col gap-3">
@@ -69,6 +72,39 @@ export default async function TeacherPage({
             <span className="text-sm text-muted-foreground">{t("browser.searchPlaceholder")}</span>
           </span>
         </Link>
+
+        {pendingDrafts > 0 ? (
+          /*
+           * Only appears when something is actually waiting. Content she cannot
+           * see yet is the one thing on this screen with a queue behind it.
+           */
+          <Link
+            href="/teacher/drafts"
+            className="flex items-center gap-4 rounded-lg border border-accent bg-accent-soft/30 p-5 transition-colors hover:border-primary"
+          >
+            <FileCheck2 className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+            <span className="flex flex-1 flex-col">
+              <span className="font-medium">{t("drafts.title")}</span>
+              <span className="text-sm text-muted-foreground">{t("drafts.subtitle")}</span>
+            </span>
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold tabular-nums text-accent-foreground">
+              {pendingDrafts}
+            </span>
+          </Link>
+        ) : null}
+
+        {isAiConfigured() ? (
+          <Link
+            href="/teacher/generate"
+            className="flex items-center gap-4 rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary"
+          >
+            <Sparkles className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+            <span className="flex flex-1 flex-col">
+              <span className="font-medium">{t("generate.title")}</span>
+              <span className="text-sm text-muted-foreground">{t("generate.subtitle")}</span>
+            </span>
+          </Link>
+        ) : null}
 
         {missingVoice.length ? (
           <div className="flex flex-col gap-3 rounded-lg border border-border p-5">

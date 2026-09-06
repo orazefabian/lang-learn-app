@@ -110,33 +110,6 @@ export const notifications = pgTable(
   (t) => [index("notifications_user_idx").on(t.userId, t.readAt)],
 );
 
-/**
- * Audit trail for AI content generation. The generated lexemes and phrases
- * live in their own tables with status "draft" and never reach her deck
- * before the teacher approves them.
- */
-export const aiGenerationRuns = pgTable(
-  "ai_generation_runs",
-  {
-    id: uuid("id").defaultRandom().primaryKey(),
-    requestedBy: uuid("requested_by")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    topic: text("topic").notNull(),
-    instructions: text("instructions"),
-    model: text("model").notNull(),
-    /** Raw model output, kept so a bad batch can be diagnosed. */
-    rawResponse: jsonb("raw_response"),
-    lexemeCount: integer("lexeme_count").notNull().default(0),
-    phraseCount: integer("phrase_count").notNull().default(0),
-    clozeCount: integer("cloze_count").notNull().default(0),
-    status: contentStatusEnum("status").notNull().default("draft"),
-    errorMessage: text("error_message"),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (t) => [index("ai_generation_runs_user_idx").on(t.requestedBy, t.createdAt)],
-);
-
 export const questionsRelations = relations(questions, ({ one }) => ({
   asker: one(users, { fields: [questions.askedBy], references: [users.id] }),
   card: one(cards, { fields: [questions.cardId], references: [cards.id] }),

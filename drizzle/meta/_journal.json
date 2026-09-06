@@ -8,6 +8,20 @@
       "when": 1788680397112,
       "tag": "0000_high_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788697918138,
+      "tag": "0001_add_generation_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788697925654,
+      "tag": "0002_drop_unused_ai_run_placeholder",
+      "breakpoints": true
     }
   ]
 }

@@ -73,7 +73,8 @@ describe("migrations", () => {
       "lesson_progress",
       "digest_snapshots",
       "notifications",
-      "ai_generation_runs",
+      "generation_runs",
+      "generation_items",
     ]) {
       expect(tables, `missing table ${expected}`).toContain(expected);
     }

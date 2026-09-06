@@ -52,7 +52,8 @@
     "role": {
       "learner": "Lernende",
       "teacher": "Lehrer"
-    }
+    },
+    "done": "erledigt"
   },
   "errors": {
     "notFound": "Diese Seite gibt es nicht.",
@@ -232,7 +233,11 @@
       "addVoice": "Stimme aufnehmen",
       "another": "Noch eins",
       "missingSlovene": "Ohne slowenischen Text geht es nicht.",
-      "saveFailed": "Konnte nicht gespeichert werden. Nochmal?"
+      "saveFailed": "Konnte nicht gespeichert werden. Nochmal?",
+      "assist": "Vorschlag holen",
+      "assistRunning": "Fragt nach …",
+      "assistHint": "Füllt leere Felder mit Vorschlägen. Gespeichert wird trotzdem erst, wenn du speicherst.",
+      "assistFailed": "Kein Vorschlag zu holen. Schreib es einfach selbst."
     },
     "browser": {
       "title": "Inhalte",
@@ -327,6 +332,58 @@
       "needsSomething": "Schreib etwas oder nimm eine Nachricht auf.",
       "openItem": "Eintrag öffnen",
       "badge": "{count} offen"
+    },
+    "generate": {
+      "title": "Vorschläge erzeugen",
+      "subtitle": "Claude schlägt vor, du entscheidest.",
+      "gate": "Alles landet als Entwurf. Nichts davon erreicht ihren Stapel, bevor du es freigegeben hast.",
+      "notConfigured": "Kein API-Schlüssel hinterlegt. Ohne ANTHROPIC_API_KEY bleibt dieser Teil einfach aus.",
+      "topic": "Thema oder Situation",
+      "topicPlaceholder": "z. B. beim Essen bei Oma",
+      "kind": "Was",
+      "kinds": {
+        "mixed": "Gemischt",
+        "phrases": "Sätze",
+        "lexemes": "Wörter",
+        "cloze": "Lückensätze"
+      },
+      "count": "Anzahl",
+      "instructions": "Zusätzliche Hinweise",
+      "instructionsPlaceholder": "z. B. eher Umgangssprache, so wie bei euch gesprochen wird",
+      "run": "Vorschläge holen",
+      "running": "Claude schreibt …",
+      "invalidInput": "Sag kurz, worum es gehen soll.",
+      "failed": "Hat nicht geklappt: {reason}",
+      "doneTitle": "{count, plural, =0 {Nichts Brauchbares dabei} =1 {1 Entwurf liegt bereit} other {# Entwürfe liegen bereit}}",
+      "doneHint": "Entwürfe sind nicht in ihrem Stapel. Erst nach deiner Freigabe.",
+      "duplicates": "{count, plural, =1 {1 Vorschlag gab es schon} other {# Vorschläge gab es schon}} — steht mit dabei, damit nichts stillschweigend verschwindet.",
+      "modelNotes": "Anmerkungen von Claude",
+      "reviewNow": "Jetzt durchsehen",
+      "recentRuns": "Zuletzt",
+      "runSummary": "{drafted} Entwürfe, {duplicates} Dubletten",
+      "runFailed": "Fehlgeschlagen"
+    },
+    "drafts": {
+      "title": "Entwürfe",
+      "subtitle": "Nichts hiervon sieht sie, solange es hier liegt.",
+      "runTopic": "Thema",
+      "showAll": "Alle {count} Entwürfe zeigen",
+      "empty": "Nichts zu prüfen.",
+      "generateMore": "Neue Vorschläge holen",
+      "pending": "{count, plural, =1 {1 wartet} other {# warten}}",
+      "approveAll": "Alle übernehmen",
+      "rejectAll": "Alle verwerfen",
+      "allDecided": "Durch.",
+      "slovene": "Slowenisch",
+      "german": "Deutsch",
+      "germanMissing": "fehlt noch",
+      "contextNote": "Wann sagt man das",
+      "register": "Sprachebene",
+      "clozeBlank": "Lücke: {answer}",
+      "duplicateWarning": "Gibt es schon. Übernehmen ergänzt nur, was fehlt.",
+      "merge": "Ergänzen",
+      "approve": "Übernehmen",
+      "reject": "Verwerfen"
     }
   }
 }

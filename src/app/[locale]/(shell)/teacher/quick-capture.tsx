@@ -2,13 +2,14 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { Check, ChevronDown, Mic } from "lucide-react";
+import { Check, ChevronDown, Mic, Wand2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { SpeechRecorder, type RecordingResult } from "@/components/speech-recorder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/i18n/navigation";
+import { suggestCaptureFields } from "./ai-actions";
 import { quickCapture, uploadRecording, type CaptureState } from "./actions";
 
 /**
@@ -28,7 +29,7 @@ function SaveButton({ label, pendingLabel }: { label: string; pendingLabel: stri
   );
 }
 
-export function QuickCapture() {
+export function QuickCapture({ assistAvailable = false }: { assistAvailable?: boolean }) {
   const t = useTranslations("teacher.capture");
   const tItem = useTranslations("teacher.item");
   const tRegister = useTranslations("teacher.registerLabel");
@@ -43,8 +44,62 @@ export function QuickCapture() {
   /** Set when she taps "another": shows the empty form again without a reload. */
   const [dismissed, setDismissed] = useState(false);
 
+  /** Auto-fill: suggestions written into the form, never committed. */
+  const [assisting, setAssisting] = useState(false);
+  const [assistNote, setAssistNote] = useState<string | null>(null);
+  const [assistError, setAssistError] = useState(false);
+
   const formRef = useRef<HTMLFormElement>(null);
   const sloveneRef = useRef<HTMLInputElement>(null);
+  const germanRef = useRef<HTMLInputElement>(null);
+  const contextRef = useRef<HTMLTextAreaElement>(null);
+  const registerRef = useRef<HTMLSelectElement>(null);
+  const regionRef = useRef<HTMLInputElement>(null);
+
+  async function autofill() {
+    const slovene = sloveneRef.current?.value.trim();
+    if (!slovene) {
+      sloveneRef.current?.focus();
+      return;
+    }
+
+    setAssisting(true);
+    setAssistError(false);
+    setAssistNote(null);
+
+    const result = await suggestCaptureFields({
+      slovene,
+      hint: contextRef.current?.value.trim() || undefined,
+    });
+
+    setAssisting(false);
+
+    if (result.status !== "ok") {
+      setAssistError(true);
+      return;
+    }
+
+    /*
+     * Filled in, not committed, and never over the top of something he typed:
+     * a suggestion that quietly replaced his own words would be worse than no
+     * suggestion at all.
+     */
+    const { suggestion } = result;
+    if (germanRef.current && !germanRef.current.value.trim()) {
+      germanRef.current.value = suggestion.german.join(", ");
+    }
+    if (contextRef.current && !contextRef.current.value.trim() && suggestion.contextNote) {
+      contextRef.current.value = suggestion.contextNote;
+    }
+    if (suggestion.register !== "standard") {
+      setExpanded(true);
+      if (registerRef.current) registerRef.current.value = suggestion.register;
+      if (regionRef.current && !regionRef.current.value.trim() && suggestion.regionLabel) {
+        regionRef.current.value = suggestion.regionLabel;
+      }
+    }
+    setAssistNote(suggestion.grammarNote ?? null);
+  }
 
   useEffect(() => {
     sloveneRef.current?.focus();
@@ -53,6 +108,8 @@ export function QuickCapture() {
   useEffect(() => {
     if (state.status === "saved") {
       formRef.current?.reset();
+      setAssistNote(null);
+      setAssistError(false);
       setExpanded(false);
       setRecording(false);
       setVoiceSaved(false);
@@ -154,7 +211,12 @@ export function QuickCapture() {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="german">{t("german")}</Label>
-        <Input id="german" name="german" placeholder={t("germanPlaceholder")} />
+        <Input
+          id="german"
+          name="german"
+          ref={germanRef}
+          placeholder={t("germanPlaceholder")}
+        />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -162,11 +224,32 @@ export function QuickCapture() {
         <textarea
           id="contextNote"
           name="contextNote"
+          ref={contextRef}
           rows={2}
           placeholder={t("contextPlaceholder")}
           className="min-h-20 w-full rounded-lg border border-input bg-card px-4 py-3 text-base"
         />
       </div>
+
+      {assistAvailable ? (
+        <div className="flex flex-col gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => void autofill()}
+            disabled={assisting}
+            className="self-start"
+          >
+            <Wand2 />
+            {assisting ? t("assistRunning") : t("assist")}
+          </Button>
+          {/* Suggestions, and it says so. He reads them and presses save, or does not. */}
+          <p className="text-sm text-muted-foreground">
+            {assistError ? t("assistFailed") : (assistNote ?? t("assistHint"))}
+          </p>
+        </div>
+      ) : null}
 
       <button
         type="button"
@@ -192,6 +275,7 @@ export function QuickCapture() {
             <select
               id="register"
               name="register"
+              ref={registerRef}
               defaultValue="standard"
               className="min-h-12 rounded-lg border border-input bg-card px-3 text-base"
             >
@@ -204,7 +288,12 @@ export function QuickCapture() {
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="regionLabel">{t("regionLabel")}</Label>
-            <Input id="regionLabel" name="regionLabel" placeholder={t("regionPlaceholder")} />
+            <Input
+              id="regionLabel"
+              name="regionLabel"
+              ref={regionRef}
+              placeholder={t("regionPlaceholder")}
+            />
           </div>
         </div>
       ) : null}

@@ -52,7 +52,8 @@
     "role": {
       "learner": "Learner",
       "teacher": "Teacher"
-    }
+    },
+    "done": "done"
   },
   "errors": {
     "notFound": "This page does not exist.",
@@ -232,7 +233,11 @@
       "addVoice": "Record a voice",
       "another": "Another one",
       "missingSlovene": "The Slovene text is needed.",
-      "saveFailed": "Could not save. Try again?"
+      "saveFailed": "Could not save. Try again?",
+      "assist": "Suggest the rest",
+      "assistRunning": "Asking …",
+      "assistHint": "Fills empty fields with suggestions. Nothing is saved until you save it.",
+      "assistFailed": "No suggestion this time. Write it yourself."
     },
     "browser": {
       "title": "Content",
@@ -327,6 +332,58 @@
       "needsSomething": "Write something or record a note.",
       "openItem": "Open entry",
       "badge": "{count} open"
+    },
+    "generate": {
+      "title": "Generate proposals",
+      "subtitle": "Claude proposes, you decide.",
+      "gate": "Everything lands as a draft. None of it reaches her deck until you approve it.",
+      "notConfigured": "No API key configured. Without ANTHROPIC_API_KEY this part simply stays off.",
+      "topic": "Topic or situation",
+      "topicPlaceholder": "e.g. eating at Oma's",
+      "kind": "What",
+      "kinds": {
+        "mixed": "Mixed",
+        "phrases": "Phrases",
+        "lexemes": "Words",
+        "cloze": "Gap sentences"
+      },
+      "count": "How many",
+      "instructions": "Extra instructions",
+      "instructionsPlaceholder": "e.g. colloquial, the way your family actually talks",
+      "run": "Get proposals",
+      "running": "Claude is writing …",
+      "invalidInput": "Say briefly what it should be about.",
+      "failed": "That did not work: {reason}",
+      "doneTitle": "{count, plural, =0 {Nothing usable came back} =1 {1 draft is ready} other {# drafts are ready}}",
+      "doneHint": "Drafts are not in her deck. Only after you approve them.",
+      "duplicates": "{count, plural, =1 {1 proposal already existed} other {# proposals already existed}} — listed here so nothing disappears quietly.",
+      "modelNotes": "Claude's own notes",
+      "reviewNow": "Review now",
+      "recentRuns": "Recently",
+      "runSummary": "{drafted} drafts, {duplicates} duplicates",
+      "runFailed": "Failed"
+    },
+    "drafts": {
+      "title": "Drafts",
+      "subtitle": "She sees none of this while it sits here.",
+      "runTopic": "Topic",
+      "showAll": "Show all {count} drafts",
+      "empty": "Nothing to review.",
+      "generateMore": "Get new proposals",
+      "pending": "{count, plural, =1 {1 waiting} other {# waiting}}",
+      "approveAll": "Approve all",
+      "rejectAll": "Reject all",
+      "allDecided": "Done.",
+      "slovene": "Slovene",
+      "german": "German",
+      "germanMissing": "still missing",
+      "contextNote": "When you say it",
+      "register": "Register",
+      "clozeBlank": "Blank: {answer}",
+      "duplicateWarning": "This already exists. Approving only fills in what is missing.",
+      "merge": "Fill in",
+      "approve": "Approve",
+      "reject": "Reject"
     }
   }
 }

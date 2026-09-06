@@ -24,8 +24,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 6 | Lessons, home screen, progress view | done |
 | 7 | Teacher area: browser, quick-capture, recordings | done |
 | 8 | "Ask me" questions inbox | done |
-| 9 | AI generation with draft approval | next |
-| 10 | Weekly digest | |
+| 9 | AI generation with draft approval | done |
+| 10 | Weekly digest | next |
 | 11 | PWA and offline review | |
 | 12 | K8s manifests, backups, E2E suite | |
 
@@ -292,6 +292,50 @@ un-archiving puts the item back exactly where it was.
 Editing the Slovene marks the audio stale and regenerates it, since the media
 store is keyed by a hash of the text.
 
+**Auto-fill** proposes the German, the register and a context note from the
+Slovene alone. It only ever writes into empty fields — a suggestion that
+silently replaced something he typed would be worse than no suggestion — and it
+saves nothing: the entry is committed by pressing save, like any other.
+
+## AI drafts
+
+A teacher-side tool. Give it a topic ("beim Essen bei Oma"), how much, and
+optional instructions, and Claude proposes phrases, words and cloze blanks.
+
+**Everything lands as `status: draft` and is invisible to the learner.** Drafts
+have no cards, and the only code path that creates one is approval. This is the
+rule the feature exists around, so it is asserted from several directions in
+`tests/integration/generation.test.ts`, including a test whose entire body
+checks that a fresh batch has given her nothing to study.
+
+The pipeline is: forced tool call for structured output → Zod → database. There
+is no prose parsing anywhere and no field-by-field repair: if the answer does
+not match the schema the whole run is marked failed with the reason on it and
+nothing is inserted. A cloze whose blanked word is not actually a token in its
+phrase loses the blank and keeps the phrase, because guessing which word was
+meant is how a wrong case ending gets drilled for six weeks.
+
+The review screen edits every field in place, since correcting and approving is
+one action rather than two — the alternative is approving something slightly
+wrong and fixing it after she has already seen it. Approving activates the item,
+creates her cards and generates its audio; rejecting archives the draft and
+leaves the run as a record of what was thrown out. Batch approve and reject act
+on one run at a time.
+
+Duplicates are **warned about, never silently skipped**. A proposal that
+collides with an existing item is shown next to what it hit, and approving it
+fills in what the existing entry is missing instead of adding a second copy —
+the existing text always wins, because it is usually something he wrote down at
+a family table himself.
+
+Each run keeps its own audit trail: the prompt, the model, token usage, the
+model's own caveats, and the payload of every proposal next to the row it
+became. When something subtly wrong surfaces weeks later, "did the model write
+that or did I?" has an answer.
+
+Without `ANTHROPIC_API_KEY` the generate screen and the auto-fill button are
+simply absent. Nothing else changes.
+
 ## Asking a question
 
 Every card carries an unobtrusive **"Verstehe ich nicht"**. Tapping it opens a
@@ -340,10 +384,13 @@ The teacher gets a count on the inbox and a badge on his tab.
   Slovene the differing word is usually a case ending. Longer phrases stay
   forgiving. The thresholds live in one place (`src/lib/speech/scoring.ts`) and
   are meant to be tuned once there is real data.
-- **Quick capture has no AI auto-fill yet.** The brief asks for a button that
-  proposes the German translation and grammatical information from the Slovene.
-  It arrives with the rest of the Anthropic integration in step 9 rather than
-  shipping as a button that does nothing.
+- **The Anthropic API has never actually been called from here.** There is no
+  key on this machine, so generation and auto-fill have only ever run against a
+  stub client: the schema, dedup, draft, approval and failure paths are covered
+  by tests, and the screens have been rendered, but the first real call will be
+  the first real call. The request shape follows the Messages API tool-use
+  contract (`tool_choice` forced to the one tool), which is the part most likely
+  to need a correction.
 - **Neither speech service has been run end to end.** The scoring, storage and
   degradation paths are covered by tests against a stub recogniser, and the
   containers are written and wired, but no Slovene audio has been transcribed
