@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, GraduationCap, House, MessageSquareQuote } from "lucide-react";
+import { BookOpen, GraduationCap, House, MessageSquareQuote, PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -9,16 +9,23 @@ import { cn } from "@/lib/utils";
  * Bottom navigation, because the whole app is used one-handed on a phone and
  * the top of a phone is the part a thumb cannot reach.
  */
-const ITEMS = [
+const LEARNER_ITEMS = [
   { href: "/", key: "home", Icon: House },
   { href: "/lessons", key: "lessons", Icon: GraduationCap },
   { href: "/review", key: "review", Icon: BookOpen },
   { href: "/progress", key: "progress", Icon: MessageSquareQuote },
 ] as const;
 
-export function BottomNav() {
+/**
+ * The teacher sees everything the learner sees, plus one more tab. Same app,
+ * same URL — so he can sit next to her and switch views on his own phone.
+ */
+const TEACHER_ITEM = { href: "/teacher", key: "teacher", Icon: PenLine } as const;
+
+export function BottomNav({ role }: { role: "learner" | "teacher" }) {
   const t = useTranslations("nav");
   const pathname = usePathname();
+  const items = role === "teacher" ? [...LEARNER_ITEMS, TEACHER_ITEM] : LEARNER_ITEMS;
 
   return (
     <nav
@@ -27,7 +34,7 @@ export function BottomNav() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="mx-auto flex w-full max-w-md items-stretch">
-        {ITEMS.map(({ href, key, Icon }) => {
+        {items.map(({ href, key, Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <li key={href} className="flex-1">

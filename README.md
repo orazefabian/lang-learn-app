@@ -22,8 +22,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 4 | Piper TTS and the audio pipeline | done |
 | 5 | Whisper ASR and speaking exercises | done |
 | 6 | Lessons, home screen, progress view | done |
-| 7 | Teacher area: browser, quick-capture, recordings | next |
-| 8 | "Ask me" questions inbox | |
+| 7 | Teacher area: browser, quick-capture, recordings | done |
+| 8 | "Ask me" questions inbox | next |
 | 9 | AI generation with draft approval | |
 | 10 | Weekly digest | |
 | 11 | PWA and offline review | |
@@ -260,6 +260,38 @@ The dual gets its own mark — a pair of dots — on the lessons, cards and phra
 that turn on it. Slovene counts to two before it counts to many, and that is
 the one thing about the language worth putting a glyph on.
 
+## The teacher area
+
+Same app, same URL, one extra tab that only appears for the teacher account —
+so he can sit next to her and switch views on his own phone. Every teacher route
+turns a learner away rather than rendering.
+
+**Quick capture** is built for the ten seconds between hearing something at a
+family dinner and losing it: the Slovene field is focused on load, only that
+field is required, and everything else folds away. After saving it offers to
+record a voice for it immediately, and then an empty form again, because at a
+table there is usually a second phrase coming.
+
+Captured items go live at once — unlike AI drafts, which wait for approval. The
+teacher heard it said; that is the review. They join the pile with **no priority
+boost and no deadline**: same `new` state, same due time, same daily limit as
+everything else.
+
+**Human recordings** attach to any item, by recording in the browser or
+uploading a file, each with a speaker label — "Oma", "Papa", "ich". A recording
+always outranks the generated voice on her card, and the rest stay available as
+alternates. The teacher hub lists the active items nobody has recorded yet,
+which is the natural working queue.
+
+**The content browser** searches Slovene, German and context notes, including
+without diacritics — `bos se` finds `Boš še?`. Filters live in the URL, so a
+filtered view survives an edit and can be bookmarked. Archiving suspends the
+learner's cards instead of deleting them: her review history stays intact and
+un-archiving puts the item back exactly where it was.
+
+Editing the Slovene marks the audio stale and regenerates it, since the media
+store is keyed by a hash of the text.
+
 ## Known limitations
 
 - **The scheduler is FSRS-6, not FSRS-5.** The brief asked for FSRS-5, but
@@ -282,6 +314,10 @@ the one thing about the language worth putting a glyph on.
   Slovene the differing word is usually a case ending. Longer phrases stay
   forgiving. The thresholds live in one place (`src/lib/speech/scoring.ts`) and
   are meant to be tuned once there is real data.
+- **Quick capture has no AI auto-fill yet.** The brief asks for a button that
+  proposes the German translation and grammatical information from the Slovene.
+  It arrives with the rest of the Anthropic integration in step 9 rather than
+  shipping as a button that does nothing.
 - **Neither speech service has been run end to end.** The scoring, storage and
   degradation paths are covered by tests against a stub recogniser, and the
   containers are written and wired, but no Slovene audio has been transcribed
