@@ -8,7 +8,14 @@ type Sql = ReturnType<typeof postgres>;
 type Database = PostgresJsDatabase<typeof schema>;
 
 declare global {
-  // Reused across hot reloads in development so we do not leak connections.
+  /**
+   * One connection pool per process, shared through globalThis.
+   *
+   * Next bundles server components and route handlers separately, so this
+   * module is instantiated more than once in the same process. Without the
+   * global, each bundle opens its own pool and the app quietly holds twice the
+   * connections it reports.
+   */
   // eslint-disable-next-line no-var
   var __sloveneSql: Sql | undefined;
 }
@@ -25,11 +32,11 @@ export function getSql(): Sql {
   sqlInstance =
     globalThis.__sloveneSql ??
     postgres(env().DATABASE_URL, {
-      max: env().NODE_ENV === "production" ? 10 : 5,
+      max: env().DB_POOL_MAX ?? (env().NODE_ENV === "production" ? 10 : 5),
       idle_timeout: 30,
       prepare: false,
     });
-  if (env().NODE_ENV !== "production") globalThis.__sloveneSql = sqlInstance;
+  globalThis.__sloveneSql = sqlInstance;
   return sqlInstance;
 }
 

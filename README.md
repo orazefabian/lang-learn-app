@@ -18,8 +18,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | ---- | ----- | ----- |
 | 1 | Scaffold, Docker/compose, Postgres, schema, migrations, auth, i18n | done |
 | 2 | Content model + seed import (1100-lemma deck, 39 lessons) | done |
-| 3 | FSRS, card generation, review sessions | next |
-| 4 | Piper TTS and the audio pipeline | |
+| 3 | FSRS, card generation, review sessions | done |
+| 4 | Piper TTS and the audio pipeline | next |
 | 5 | Whisper ASR and speaking exercises | |
 | 6 | Lessons, home screen, progress view | |
 | 7 | Teacher area: browser, quick-capture, recordings | |
@@ -73,7 +73,8 @@ them. There is no public signup, by design.
 
 `pnpm dev:db` starts a wire-protocol-compatible Postgres in-process (PGlite) on
 port 5432, so the app can run on a machine with no database installed. It is a
-development convenience only — deploy against real PostgreSQL.
+development convenience only — deploy against real PostgreSQL. It serves one
+connection at a time, so set `DB_POOL_MAX=1` when the app points at it.
 
 ## Deployment
 
@@ -141,8 +142,38 @@ Slovene is not treated as a generic language:
 - **Cards, not items, are scheduled.** One lexeme or phrase produces several
   cards, one per exercise type, and FSRS schedules each independently.
 
+## Spaced repetition
+
+Cards, not items, are scheduled: one phrase produces a recognition card, a
+production card, and — once the audio services exist — listening and speaking
+cards, each with its own schedule.
+
+The backlog rules are the part worth reading:
+
+- A session queues at most `reviewCap` review cards (default 20) plus new
+  material. When more is overdue, the rest waits and FSRS catches up over the
+  following days.
+- Oversized backlogs are ordered by how late a card is *relative to its own
+  interval*, then by lowest stability, then oldest first. A two-day card two
+  days late outranks a year-long card ten days late.
+- **No screen ever shows a number above the cap.** The real count exists for
+  the weekly digest, which is not her screen.
+- New material is withheld entirely while more than
+  `newMaterialBacklogThreshold` cards are overdue — silently, with no message
+  about it.
+- A card answered correctly forty days late gains stability rather than
+  resetting. Coming back after two weeks is rewarded, not punished.
+
+Session state — the queue and the cursor — lives in the database, so closing
+the app mid-session loses nothing.
+
 ## Known limitations
 
+- **The scheduler is FSRS-6, not FSRS-5.** The brief asked for FSRS-5, but
+  ts-fsrs 5.4.2 ships FSRS-6 as its default parameter set (21 weights instead of
+  17). FSRS-6 is the successor from the same authors and is better calibrated,
+  so the library default is used. Passing FSRS-5's weights to `createScheduler`
+  pins the older model if that is ever wanted; nothing else changes.
 - **Pitch accent and vowel length are not taught or graded.** They are real
   features of Slovene and no automatic scoring available here can judge them.
   The app provides good audio to imitate and stays quiet about the rest.
@@ -160,14 +191,17 @@ Slovene is not treated as a generic language:
 ## Development
 
 ```bash
-pnpm typecheck     # tsc --noEmit, strict
-pnpm test          # Vitest unit tests
-pnpm test:e2e      # Playwright critical paths (from step 12)
+pnpm typecheck        # tsc --noEmit, strict
+pnpm test             # Vitest unit tests
+pnpm test:integration # service layer against a real Postgres (PGlite)
+pnpm test:e2e         # Playwright critical paths (from step 12)
 pnpm db:generate   # regenerate SQL migrations after a schema change
 ```
 
 Unit tests run the checked-in migrations against a real Postgres (PGlite,
-in-process), so schema changes are validated without a running server.
+in-process), so schema changes are validated without a running server. The
+integration suite goes further and drives the review loop over the real wire
+protocol.
 
 Code, comments and identifiers are English. All user-facing copy lives in
 `messages/de.json` with `messages/en.json` as fallback — no hardcoded strings.

@@ -32,7 +32,9 @@
     "continueLearning": "Weiter lernen",
     "startReview": "Wiederholen",
     "answeredQuestions": "Beantwortete Fragen",
-    "capability": "Was ich sagen kann"
+    "capability": "Was ich sagen kann",
+    "reviewCta": "Wiederholen",
+    "moreLater": "Der Rest kommt in den nächsten Tagen von selbst."
   },
   "common": {
     "loading": "Lädt …",
@@ -48,5 +50,54 @@
     "notFound": "Diese Seite gibt es nicht.",
     "generic": "Da ist etwas schiefgelaufen.",
     "retry": "Nochmal versuchen"
+  },
+  "review": {
+    "title": "Wiederholen",
+    "empty": "Gerade ist nichts dran. Schön, dass du da warst.",
+    "emptyAction": "Zur Startseite",
+    "progress": "{current} von {total}",
+    "newBadge": "neu",
+    "show": "Zeigen",
+    "check": "Prüfen",
+    "skip": "Überspringen",
+    "yourAnswer": "Deine Antwort",
+    "typeSlovene": "Auf Slowenisch tippen",
+    "typeAnswer": "Antwort eingeben",
+    "correctForm": "So schreibt man es",
+    "verdict": {
+      "correct": "Richtig",
+      "almost": "Fast — kleiner Tippfehler",
+      "wrong": "Noch nicht"
+    },
+    "diacriticsHint": "Ohne Häkchen zählt auch. So sieht es mit aus:",
+    "howWasIt": "Wie ist es dir gegangen?",
+    "rating": {
+      "again": "Nochmal",
+      "hard": "Schwer",
+      "good": "Gut",
+      "easy": "Leicht"
+    },
+    "ratingHint": {
+      "again": "Wusste ich nicht",
+      "hard": "Mit Mühe",
+      "good": "Gewusst",
+      "easy": "Sofort da"
+    },
+    "suggested": "Vorgeschlagen",
+    "context": "Wann sagt man das",
+    "cloze": "Welches Wort fehlt?",
+    "hint": "Hinweis",
+    "showHint": "Hinweis zeigen",
+    "register": {
+      "colloquial": "umgangssprachlich",
+      "regional": "regional",
+      "formal": "förmlich"
+    },
+    "done": {
+      "title": "Das war's für jetzt",
+      "body": "{count, plural, =1 {Eine Karte} other {# Karten}} wiederholt.",
+      "home": "Zur Startseite",
+      "again": "Weiter wiederholen"
+    }
   }
 }

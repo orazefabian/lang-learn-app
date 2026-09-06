@@ -8,6 +8,12 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DATABASE_URL: z.string().min(1),
   /**
+   * Connection pool size. The default suits real PostgreSQL; the PGlite
+   * development database in `pnpm dev:db` serves one connection at a time and
+   * needs DB_POOL_MAX=1.
+   */
+  DB_POOL_MAX: z.coerce.number().int().positive().max(100).optional(),
+  /**
    * HMAC key for session cookies. Optional here so CLI tools that only touch
    * the database can run with DATABASE_URL alone; the server checks for it at
    * startup and signing throws loudly if it is missing.

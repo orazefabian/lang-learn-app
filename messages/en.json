@@ -32,7 +32,9 @@
     "continueLearning": "Keep learning",
     "startReview": "Review",
     "answeredQuestions": "Answered questions",
-    "capability": "What I can say"
+    "capability": "What I can say",
+    "reviewCta": "Review",
+    "moreLater": "The rest will come back on its own over the next days."
   },
   "common": {
     "loading": "Loading …",
@@ -48,5 +50,54 @@
     "notFound": "This page does not exist.",
     "generic": "Something went wrong.",
     "retry": "Try again"
+  },
+  "review": {
+    "title": "Review",
+    "empty": "Nothing due right now. Good to see you anyway.",
+    "emptyAction": "Back home",
+    "progress": "{current} of {total}",
+    "newBadge": "new",
+    "show": "Show",
+    "check": "Check",
+    "skip": "Skip",
+    "yourAnswer": "Your answer",
+    "typeSlovene": "Type it in Slovene",
+    "typeAnswer": "Type your answer",
+    "correctForm": "How it is written",
+    "verdict": {
+      "correct": "Correct",
+      "almost": "Almost — small typo",
+      "wrong": "Not yet"
+    },
+    "diacriticsHint": "Without the marks counts too. Here it is with them:",
+    "howWasIt": "How did that go?",
+    "rating": {
+      "again": "Again",
+      "hard": "Hard",
+      "good": "Good",
+      "easy": "Easy"
+    },
+    "ratingHint": {
+      "again": "Did not know it",
+      "hard": "With effort",
+      "good": "Knew it",
+      "easy": "Straight away"
+    },
+    "suggested": "Suggested",
+    "context": "When to say this",
+    "cloze": "Which word is missing?",
+    "hint": "Hint",
+    "showHint": "Show hint",
+    "register": {
+      "colloquial": "colloquial",
+      "regional": "regional",
+      "formal": "formal"
+    },
+    "done": {
+      "title": "That's it for now",
+      "body": "{count, plural, =1 {One card} other {# cards}} reviewed.",
+      "home": "Back home",
+      "again": "Keep reviewing"
+    }
   }
 }
