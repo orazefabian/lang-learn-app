@@ -1,0 +1,52 @@
+{
+  "app": {
+    "name": "Slovenščina",
+    "tagline": "Slovene for real conversations"
+  },
+  "nav": {
+    "home": "Home",
+    "review": "Review",
+    "lessons": "Lessons",
+    "progress": "What I can say",
+    "teacher": "Teacher area",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signInSubtitle": "Two accounts, no audience.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "pending": "One moment …",
+    "invalidCredentials": "That email or password is not right.",
+    "missingFields": "Please enter an email and a password.",
+    "unexpectedError": "Something went wrong. Please try again."
+  },
+  "home": {
+    "greeting": "Hello, {name}",
+    "welcomeBack": "Good to see you.",
+    "dueToday": "Due today",
+    "dueTodayCount": "{count} cards",
+    "nothingDue": "Nothing due — learn something new if you feel like it.",
+    "continueLearning": "Keep learning",
+    "startReview": "Review",
+    "answeredQuestions": "Answered questions",
+    "capability": "What I can say"
+  },
+  "common": {
+    "loading": "Loading …",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "role": {
+      "learner": "Learner",
+      "teacher": "Teacher"
+    }
+  },
+  "errors": {
+    "notFound": "This page does not exist.",
+    "generic": "Something went wrong.",
+    "retry": "Try again"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "app": {
+    "name": "Slovenščina",
+    "tagline": "Slowenisch für echte Gespräche"
+  },
+  "nav": {
+    "home": "Start",
+    "review": "Wiederholen",
+    "lessons": "Lektionen",
+    "progress": "Was ich sagen kann",
+    "teacher": "Lehrbereich",
+    "settings": "Einstellungen",
+    "signOut": "Abmelden"
+  },
+  "auth": {
+    "signInTitle": "Anmelden",
+    "signInSubtitle": "Zwei Konten, kein Publikum.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "pending": "Einen Moment …",
+    "invalidCredentials": "E-Mail oder Passwort stimmt nicht.",
+    "missingFields": "Bitte E-Mail und Passwort eingeben.",
+    "unexpectedError": "Etwas ist schiefgelaufen. Bitte nochmal versuchen."
+  },
+  "home": {
+    "greeting": "Hallo, {name}",
+    "welcomeBack": "Schön, dass du da bist.",
+    "dueToday": "Heute dran",
+    "dueTodayCount": "{count} Karten",
+    "nothingDue": "Nichts fällig — wenn du magst, lern etwas Neues.",
+    "continueLearning": "Weiter lernen",
+    "startReview": "Wiederholen",
+    "answeredQuestions": "Beantwortete Fragen",
+    "capability": "Was ich sagen kann"
+  },
+  "common": {
+    "loading": "Lädt …",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "back": "Zurück",
+    "role": {
+      "learner": "Lernende",
+      "teacher": "Lehrer"
+    }
+  },
+  "errors": {
+    "notFound": "Diese Seite gibt es nicht.",
+    "generic": "Da ist etwas schiefgelaufen.",
+    "retry": "Nochmal versuchen"
+  }
+}

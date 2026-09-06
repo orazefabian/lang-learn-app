@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1
+
+# Debian slim rather than Alpine: @node-rs/argon2 ships a glibc prebuild, and
+# musl would force a source build for no benefit here.
+FROM node:24-bookworm-slim AS base
+ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
+RUN corepack enable
+WORKDIR /app
+
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+FROM base AS builder
+ENV NEXT_TELEMETRY_DISABLED=1
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN pnpm build
+
+FROM base AS runner
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
+RUN groupadd --system --gid 1001 nodejs \
+ && useradd --system --uid 1001 --gid nodejs nextjs
+
+# The standalone output carries only the server and the modules it actually uses.
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Migrations run from src/instrumentation.ts on server start, so the image
+# needs the SQL files. scripts/ carries the one-off user seeding command.
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+# The standalone tree only links packages the server imports by name; the
+# one-off seeding script needs `postgres` resolvable from /app as well.
+RUN cd /app/node_modules \
+ && ln -sfn "$(ls -d .pnpm/postgres@*/node_modules/postgres | head -n1)" postgres \
+ && mkdir -p /media && chown -R nextjs:nodejs /media
+
+USER nextjs
+EXPOSE 3000
+ENV MEDIA_ROOT=/media
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+CMD ["node", "server.js"]
