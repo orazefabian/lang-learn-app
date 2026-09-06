@@ -26,6 +26,17 @@ const ARGON2_OPTIONS = { memoryCost: 19456, timeCost: 2, parallelism: 1 };
  */
 const set = (value) => (value?.trim() ? value : undefined);
 
+/**
+ * The login form validates the address before it looks anything up, so an
+ * account seeded with an address that form rejects can never be used. Checked
+ * here with the same rule rather than discovered at the login screen, where
+ * the failure looks like a wrong password.
+ *
+ * The practical trap is a single-label domain: `fabian@local` is a perfectly
+ * good local mailbox and is not a valid email address.
+ */
+const LOGIN_EMAIL = /^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$/;
+
 const specs = [
   {
     role: "learner",
@@ -51,6 +62,16 @@ try {
     }
 
     const email = spec.email.trim().toLowerCase();
+
+    if (!LOGIN_EMAIL.test(email)) {
+      console.error(
+        `refusing to seed ${spec.role}: "${email}" is not an address the login form accepts.\n` +
+          `  It needs a dotted domain — "${email}.test" or a real address.\n` +
+          `  Seeding it would create an account that cannot sign in.`,
+      );
+      process.exitCode = 1;
+      continue;
+    }
     const password = spec.password ?? randomBytes(12).toString("base64url");
     const passwordHash = await hash(password, ARGON2_OPTIONS);
 

@@ -7,9 +7,14 @@ const intlMiddleware = createIntlMiddleware(routing);
 
 /**
  * Locale negotiation only. Auth is enforced in server components via
- * requireUser(), because the middleware runtime cannot reach the database.
+ * requireUser(), because this runtime cannot reach the database.
+ *
+ * Named `proxy` in a file called proxy.ts: Next 16 renamed the middleware
+ * convention, and the compatibility shim for the old name redirected the
+ * default locale to itself in a production build — every German URL, which is
+ * all of them.
  */
-export function middleware(request: NextRequest): NextResponse {
+export default function proxy(request: NextRequest): NextResponse {
   return intlMiddleware(request);
 }
 
