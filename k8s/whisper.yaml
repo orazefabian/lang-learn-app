@@ -71,12 +71,14 @@ spec:
           volumeMounts:
             - name: models
               mountPath: /models
-          # medium/int8 needs roughly 2 GB resident and a few seconds per short
-          # phrase on a couple of cores. Drop to `small` on a constrained node;
-          # Slovene accuracy suffers noticeably, which the README covers.
+          # medium/int8 needs roughly 2 GB resident. One core is the cap on
+          # purpose: transcription is off the critical path — she rates her own
+          # speaking either way — so it should not be able to starve the app.
+          # Drop to `small` on a constrained node; Slovene accuracy suffers
+          # noticeably, which the README covers.
           resources:
-            requests: { cpu: 500m, memory: 2Gi }
-            limits: { cpu: "4", memory: 4Gi }
+            requests: { cpu: 250m, memory: 2Gi }
+            limits: { cpu: "1", memory: 3Gi }
           readinessProbe:
             httpGet: { path: /health, port: http }
             # The first start downloads ~1.5 GB. Nothing else depends on this

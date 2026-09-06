@@ -98,7 +98,7 @@ spec:
               mountPath: /media
           resources:
             requests: { cpu: 100m, memory: 256Mi }
-            limits: { memory: 1Gi }
+            limits: { cpu: "1", memory: 1Gi }
           startupProbe:
             # Migrations run at boot. This is the probe that gives them room,
             # so the liveness probe below can stay tight afterwards.
