@@ -39,7 +39,10 @@
     "canSayTitle": "Was ich sagen kann",
     "canSayCount": "{count, plural, =0 {Noch nichts — das kommt} =1 {Ein Satz} other {# Sätze}}",
     "canSayEmpty": "Hier sammelt sich, was du sicher sagen kannst.",
-    "canSayAll": "Alles ansehen"
+    "canSayAll": "Alles ansehen",
+    "answeredTitle": "Antworten für dich",
+    "answeredCount": "{count, plural, =1 {Eine Frage wurde beantwortet} other {# Fragen wurden beantwortet}}",
+    "answeredOpen": "Ansehen"
   },
   "common": {
     "loading": "Lädt …",
@@ -140,6 +143,17 @@
       "failed": "Die Auswertung hat nicht geklappt. Die Aufnahme ist trotzdem gespeichert.",
       "retry": "Nochmal aufnehmen",
       "skipSpeaking": "Überspringen"
+    },
+    "ask": {
+      "button": "Verstehe ich nicht",
+      "title": "Was ist unklar?",
+      "hint": "Optional — auch ohne Text weiß er, welche Karte es war.",
+      "placeholder": "z. B. Warum heißt es hier kavo und nicht kava?",
+      "send": "Abschicken",
+      "sent": "Ist notiert. Weiter geht's.",
+      "failed": "Konnte nicht abgeschickt werden.",
+      "cancel": "Abbrechen",
+      "answerTitle": "Antwort"
     }
   },
   "lessons": {
@@ -289,7 +303,30 @@
     },
     "nav": {
       "capture": "Aufschreiben",
-      "content": "Inhalte"
+      "content": "Inhalte",
+      "inbox": "Fragen"
+    },
+    "inbox": {
+      "title": "Fragen",
+      "open": "Offen",
+      "answered": "Beantwortet",
+      "all": "Alle",
+      "emptyOpen": "Keine offenen Fragen.",
+      "emptyAnswered": "Noch nichts beantwortet.",
+      "askedAbout": "Zu dieser Karte",
+      "noText": "Ohne Text — nur die Karte.",
+      "asked": "gefragt am {date}",
+      "answeredOn": "beantwortet am {date}",
+      "answerPlaceholder": "Erklär es kurz …",
+      "answerLabel": "Antwort",
+      "recordAnswer": "Sprachnachricht",
+      "stopRecording": "Fertig",
+      "send": "Antwort schicken",
+      "sending": "Schickt …",
+      "sent": "Antwort ist bei ihr.",
+      "needsSomething": "Schreib etwas oder nimm eine Nachricht auf.",
+      "openItem": "Eintrag öffnen",
+      "badge": "{count} offen"
     }
   }
 }

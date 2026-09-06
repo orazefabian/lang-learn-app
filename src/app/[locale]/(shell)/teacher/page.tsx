@@ -1,8 +1,9 @@
-import { Library } from "lucide-react";
+import { Inbox, Library } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { db } from "@/db/client";
 import { Link } from "@/i18n/navigation";
 import { requireTeacher } from "@/lib/auth";
+import { getInboxCounts } from "@/lib/questions/service";
 import { searchContent } from "@/lib/teacher/content";
 import { QuickCapture } from "./quick-capture";
 
@@ -19,11 +20,10 @@ export default async function TeacherPage({
 
   // The working list: what she will hear in a computer voice until someone
   // records it.
-  const missingVoice = await searchContent(db, {
-    status: "active",
-    missingHumanAudio: true,
-    limit: 5,
-  });
+  const [missingVoice, inbox] = await Promise.all([
+    searchContent(db, { status: "active", missingHumanAudio: true, limit: 5 }),
+    getInboxCounts(db),
+  ]);
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-8 px-5 pb-10 pt-8">
@@ -41,6 +41,24 @@ export default async function TeacherPage({
       </section>
 
       <section className="flex flex-col gap-3">
+        <Link
+          href="/teacher/inbox"
+          className="flex items-center gap-4 rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary"
+        >
+          <Inbox className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+          <span className="flex flex-1 flex-col">
+            <span className="font-medium">{t("inbox.title")}</span>
+            <span className="text-sm text-muted-foreground">
+              {t("inbox.badge", { count: inbox.open })}
+            </span>
+          </span>
+          {inbox.open > 0 ? (
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold tabular-nums text-accent-foreground">
+              {inbox.open}
+            </span>
+          ) : null}
+        </Link>
+
         <Link
           href="/teacher/content"
           className="flex items-center gap-4 rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary"

@@ -172,3 +172,35 @@ export async function submitSpeechAttempt(formData: FormData): Promise<SpeechAtt
     ...(result.reason ? { reason: result.reason } : {}),
   };
 }
+
+const askSchema = z.object({
+  cardId: z.string().uuid(),
+  body: z.string().max(2000).optional(),
+});
+
+/**
+ * "Verstehe ich nicht".
+ *
+ * Files the question and returns immediately — the session must not pause for
+ * it. Failure is swallowed on purpose: losing a question is bad, but stopping
+ * her session over one is worse.
+ */
+export async function askAboutCard(
+  input: z.input<typeof askSchema>,
+): Promise<{ ok: boolean }> {
+  const user = await requireUser();
+  const parsed = askSchema.parse(input);
+
+  try {
+    const { askQuestion } = await import("@/lib/questions/service");
+    await askQuestion(db, {
+      askedBy: user.id,
+      cardId: parsed.cardId,
+      body: parsed.body,
+    });
+    return { ok: true };
+  } catch (error) {
+    logger.error({ err: error, cardId: parsed.cardId }, "could not file question");
+    return { ok: false };
+  }
+}

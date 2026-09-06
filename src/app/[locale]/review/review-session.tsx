@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import type { CardPrompt } from "@/lib/session/service";
 import type { CardRating } from "@/lib/srs/scheduler";
 import { checkAnswer, getNextCard, submitAnswer, type CheckAnswerResult } from "./actions";
+import { AskButton } from "./ask-button";
+import { mediaUrl } from "@/lib/audio/resolve";
 import { SpeakingCard } from "./speaking-card";
 
 const RATINGS: CardRating[] = ["again", "hard", "good", "easy"];
@@ -284,11 +286,37 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
                 {card.contextNote}
               </p>
             ) : null}
+
+            {/*
+              Answers stay on the card from then on. Asking once should pay off
+              every time she meets the item again.
+            */}
+            {card.answers.map((answer) => (
+              <div
+                key={answer.questionId}
+                className="flex flex-col gap-2 border-t border-border pt-4"
+              >
+                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
+                  {t("ask.answerTitle")}
+                </p>
+                {answer.answerText ? (
+                  <p className="text-sm leading-relaxed">{answer.answerText}</p>
+                ) : null}
+                {answer.answerAudioPath ? (
+                  // eslint-disable-next-line jsx-a11y/media-has-caption
+                  <audio controls preload="none" className="h-9 w-full">
+                    <source src={mediaUrl(answer.answerAudioPath)} />
+                  </audio>
+                ) : null}
+              </div>
+            ))}
           </div>
         ) : null}
       </section>
 
       <footer className="flex flex-col gap-3">
+        <AskButton key={card.cardId} cardId={card.cardId} />
+
         {!revealed ? (
           isSpeaking ? null : isTyped ? (
             <Button size="lg" block onClick={check} disabled={pending}>

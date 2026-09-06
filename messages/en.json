@@ -39,7 +39,10 @@
     "canSayTitle": "What I can say",
     "canSayCount": "{count, plural, =0 {Nothing yet — it will come} =1 {One sentence} other {# sentences}}",
     "canSayEmpty": "This is where the things you can say for sure collect.",
-    "canSayAll": "See all"
+    "canSayAll": "See all",
+    "answeredTitle": "Answers for you",
+    "answeredCount": "{count, plural, =1 {One question was answered} other {# questions were answered}}",
+    "answeredOpen": "Look"
   },
   "common": {
     "loading": "Loading …",
@@ -140,6 +143,17 @@
       "failed": "Scoring did not work. The recording is saved anyway.",
       "retry": "Record again",
       "skipSpeaking": "Skip"
+    },
+    "ask": {
+      "button": "I don't get this",
+      "title": "What is unclear?",
+      "hint": "Optional — even without text he knows which card it was.",
+      "placeholder": "e.g. why is it kavo here and not kava?",
+      "send": "Send",
+      "sent": "Noted. Carry on.",
+      "failed": "Could not be sent.",
+      "cancel": "Cancel",
+      "answerTitle": "Answer"
     }
   },
   "lessons": {
@@ -289,7 +303,30 @@
     },
     "nav": {
       "capture": "Capture",
-      "content": "Content"
+      "content": "Content",
+      "inbox": "Questions"
+    },
+    "inbox": {
+      "title": "Questions",
+      "open": "Open",
+      "answered": "Answered",
+      "all": "All",
+      "emptyOpen": "No open questions.",
+      "emptyAnswered": "Nothing answered yet.",
+      "askedAbout": "About this card",
+      "noText": "No text — just the card.",
+      "asked": "asked on {date}",
+      "answeredOn": "answered on {date}",
+      "answerPlaceholder": "Explain it briefly …",
+      "answerLabel": "Answer",
+      "recordAnswer": "Voice note",
+      "stopRecording": "Done",
+      "send": "Send answer",
+      "sending": "Sending …",
+      "sent": "She has it.",
+      "needsSomething": "Write something or record a note.",
+      "openItem": "Open entry",
+      "badge": "{count} open"
     }
   }
 }

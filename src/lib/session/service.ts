@@ -10,6 +10,7 @@ import {
   userSettings,
 } from "@/db/schema";
 import { getAudioForItem, type PlayableAudio } from "@/lib/audio/resolve";
+import { getAnswersForItem, type ItemAnswer } from "@/lib/questions/service";
 import { availableExerciseTypes, type ExerciseType } from "@/lib/srs/cards";
 import {
   buildSessionQueue,
@@ -327,6 +328,11 @@ export type CardPrompt = {
   acceptableAnswers: string[];
   /** Human recordings first, generated speech last. */
   audio: PlayableAudio[];
+  /**
+   * Answers the teacher has given about this item. They stay on the card from
+   * then on, not just the once — that is the whole point of asking.
+   */
+  answers: ItemAnswer[];
   /** Shown after answering. */
   slovene: string;
   german: string;
@@ -347,6 +353,10 @@ export async function getCardPrompt(db: Db, cardId: string): Promise<CardPrompt 
   const exerciseType = card.exerciseType as ExerciseType;
   const isNew = card.state === "new";
   const audio = await getAudioForItem(db, {
+    phraseId: card.phraseId,
+    lexemeId: card.lexemeId,
+  });
+  const answers = await getAnswersForItem(db, {
     phraseId: card.phraseId,
     lexemeId: card.lexemeId,
   });
@@ -373,6 +383,7 @@ export async function getCardPrompt(db: Db, cardId: string): Promise<CardPrompt 
       answer,
       acceptableAnswers: [answer],
       audio,
+      answers,
       slovene: phrase.slovene,
       german: phrase.german,
       contextNote: phrase.contextNote,
@@ -410,6 +421,7 @@ export async function getCardPrompt(db: Db, cardId: string): Promise<CardPrompt 
           ? [lexeme.slovene]
           : [german, ...lexeme.german],
       audio,
+      answers,
       slovene: lexeme.slovene,
       german,
       contextNote: lexeme.notes,
@@ -443,6 +455,7 @@ export async function getCardPrompt(db: Db, cardId: string): Promise<CardPrompt 
       answer: cloze.answer,
       acceptableAnswers: [cloze.answer],
       audio,
+      answers,
       slovene: phrase.slovene,
       german: phrase.german,
       contextNote: phrase.contextNote,

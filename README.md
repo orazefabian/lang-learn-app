@@ -23,8 +23,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 5 | Whisper ASR and speaking exercises | done |
 | 6 | Lessons, home screen, progress view | done |
 | 7 | Teacher area: browser, quick-capture, recordings | done |
-| 8 | "Ask me" questions inbox | next |
-| 9 | AI generation with draft approval | |
+| 8 | "Ask me" questions inbox | done |
+| 9 | AI generation with draft approval | next |
 | 10 | Weekly digest | |
 | 11 | PWA and offline review | |
 | 12 | K8s manifests, backups, E2E suite | |
@@ -291,6 +291,32 @@ un-archiving puts the item back exactly where it was.
 
 Editing the Slovene marks the audio stale and regenerates it, since the media
 store is keyed by a hash of the text.
+
+## Asking a question
+
+Every card carries an unobtrusive **"Verstehe ich nicht"**. Tapping it opens a
+small box for optional text; sending is fire-and-forget, so the confirmation
+appears at once and the session never waits on the network. Being stuck should
+cost a tap, not her momentum. A question with no text is perfectly valid — the
+card alone says where she got stuck.
+
+The teacher answers with text, a voice note, or both. Explaining a case ending
+out loud takes ten seconds and typing it takes two minutes, so recording is one
+tap rather than a menu.
+
+**The answer attaches to the item, not the card.** It shows on every card for
+that item from then on — recognition, listening, cloze — and survives the card
+being rebuilt, because the question stores the phrase and lexeme references
+alongside the card it came from.
+
+Answer audio is deliberately *not* linked to the item as a media asset. An
+answer is an explanation, not a model pronunciation; attaching it would put the
+teacher explaining the accusative into the rotation of voices her listening
+cards play back. There is a test for exactly that.
+
+Her side gets one notification, and it only ever carries good news: an
+"Antworten für dich" panel on the home screen that clears once she has looked.
+The teacher gets a count on the inbox and a badge on his tab.
 
 ## Known limitations
 

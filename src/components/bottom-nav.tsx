@@ -22,7 +22,14 @@ const LEARNER_ITEMS = [
  */
 const TEACHER_ITEM = { href: "/teacher", key: "teacher", Icon: PenLine } as const;
 
-export function BottomNav({ role }: { role: "learner" | "teacher" }) {
+export function BottomNav({
+  role,
+  openQuestions = 0,
+}: {
+  role: "learner" | "teacher";
+  /** Unanswered questions, badged on the teacher tab. */
+  openQuestions?: number;
+}) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const items = role === "teacher" ? [...LEARNER_ITEMS, TEACHER_ITEM] : LEARNER_ITEMS;
@@ -46,7 +53,14 @@ export function BottomNav({ role }: { role: "learner" | "teacher" }) {
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icon className="size-5" aria-hidden />
+                <span className="relative">
+                  <Icon className="size-5" aria-hidden />
+                  {key === "teacher" && openQuestions > 0 ? (
+                    <span className="absolute -right-2 -top-1 flex size-4 items-center justify-center rounded-full bg-accent text-[0.6rem] font-bold tabular-nums text-accent-foreground">
+                      {openQuestions > 9 ? "9+" : openQuestions}
+                    </span>
+                  ) : null}
+                </span>
                 <span className="font-medium">{t(key as "home")}</span>
                 {/* Never colour alone: the active tab also carries a marker. */}
                 <span

@@ -215,3 +215,51 @@ export async function makePrimaryRecording(
   revalidatePath("/teacher");
   return { ok: true };
 }
+
+const answerSchema = z.object({
+  questionId: z.string().uuid(),
+  text: z.string().max(4000).optional(),
+});
+
+/**
+ * Answers one question with text, a voice note, or both. The answer attaches to
+ * the item permanently and shows on that card from then on.
+ */
+export async function answerInboxQuestion(formData: FormData): Promise<{ ok: true }> {
+  const teacher = await requireTeacher();
+
+  const parsed = answerSchema.parse({
+    questionId: formData.get("questionId"),
+    text: String(formData.get("text") ?? "").trim() || undefined,
+  });
+
+  const file = formData.get("audio");
+  const hasAudio = file instanceof File && file.size > 0;
+
+  if (hasAudio) {
+    const mimeType = (file.type || "audio/webm").split(";")[0]?.trim() ?? "audio/webm";
+    if (!ALLOWED_AUDIO.includes(mimeType)) throw new Error(`unsupported audio type ${mimeType}`);
+  }
+
+  const { answerQuestion } = await import("@/lib/questions/service");
+
+  await answerQuestion(db, {
+    questionId: parsed.questionId,
+    answeredBy: teacher.id,
+    text: parsed.text,
+    ...(hasAudio
+      ? {
+          audio: {
+            data: Buffer.from(await (file as File).arrayBuffer()),
+            mimeType: ((file as File).type || "audio/webm").split(";")[0] as string,
+            durationMs: Number(formData.get("durationMs")) || undefined,
+          },
+        }
+      : {}),
+  });
+
+  revalidatePath("/teacher");
+  revalidatePath("/teacher/inbox");
+  revalidatePath("/review");
+  return { ok: true };
+}
