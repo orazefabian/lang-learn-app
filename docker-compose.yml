@@ -111,8 +111,13 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
       DIGEST_ENABLED: ${DIGEST_ENABLED:-false}
+      DIGEST_DAY: ${DIGEST_DAY:-sunday}
+      DIGEST_HOUR: ${DIGEST_HOUR:-18}
+      DIGEST_TIMEZONE: ${DIGEST_TIMEZONE:-Europe/Berlin}
       SMTP_URL: ${SMTP_URL:-}
       DIGEST_EMAIL_TO: ${DIGEST_EMAIL_TO:-}
+      DIGEST_EMAIL_FROM: ${DIGEST_EMAIL_FROM:-}
+      APP_URL: ${APP_URL:-}
       LOG_LEVEL: ${LOG_LEVEL:-info}
     volumes:
       - media:/media

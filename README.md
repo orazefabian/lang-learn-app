@@ -25,8 +25,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 7 | Teacher area: browser, quick-capture, recordings | done |
 | 8 | "Ask me" questions inbox | done |
 | 9 | AI generation with draft approval | done |
-| 10 | Weekly digest | next |
-| 11 | PWA and offline review | |
+| 10 | Weekly digest | done |
+| 11 | PWA and offline review | next |
 | 12 | K8s manifests, backups, E2E suite | |
 
 ## Stack
@@ -362,6 +362,43 @@ that or did I?" has an answer.
 Without `ANTHROPIC_API_KEY` the generate screen and the auto-fill button are
 simply absent. Nothing else changes.
 
+## The weekly digest
+
+One person reads it, and its only job is to tell him what to record or explain
+next. It reports the week and never characterises it: no streak, no target, no
+"only two sessions" — **the digest must not become a nag he is expected to
+relay.** If she did not study, it says when she last did and moves on.
+
+Per week: reviews, distinct cards, days with any practice, retention, newly
+started cards, lessons finished, and how much she can say in total. Then the
+part that is actually the point — the ten items that are not sticking, ranked
+by lapses and then by how little has stuck, **grouped by item rather than by
+card** so one hard phrase does not fill the list three times over as its
+recognition, listening and speaking cards.
+
+That list is actionable in place: record a voice for the item, or write the
+context note that says when it is used, both without leaving the page. A list
+that could only be read would report that something is hard and leave him to go
+find it, which is the version of this feature nobody uses.
+
+Retention counts only reviews of cards that were already in the review state —
+learning-step repeats would flatter the number, and a flattering number is
+useless for deciding what to teach next. A week with no mature reviews has no
+rate at all rather than a zero, because a zero reads as a failure.
+
+**Scheduling** is a weekday, hour and timezone (`DIGEST_DAY`, `DIGEST_HOUR`,
+`DIGEST_TIMEZONE`), and lands at a real local time: 18:00 stays 18:00 across
+both clock changes. The job is idempotent per week, which is what lets the
+scheduler be a plain interval rather than a cron with state — it checks every
+15 minutes, writes the week if it is not there, and does nothing otherwise.
+`DIGEST_ENABLED=false` turns it off in favour of `pnpm digest:run` from cron or
+a Kubernetes CronJob.
+
+**Email is optional and off by default.** Without `SMTP_URL` and
+`DIGEST_EMAIL_TO` the digest simply waits in the teacher area. Only a newly
+written week is ever mailed, so re-running the job — or rebuilding a week from
+current data — cannot send the same digest twice.
+
 ## Asking a question
 
 Every card carries an unobtrusive **"Verstehe ich nicht"**. Tapping it opens a
@@ -410,6 +447,10 @@ The teacher gets a count on the inbox and a badge on his tab.
   Slovene the differing word is usually a case ending. Longer phrases stay
   forgiving. The thresholds live in one place (`src/lib/speech/scoring.ts`) and
   are meant to be tuned once there is real data.
+- **No SMTP server has been talked to.** The digest email is rendered, escaped
+  and covered by tests, and the send path is behind an interface that the tests
+  drive with a stub, but nothing has been handed to a real mail server. The
+  digest itself does not depend on it.
 - **The Anthropic API has never actually been called from here.** There is no
   key on this machine, so generation and auto-fill have only ever run against a
   stub client: the schema, dedup, draft, approval and failure paths are covered

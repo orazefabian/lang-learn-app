@@ -1,4 +1,4 @@
-import { FileCheck2, Inbox, Library, Sparkles } from "lucide-react";
+import { CalendarRange, FileCheck2, Inbox, Library, Sparkles } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { db } from "@/db/client";
 import { Link } from "@/i18n/navigation";
@@ -92,6 +92,17 @@ export default async function TeacherPage({
             </span>
           </Link>
         ) : null}
+
+        <Link
+          href="/teacher/digest"
+          className="flex items-center gap-4 rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary"
+        >
+          <CalendarRange className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+          <span className="flex flex-1 flex-col">
+            <span className="font-medium">{t("digest.title")}</span>
+            <span className="text-sm text-muted-foreground">{t("digest.subtitle")}</span>
+          </span>
+        </Link>
 
         {isAiConfigured() ? (
           <Link

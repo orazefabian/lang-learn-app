@@ -12,6 +12,35 @@ export async function register(): Promise<void> {
   const { sessionSecret } = await import("@/lib/env");
   sessionSecret();
 
+  await runMigrations();
+  await startScheduledJobs();
+}
+
+/**
+ * The weekly digest, when it is switched on.
+ *
+ * Started after migrations so the first run cannot race the schema, and only
+ * when DIGEST_ENABLED is set — a Kubernetes CronJob calling `pnpm digest:run`
+ * is the other supported shape, and the two should not both be live.
+ */
+async function startScheduledJobs(): Promise<void> {
+  const { env } = await import("@/lib/env");
+  if (!env().DIGEST_ENABLED) return;
+
+  const [{ db }, { startDigestScheduler }, { logger }] = await Promise.all([
+    import("@/db/client"),
+    import("@/lib/digest/run"),
+    import("@/lib/logger"),
+  ]);
+
+  startDigestScheduler(db);
+  logger.info(
+    { day: env().DIGEST_DAY, hour: env().DIGEST_HOUR, timeZone: env().DIGEST_TIMEZONE },
+    "digest scheduler started",
+  );
+}
+
+async function runMigrations(): Promise<void> {
   if (process.env.RUN_MIGRATIONS_ON_START === "false") return;
 
   const [{ drizzle }, { migrate }, postgres, { logger }] = await Promise.all([

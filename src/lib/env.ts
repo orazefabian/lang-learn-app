@@ -39,11 +39,21 @@ const envSchema = z.object({
   ANTHROPIC_MODEL: z.string().default("claude-sonnet-5"),
 
   SMTP_URL: z.string().optional(),
-  DIGEST_EMAIL_TO: z.string().email().optional(),
+  DIGEST_EMAIL_TO: z.email().optional(),
+  DIGEST_EMAIL_FROM: z.email().optional(),
+  /** Turns the in-process weekly scheduler on. The digest itself always works. */
   DIGEST_ENABLED: z
     .enum(["true", "false"])
     .default("false")
     .transform((v) => v === "true"),
+  DIGEST_DAY: z
+    .enum(["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"])
+    .default("sunday"),
+  DIGEST_HOUR: z.coerce.number().int().min(0).max(23).default(18),
+  /** The digest lands at a real local time, so it needs a real timezone. */
+  DIGEST_TIMEZONE: z.string().default("Europe/Berlin"),
+  /** Absolute URL of the app, used for the link in the digest email. */
+  APP_URL: z.url({ protocol: /^https?$/ }).optional(),
 
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
 });
