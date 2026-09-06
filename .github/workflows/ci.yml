@@ -1,0 +1,29 @@
+# Everything that can run without a browser or a cluster.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      # Scheduling, scoring, the backlog cap, config parsing, the manifests.
+      - run: pnpm test
+      # PGlite over its wire protocol: no service containers needed.
+      - run: pnpm test:integration
+      - run: pnpm build
+        env:
+          # The build never connects, but env parsing runs at import time.
+          SESSION_SECRET: ci-placeholder-secret-at-least-32-characters

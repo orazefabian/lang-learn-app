@@ -21,3 +21,6 @@ CLAUDE.md
 
 # Filled in from k8s/secret.example.yaml.
 /k8s/secret.yaml
+
+# Compiled by pnpm ops:build during the image build.
+/scripts/dist/

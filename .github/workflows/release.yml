@@ -1,0 +1,82 @@
+# Builds and publishes the three images this app deploys as.
+#
+# Tag a release and the cluster gets new images to point at:
+#
+#   git tag v0.2.0 && git push origin v0.2.0
+#
+# Then bump the tag in homecluster's apps/slovenscina/*/manifests, or let
+# Renovate open that PR for you.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag to publish (e.g. 0.2.0)"
+        required: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  images:
+    # Native arm64: the cluster is arm64, and building it under QEMU on an
+    # x64 runner takes the Next build and the argon2 native module from
+    # minutes to the better part of an hour.
+    runs-on: ubuntu-24.04-arm
+
+    strategy:
+      # One failing image should not cancel the other two — they are
+      # independent, and a Piper build failure is not a reason to skip the app.
+      fail-fast: false
+      matrix:
+        include:
+          - name: app
+            context: .
+            dockerfile: Dockerfile
+          - name: piper
+            context: ./docker/piper
+            dockerfile: ./docker/piper/Dockerfile
+          - name: whisper
+            context: ./docker/whisper
+            dockerfile: ./docker/whisper/Dockerfile
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Work out the version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "publishing $version"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ matrix.name }}:${{ steps.version.outputs.version }}
+            ghcr.io/${{ github.repository }}/${{ matrix.name }}:latest
+          # Layer cache in the registry, so a change to the app does not
+          # rebuild Piper's voice download or Whisper's pip install.
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.name }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}/${{ matrix.name }}:buildcache,mode=max
+          provenance: false

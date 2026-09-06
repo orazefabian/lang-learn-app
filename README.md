@@ -119,7 +119,31 @@ volume, the database on `db-data`.
 Migrations run automatically at server startup (`src/instrumentation.ts`) and are
 idempotent. Set `RUN_MIGRATIONS_ON_START=false` to manage them yourself.
 
-### Kubernetes
+### The home cluster
+
+The real target is a k3s cluster running ArgoCD, and the manifests for it live
+in that cluster's own repo under `apps/slovenscina/` — namespace `halo`,
+Longhorn volumes, the existing ingress-nginx and wildcard certificate. The
+`k8s/` directory here is the portable version for anyone else.
+
+Updating is a tag:
+
+```bash
+git tag v0.2.0 && git push origin v0.2.0
+```
+
+`.github/workflows/release.yml` builds and pushes three arm64 images to GHCR —
+`app`, `piper`, `whisper` — and Renovate opens the PR that bumps the tags in
+the cluster repo. Migrations run at boot and are idempotent, so a version bump
+is only ever an image tag; there is no separate migration step.
+
+`pnpm ops:build` compiles the operational scripts to plain JavaScript for the
+image, because the runtime has no `tsx`. Without it a deployed instance could
+create its two accounts and nothing else — the deck import and the audio
+generation both have to run in the cluster, the latter because the media
+volume only exists there.
+
+### Kubernetes (portable)
 
 ```bash
 cp k8s/secret.example.yaml k8s/secret.yaml   # fill in, gitignored

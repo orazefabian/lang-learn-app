@@ -16,6 +16,11 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm build
+# The ops scripts as plain JavaScript. The runtime has no tsx, and without
+# these the deployed app could create its two accounts and nothing else — no
+# seeding the deck, no generating audio onto the media volume, which is a job
+# that can only run where that volume is.
+RUN pnpm ops:build
 
 FROM base AS runner
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
@@ -28,9 +33,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Migrations run from src/instrumentation.ts on server start, so the image
-# needs the SQL files. scripts/ carries the one-off user seeding command.
+# needs the SQL files. scripts/ carries seed-users.mjs and the dist/ scripts
+# compiled above; seed/ is the deck and curriculum they import.
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/seed ./seed
 # The standalone tree only links packages the server imports by name; the
 # one-off seeding script needs `postgres` resolvable from /app as well.
 RUN cd /app/node_modules \
