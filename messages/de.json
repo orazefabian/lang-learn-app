@@ -27,14 +27,19 @@
     "greeting": "Hallo, {name}",
     "welcomeBack": "Schön, dass du da bist.",
     "dueToday": "Heute dran",
-    "dueTodayCount": "{count} Karten",
-    "nothingDue": "Nichts fällig — wenn du magst, lern etwas Neues.",
-    "continueLearning": "Weiter lernen",
-    "startReview": "Wiederholen",
-    "answeredQuestions": "Beantwortete Fragen",
-    "capability": "Was ich sagen kann",
+    "dueTodayCount": "{count, plural, =1 {Eine Karte} other {# Karten}}",
+    "nothingDue": "Nichts fällig.",
+    "nothingDueHint": "Wenn du magst, lern etwas Neues.",
+    "moreLater": "Der Rest kommt in den nächsten Tagen von selbst.",
     "reviewCta": "Wiederholen",
-    "moreLater": "Der Rest kommt in den nächsten Tagen von selbst."
+    "continueLesson": "Weiter lernen",
+    "lessonMeta": "{minutes} Min · {count, plural, =1 {1 Sache} other {# Sachen}}",
+    "allLessonsDone": "Du hast alle Lektionen durch.",
+    "browseLessons": "Alle Lektionen",
+    "canSayTitle": "Was ich sagen kann",
+    "canSayCount": "{count, plural, =0 {Noch nichts — das kommt} =1 {Ein Satz} other {# Sätze}}",
+    "canSayEmpty": "Hier sammelt sich, was du sicher sagen kannst.",
+    "canSayAll": "Alles ansehen"
   },
   "common": {
     "loading": "Lädt …",
@@ -136,5 +141,55 @@
       "retry": "Nochmal aufnehmen",
       "skipSpeaking": "Überspringen"
     }
+  },
+  "lessons": {
+    "title": "Lektionen",
+    "unitProgress": "{done} von {total}",
+    "status": {
+      "not_started": "Neu",
+      "in_progress": "Angefangen",
+      "completed": "Fertig"
+    },
+    "meta": "{minutes} Min · {count, plural, =1 {1 Sache} other {# Sachen}}",
+    "dualBadge": "Dvojina",
+    "start": "Anfangen",
+    "resume": "Weitermachen",
+    "again": "Nochmal ansehen",
+    "skipWarningTitle": "Du überspringst etwas",
+    "skipWarningBody": "Davor liegen noch {count, plural, =1 {eine Lektion} other {# Lektionen}}, die du nicht gemacht hast. Das ist in Ordnung — du kannst jederzeit zurück.",
+    "skipWarningContinue": "Trotzdem hier anfangen",
+    "skipWarningBack": "Zurück zur Übersicht",
+    "intro": "Darum geht's",
+    "goal": "Danach kannst du",
+    "newItems": "Das ist neu",
+    "grammarNote": "Kurz zur Grammatik",
+    "next": "Weiter",
+    "back": "Zurück",
+    "practice": "Kurz ausprobieren",
+    "practiceHint": "Nur zum Ausprobieren — das zählt noch nicht.",
+    "checkPractice": "Prüfen",
+    "practiceCorrect": "Genau.",
+    "practiceWrong": "Noch nicht — so heißt es:",
+    "finish": "Lektion abschließen",
+    "finished": {
+      "title": "Fertig.",
+      "body": "{count, plural, =1 {Eine Sache ist} other {# Sachen sind}} jetzt in deinen Wiederholungen.",
+      "review": "Gleich wiederholen",
+      "next": "Nächste Lektion",
+      "home": "Zur Startseite"
+    },
+    "empty": "Es sind noch keine Lektionen freigegeben."
+  },
+  "progress": {
+    "title": "Was ich sagen kann",
+    "intro": "Sätze, die sitzen. Die Liste wächst von allein.",
+    "empty": "Noch ist die Liste leer. Nach ein paar Wiederholungen taucht hier der erste Satz auf.",
+    "emptyAction": "Erste Lektion",
+    "countLabel": "Sätze",
+    "wordsLabel": "Wörter begegnet",
+    "lessonsLabel": "Lektionen",
+    "dualLabel": "davon mit Dvojina",
+    "wordsTitle": "Wörter, die du getroffen hast",
+    "sinceLabel": "seit {date}"
   }
 }

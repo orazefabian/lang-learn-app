@@ -21,8 +21,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 3 | FSRS, card generation, review sessions | done |
 | 4 | Piper TTS and the audio pipeline | done |
 | 5 | Whisper ASR and speaking exercises | done |
-| 6 | Lessons, home screen, progress view | next |
-| 7 | Teacher area: browser, quick-capture, recordings | |
+| 6 | Lessons, home screen, progress view | done |
+| 7 | Teacher area: browser, quick-capture, recordings | next |
 | 8 | "Ask me" questions inbox | |
 | 9 | AI generation with draft approval | |
 | 10 | Weekly digest | |
@@ -220,6 +220,45 @@ there is evidence before anyone decides to trust the recogniser more.
 `GET /api/ready` reports each optional service as `absent` (not configured),
 `reachable`, or `unreachable` (configured but not answering). Neither gates
 readiness — the app is healthy without them, just quieter.
+
+## The app she uses
+
+Four screens, phone-first, bottom navigation because the top of a phone is the
+part a thumb cannot reach.
+
+**Home** offers both ways in, always: the capped review count and the next
+lesson. Reviews never depend on lessons and lessons never depend on reviews.
+Below them sits the beginning of the capability list.
+
+**Lessons** are a short guided sequence — the item, its audio, when you would
+say it, then one low-stakes try that is explicitly marked as not counting.
+Finishing is what hands the items to the scheduler. Lessons are ordered but
+never gated: opening one out of sequence shows a warning that says it is fine
+and offers a way back, not a locked door.
+
+**"Was ich sagen kann"** is the progress view, and the only progress this app
+keeps. It is a phrasebook page that fills up: each sentence she can now say,
+newest first, in Slovene with its German underneath and the context note that
+made it stick. A phrase appears once its production or speaking card holds a
+week of stability — seen once is not the same as able to say it. There are no
+streaks, no daily goals and no consecutive-day counters anywhere in the app.
+
+### Design
+
+Two typefaces, one job each: **Fraunces** sets Slovene, **Atkinson
+Hyperlegible** sets German and the interface. The split is not decoration —
+it tells her at a glance which language she is looking at, and Atkinson was
+drawn for legibility, which is what the language she already reads needs. Both
+are self-hosted at build time, so no request leaves the server at runtime.
+
+The palette comes from karst limestone and *panjske končnice*, the painted
+beehive panels of Slovene folk art: pale cool stone, blue-black ink, one ochre
+accent, and an iron red kept for the single place that needs weight. Nothing in
+it is a scoreboard colour, because there is no score.
+
+The dual gets its own mark — a pair of dots — on the lessons, cards and phrases
+that turn on it. Slovene counts to two before it counts to many, and that is
+the one thing about the language worth putting a glyph on.
 
 ## Known limitations
 

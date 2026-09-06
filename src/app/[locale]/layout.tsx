@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Atkinson_Hyperlegible_Next, Fraunces } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -6,14 +7,38 @@ import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
+/**
+ * Slovene is set in Fraunces and German in Atkinson Hyperlegible, everywhere.
+ * The split is not decoration: it tells her at a glance which language she is
+ * looking at, and Atkinson was drawn for legibility, which is what the language
+ * she already reads needs.
+ *
+ * Both are self-hosted by next/font at build time — no request leaves the
+ * server at runtime, which the offline mode depends on.
+ */
+const fraunces = Fraunces({
+  subsets: ["latin", "latin-ext"],
+  // Variable across weight, optical size and Fraunces' own SOFT/WONK axes.
+  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-fraunces",
+  display: "swap",
+});
+
+const atkinson = Atkinson_Hyperlegible_Next({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-atkinson",
+  display: "swap",
+});
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf7f2" },
-    { media: "(prefers-color-scheme: dark)", color: "#221f1c" },
+    { media: "(prefers-color-scheme: light)", color: "#f2f3f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#25282f" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -49,7 +74,11 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html
+      lang={locale}
+      className={`${fraunces.variable} ${atkinson.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
