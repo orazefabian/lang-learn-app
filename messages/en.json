@@ -110,6 +110,31 @@
       "otherVoices": "another voice",
       "generatedVoice": "computer voice",
       "unavailable": "There is no audio for this card yet."
+    },
+    "speaking": {
+      "prompt": "Say it in Slovene",
+      "modelAudio": "How it sounds",
+      "start": "Record",
+      "stop": "Done",
+      "recording": "Recording",
+      "listenBack": "Your recording",
+      "permissionDenied": "No microphone access. Allow it in your browser settings.",
+      "unsupported": "This browser cannot record, unfortunately.",
+      "checking": "Listening …",
+      "understoodAs": "Understood as",
+      "nothingHeard": "Nothing was audible. Try again?",
+      "band": {
+        "good": "That came through",
+        "close": "Almost — a few words differed",
+        "off": "That did not come through"
+      },
+      "disclaimer": "The recogniser hears words, not pronunciation. It can be wrong — you decide.",
+      "override": "That was actually right",
+      "selfAssess": "Speech recognition is not available. Your recording is saved — judge it yourself.",
+      "pendingScore": "It will be scored later.",
+      "failed": "Scoring did not work. The recording is saved anyway.",
+      "retry": "Record again",
+      "skipSpeaking": "Skip"
     }
   }
 }

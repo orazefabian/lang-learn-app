@@ -110,6 +110,31 @@
       "otherVoices": "andere Stimme",
       "generatedVoice": "Computerstimme",
       "unavailable": "Für diese Karte gibt es noch kein Audio."
+    },
+    "speaking": {
+      "prompt": "Sag es auf Slowenisch",
+      "modelAudio": "So klingt es",
+      "start": "Aufnehmen",
+      "stop": "Fertig",
+      "recording": "Nimmt auf",
+      "listenBack": "Deine Aufnahme",
+      "permissionDenied": "Kein Zugriff aufs Mikrofon. Erlaube es in den Browser-Einstellungen.",
+      "unsupported": "Dieser Browser kann leider nicht aufnehmen.",
+      "checking": "Wird angehört …",
+      "understoodAs": "Verstanden als",
+      "nothingHeard": "Da war nichts zu hören. Nochmal?",
+      "band": {
+        "good": "Das kam an",
+        "close": "Fast — ein paar Wörter waren anders",
+        "off": "So ist es nicht angekommen"
+      },
+      "disclaimer": "Die Erkennung hört Wörter, keine Aussprache. Sie kann sich irren — du entscheidest.",
+      "override": "Das war eigentlich richtig",
+      "selfAssess": "Die Spracherkennung ist gerade nicht da. Deine Aufnahme ist gespeichert — beurteile selbst, wie es war.",
+      "pendingScore": "Wird später ausgewertet.",
+      "failed": "Die Auswertung hat nicht geklappt. Die Aufnahme ist trotzdem gespeichert.",
+      "retry": "Nochmal aufnehmen",
+      "skipSpeaking": "Überspringen"
     }
   }
 }

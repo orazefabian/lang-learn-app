@@ -1,5 +1,5 @@
-# Single-host deployment: app + Postgres + Piper, with a volume for audio.
-# Whisper (ASR) joins in build step 5.
+# Single-host deployment: app + Postgres + Piper + Whisper, with volumes for
+# audio and the speech model.
 services:
   db:
     image: postgres:17-alpine
@@ -47,6 +47,42 @@ services:
       retries: 3
       start_period: 40s
 
+  whisper:
+    build:
+      context: ./docker/whisper
+      dockerfile: Dockerfile
+    image: slovenscina/whisper:latest
+    restart: unless-stopped
+    environment:
+      # small | medium | large-v3. Slovene accuracy improves noticeably above
+      # small; medium is the default for that reason. See the README.
+      WHISPER_MODEL: ${WHISPER_MODEL:-medium}
+      WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-int8}
+      WHISPER_LANGUAGE: sl
+    volumes:
+      # The model downloads on first start; keep it across restarts.
+      - whisper-models:/models
+    # The heaviest service here. medium/int8 needs roughly 2 GB while running
+    # and takes a few seconds per short phrase on a couple of cores.
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4g
+        reservations:
+          memory: 2g
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:5001/health', timeout=8).status==200 else 1)"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      # First start downloads the model; do not call it unhealthy meanwhile.
+      start_period: 15m
+
   app:
     build:
       context: .
@@ -56,8 +92,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      # Started, not healthy: without TTS the app runs, it just has no audio.
+      # Started, not healthy: without these the app still runs. No TTS means no
+      # audio; no ASR means speaking exercises fall back to self-assessment.
       piper:
+        condition: service_started
+      whisper:
         condition: service_started
     environment:
       NODE_ENV: production
@@ -67,6 +106,7 @@ services:
       MEDIA_ROOT: /media
       PIPER_URL: http://piper:5000
       PIPER_VOICE: ${PIPER_VOICE:-sl_SI-artur-medium}
+      WHISPER_URL: http://whisper:5001
       WHISPER_MODEL: ${WHISPER_MODEL:-medium}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
@@ -83,3 +123,4 @@ services:
 volumes:
   db-data:
   media:
+  whisper-models:

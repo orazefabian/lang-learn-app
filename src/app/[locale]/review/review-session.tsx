@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import type { CardPrompt } from "@/lib/session/service";
 import type { CardRating } from "@/lib/srs/scheduler";
 import { checkAnswer, getNextCard, submitAnswer, type CheckAnswerResult } from "./actions";
+import { SpeakingCard } from "./speaking-card";
 
 const RATINGS: CardRating[] = ["again", "hard", "good", "easy"];
 
@@ -45,6 +46,8 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
   const [revealed, setRevealed] = useState(false);
   const [typed, setTyped] = useState("");
   const [result, setResult] = useState<CheckAnswerResult | null>(null);
+  /** What the speech recogniser would suggest. She still taps the rating. */
+  const [speechSuggestion, setSpeechSuggestion] = useState<CardRating | null>(null);
   const [answered, setAnswered] = useState(0);
   const [finished, setFinished] = useState(!initialCard);
   const [pending, startTransition] = useTransition();
@@ -63,6 +66,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
       setRevealed(false);
       setTyped("");
       setResult(null);
+      setSpeechSuggestion(null);
       setPosition(next.cursor);
       if (next.card) setCard(next.card);
       else setFinished(true);
@@ -80,12 +84,17 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
           cardId: card.cardId,
           rating,
           durationMs,
+          ratingSource: speechSuggestion
+            ? rating === speechSuggestion
+              ? "auto_speech"
+              : "overridden"
+            : "manual",
         });
         if (outcome.finished) setFinished(true);
         else advance();
       });
     },
-    [advance, card, pending, sessionId],
+    [advance, card, pending, sessionId, speechSuggestion],
   );
 
   const check = useCallback(() => {
@@ -133,6 +142,8 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
 
   const isTyped = TYPED_EXERCISES.has(card.exerciseType);
   const isAudioFirst = AUDIO_FIRST_EXERCISES.has(card.exerciseType);
+  const isSpeaking = card.exerciseType === "speaking";
+  const suggestedRating = result?.suggestedRating ?? speechSuggestion;
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pb-8 pt-4">
@@ -158,11 +169,26 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
       </div>
 
       <section className="flex flex-1 flex-col justify-center gap-6 py-8">
-        {card.exerciseType === "cloze" ? (
+        {isSpeaking ? (
+          <SpeakingCard
+            key={card.cardId}
+            cardId={card.cardId}
+            sessionId={sessionId}
+            prompt={card.german}
+            slovene={card.slovene}
+            audio={card.audio}
+            onResult={(suggested) => {
+              setSpeechSuggestion(suggested);
+              setRevealed(true);
+            }}
+          />
+        ) : null}
+
+        {!isSpeaking && card.exerciseType === "cloze" ? (
           <p className="text-center text-sm text-muted-foreground">{t("cloze")}</p>
         ) : null}
 
-        {isAudioFirst ? (
+        {!isSpeaking && isAudioFirst ? (
           <>
             <p className="text-center text-sm text-muted-foreground">{t("listenPrompt")}</p>
             <AudioPlayer
@@ -174,7 +200,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
           </>
         ) : null}
 
-        {card.prompt ? (
+        {!isSpeaking && card.prompt ? (
           <p
             className={cn(
               "text-balance text-center font-semibold tracking-tight",
@@ -185,14 +211,14 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
           </p>
         ) : null}
 
-        {card.register !== "standard" ? (
+        {!isSpeaking && card.register !== "standard" ? (
           <p className="text-center text-sm text-muted-foreground">
             {t(`register.${card.register}` as "register.colloquial")}
             {card.regionLabel ? ` · ${card.regionLabel}` : ""}
           </p>
         ) : null}
 
-        {isTyped && !revealed ? (
+        {!isSpeaking && isTyped && !revealed ? (
           <div className="flex flex-col gap-3">
             <label className="sr-only" htmlFor="answer">
               {isAudioFirst ? t("typeGerman") : t("typeSlovene")}
@@ -223,7 +249,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
           </div>
         ) : null}
 
-        {revealed ? (
+        {revealed && !isSpeaking ? (
           <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5">
             {result ? (
               <p
@@ -264,7 +290,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
 
       <footer className="flex flex-col gap-3">
         {!revealed ? (
-          isTyped ? (
+          isSpeaking ? null : isTyped ? (
             <Button size="lg" block onClick={check} disabled={pending}>
               {t("check")}
             </Button>
@@ -278,7 +304,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
             <p className="text-center text-sm text-muted-foreground">{t("howWasIt")}</p>
             <div className="grid grid-cols-4 gap-2">
               {RATINGS.map((rating) => {
-                const suggested = result?.suggestedRating === rating;
+                const suggested = suggestedRating === rating;
                 return (
                   <Button
                     key={rating}
@@ -298,6 +324,18 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
                 );
               })}
             </div>
+
+            {isSpeaking && speechSuggestion && speechSuggestion !== "good" ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                block
+                onClick={() => rate("good")}
+                disabled={pending}
+              >
+                {t("speaking.override")}
+              </Button>
+            ) : null}
           </>
         )}
       </footer>

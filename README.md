@@ -20,8 +20,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 2 | Content model + seed import (1100-lemma deck, 39 lessons) | done |
 | 3 | FSRS, card generation, review sessions | done |
 | 4 | Piper TTS and the audio pipeline | done |
-| 5 | Whisper ASR and speaking exercises | next |
-| 6 | Lessons, home screen, progress view | |
+| 5 | Whisper ASR and speaking exercises | done |
+| 6 | Lessons, home screen, progress view | next |
 | 7 | Teacher area: browser, quick-capture, recordings | |
 | 8 | "Ask me" questions inbox | |
 | 9 | AI generation with draft approval | |
@@ -193,6 +193,34 @@ image surfaces at deploy time rather than on her first listening card.
 Listening cards show no text at all until she answers — the audio is the whole
 prompt — and every card with audio keeps a replay and a 0.75x control.
 
+## Speaking
+
+She records, the audio is stored, and the recogniser reports **what it
+understood** — never a verdict on her pronunciation. The result is framed as
+*verstanden als: …* with a word-level diff showing which words differed, and
+she taps the rating herself. A misheard word therefore costs her nothing.
+
+The recording is kept whatever happens to the recogniser:
+
+| Whisper | What happens |
+| --- | --- |
+| answering | transcript, band, and diff; a rating is suggested |
+| starting up or down | attempt stays `pending`, card falls back to self-assessment, scored on the next sync |
+| genuinely broken | attempt marked `failed`, audio still stored for the teacher |
+
+Every attempt is retained by default — it is two users — so the teacher can
+listen back to any of them later.
+
+The app records whether she agreed with the suggestion (`auto_speech`) or
+overruled it (`overridden`). That is not used to change anything; it is there so
+there is evidence before anyone decides to trust the recogniser more.
+
+### Health
+
+`GET /api/ready` reports each optional service as `absent` (not configured),
+`reachable`, or `unreachable` (configured but not answering). Neither gates
+readiness — the app is healthy without them, just quieter.
+
 ## Known limitations
 
 - **The scheduler is FSRS-6, not FSRS-5.** The brief asked for FSRS-5, but
@@ -204,10 +232,21 @@ prompt — and every card with audio keeps a replay and a 0.75x control.
   features of Slovene and no automatic scoring available here can judge them.
   The app provides good audio to imitate and stays quiet about the rest.
 - **Whisper on Slovene is a word-recognition aid, not pronunciation feedback.**
-  Results are framed as "verstanden als: …" and the learner can always override
-  the automatic assessment. `WHISPER_MODEL` defaults to `medium` because `small`
-  makes too many mistakes on a beginner speaking a low-resource language; `small`
-  remains available for constrained hosts.
+  It cannot judge pronunciation, vowel length or pitch accent, so nothing in the
+  app claims it does. Results are framed as "verstanden als: …", she always taps
+  the rating herself, and an explicit "Das war eigentlich richtig" is one tap
+  away. `WHISPER_MODEL` defaults to `medium` because `small` makes too many
+  mistakes on a beginner speaking a low-resource language; `small` remains
+  available for constrained hosts.
+- **Speech scoring thresholds are a judgement, not a measurement.** One wrong
+  word in a four-word phrase reads as "close" rather than "good", because in
+  Slovene the differing word is usually a case ending. Longer phrases stay
+  forgiving. The thresholds live in one place (`src/lib/speech/scoring.ts`) and
+  are meant to be tuned once there is real data.
+- **Neither speech service has been run end to end.** The scoring, storage and
+  degradation paths are covered by tests against a stub recogniser, and the
+  containers are written and wired, but no Slovene audio has been transcribed
+  yet — this machine cannot run either container (see the Piper note above).
 - **One Slovene TTS voice exists.** Piper ships exactly one `sl_SI` voice
   (`sl_SI-artur-medium`, single speaker, CC BY 4.0, trained on the
   [artur_studio_tts](https://huggingface.co/datasets/ppisljar/artur_studio_tts/)
