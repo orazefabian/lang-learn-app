@@ -25,7 +25,8 @@
     "seed:content": "tsx scripts/seed-content.ts",
     "cards:generate": "tsx scripts/generate-cards.ts",
     "test:integration": "vitest run --config vitest.integration.config.ts",
-    "build:standalone": "next build && sh scripts/stage-standalone.sh"
+    "build:standalone": "next build && sh scripts/stage-standalone.sh",
+    "audio:generate": "tsx scripts/generate-audio.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.0",

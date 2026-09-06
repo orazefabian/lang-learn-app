@@ -98,6 +98,18 @@
       "body": "{count, plural, =1 {Eine Karte} other {# Karten}} wiederholt.",
       "home": "Zur Startseite",
       "again": "Weiter wiederholen"
+    },
+    "listen": "Hör zu",
+    "listenPrompt": "Was heißt das?",
+    "typeGerman": "Auf Deutsch tippen",
+    "audio": {
+      "play": "Abspielen",
+      "pause": "Pause",
+      "replay": "Nochmal abspielen",
+      "slow": "Langsamer abspielen",
+      "otherVoices": "andere Stimme",
+      "generatedVoice": "Computerstimme",
+      "unavailable": "Für diese Karte gibt es noch kein Audio."
     }
   }
 }

@@ -9,6 +9,7 @@ import {
   studySessions,
   userSettings,
 } from "@/db/schema";
+import { getAudioForItem, type PlayableAudio } from "@/lib/audio/resolve";
 import { availableExerciseTypes, type ExerciseType } from "@/lib/srs/cards";
 import {
   buildSessionQueue,
@@ -315,10 +316,17 @@ export async function startOrResumeSession(
 export type CardPrompt = {
   cardId: string;
   exerciseType: ExerciseType;
-  /** What she is asked. */
+  /** What she is asked. Empty for listening cards: the audio is the prompt. */
   prompt: string;
   /** What counts as right. */
   answer: string;
+  /**
+   * Every answer that counts. A word often has more than one honest German
+   * gloss, and being marked wrong for picking the other one teaches nothing.
+   */
+  acceptableAnswers: string[];
+  /** Human recordings first, generated speech last. */
+  audio: PlayableAudio[];
   /** Shown after answering. */
   slovene: string;
   german: string;
@@ -338,15 +346,33 @@ export async function getCardPrompt(db: Db, cardId: string): Promise<CardPrompt 
 
   const exerciseType = card.exerciseType as ExerciseType;
   const isNew = card.state === "new";
+  const audio = await getAudioForItem(db, {
+    phraseId: card.phraseId,
+    lexemeId: card.lexemeId,
+  });
 
   if (card.phraseId) {
     const [phrase] = await db.select().from(phrases).where(eq(phrases.id, card.phraseId)).limit(1);
     if (!phrase) return null;
+    // Listening cards show nothing at first: the audio is the whole prompt.
+    const prompt =
+      exerciseType === "listening" || exerciseType === "dictation"
+        ? ""
+        : exerciseType === "production"
+          ? phrase.german
+          : phrase.slovene;
+    const answer =
+      exerciseType === "production" || exerciseType === "dictation"
+        ? phrase.slovene
+        : phrase.german;
+
     return {
       cardId,
       exerciseType,
-      prompt: exerciseType === "production" ? phrase.german : phrase.slovene,
-      answer: exerciseType === "production" ? phrase.slovene : phrase.german,
+      prompt,
+      answer,
+      acceptableAnswers: [answer],
+      audio,
       slovene: phrase.slovene,
       german: phrase.german,
       contextNote: phrase.contextNote,
@@ -362,11 +388,28 @@ export async function getCardPrompt(db: Db, cardId: string): Promise<CardPrompt 
     const [lexeme] = await db.select().from(lexemes).where(eq(lexemes.id, card.lexemeId)).limit(1);
     if (!lexeme) return null;
     const german = lexeme.german.join(", ");
+    const prompt =
+      exerciseType === "listening" || exerciseType === "dictation"
+        ? ""
+        : exerciseType === "production"
+          ? german
+          : lexeme.slovene;
+    const answer =
+      exerciseType === "production" || exerciseType === "dictation"
+        ? lexeme.slovene
+        : german;
+
     return {
       cardId,
       exerciseType,
-      prompt: exerciseType === "production" ? german : lexeme.slovene,
-      answer: exerciseType === "production" ? lexeme.slovene : german,
+      prompt,
+      answer,
+      // Any of the glosses counts, not just the joined string.
+      acceptableAnswers:
+        exerciseType === "production" || exerciseType === "dictation"
+          ? [lexeme.slovene]
+          : [german, ...lexeme.german],
+      audio,
       slovene: lexeme.slovene,
       german,
       contextNote: lexeme.notes,
@@ -398,6 +441,8 @@ export async function getCardPrompt(db: Db, cardId: string): Promise<CardPrompt 
       exerciseType,
       prompt: blanked,
       answer: cloze.answer,
+      acceptableAnswers: [cloze.answer],
+      audio,
       slovene: phrase.slovene,
       german: phrase.german,
       contextNote: phrase.contextNote,

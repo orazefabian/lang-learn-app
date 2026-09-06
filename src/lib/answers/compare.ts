@@ -176,3 +176,27 @@ export function diffStrings(target: string, actual: string): DiffSegment[] {
 
   return segments;
 }
+
+/**
+ * Compares against several acceptable answers and reports the best match.
+ *
+ * A word often has more than one honest German gloss — *mama* is both "die
+ * Mama" and "die Mutter" — and being marked wrong for choosing the other one
+ * teaches nothing.
+ */
+export function compareAgainstAny(input: string, targets: string[]): AnswerComparison {
+  if (!targets.length) return compareAnswer(input, "");
+
+  const rank: Record<AnswerVerdict, number> = { correct: 0, almost: 1, wrong: 2 };
+  let best = compareAnswer(input, targets[0] as string);
+
+  for (const target of targets.slice(1)) {
+    const candidate = compareAnswer(input, target);
+    const better =
+      rank[candidate.verdict] < rank[best.verdict] ||
+      (rank[candidate.verdict] === rank[best.verdict] && candidate.similarity > best.similarity);
+    if (better) best = candidate;
+  }
+
+  return best;
+}

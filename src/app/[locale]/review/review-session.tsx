@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { AudioPlayer } from "@/components/audio-player";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
@@ -13,7 +14,10 @@ import { checkAnswer, getNextCard, submitAnswer, type CheckAnswerResult } from "
 const RATINGS: CardRating[] = ["again", "hard", "good", "easy"];
 
 /** Typed exercises grade the text; the others reveal and let her judge. */
-const TYPED_EXERCISES = new Set(["production", "cloze", "dictation"]);
+const TYPED_EXERCISES = new Set(["production", "cloze", "dictation", "listening"]);
+
+/** Exercises where the audio is the prompt, so nothing is shown until she answers. */
+const AUDIO_FIRST_EXERCISES = new Set(["listening", "dictation"]);
 
 type Props = {
   sessionId: string;
@@ -23,8 +27,18 @@ type Props = {
   autoplayAudio: boolean;
 };
 
-export function ReviewSession({ sessionId, initialCard, cursor, total }: Props) {
+export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayAudio }: Props) {
   const t = useTranslations("review");
+
+  const audioLabels = {
+    play: t("audio.play"),
+    pause: t("audio.pause"),
+    replay: t("audio.replay"),
+    slow: t("audio.slow"),
+    otherVoices: t("audio.otherVoices"),
+    generatedVoice: t("audio.generatedVoice"),
+    unavailable: t("audio.unavailable"),
+  };
 
   const [card, setCard] = useState<CardPrompt | null>(initialCard);
   const [position, setPosition] = useState(cursor);
@@ -118,6 +132,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total }: Props) 
   }
 
   const isTyped = TYPED_EXERCISES.has(card.exerciseType);
+  const isAudioFirst = AUDIO_FIRST_EXERCISES.has(card.exerciseType);
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pb-8 pt-4">
@@ -147,14 +162,28 @@ export function ReviewSession({ sessionId, initialCard, cursor, total }: Props) 
           <p className="text-center text-sm text-muted-foreground">{t("cloze")}</p>
         ) : null}
 
-        <p
-          className={cn(
-            "text-balance text-center font-semibold tracking-tight",
-            card.prompt.length > 40 ? "text-2xl" : "text-3xl",
-          )}
-        >
-          {card.prompt}
-        </p>
+        {isAudioFirst ? (
+          <>
+            <p className="text-center text-sm text-muted-foreground">{t("listenPrompt")}</p>
+            <AudioPlayer
+              sources={card.audio}
+              labels={audioLabels}
+              autoplay={autoplayAudio}
+              key={card.cardId}
+            />
+          </>
+        ) : null}
+
+        {card.prompt ? (
+          <p
+            className={cn(
+              "text-balance text-center font-semibold tracking-tight",
+              card.prompt.length > 40 ? "text-2xl" : "text-3xl",
+            )}
+          >
+            {card.prompt}
+          </p>
+        ) : null}
 
         {card.register !== "standard" ? (
           <p className="text-center text-sm text-muted-foreground">
@@ -166,7 +195,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total }: Props) 
         {isTyped && !revealed ? (
           <div className="flex flex-col gap-3">
             <label className="sr-only" htmlFor="answer">
-              {t("typeSlovene")}
+              {isAudioFirst ? t("typeGerman") : t("typeSlovene")}
             </label>
             <Input
               id="answer"
@@ -179,7 +208,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total }: Props) 
                   check();
                 }
               }}
-              placeholder={t("typeAnswer")}
+              placeholder={isAudioFirst ? t("typeGerman") : t("typeAnswer")}
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="none"
@@ -214,6 +243,11 @@ export function ReviewSession({ sessionId, initialCard, cursor, total }: Props) 
 
             <p className="text-center text-2xl font-semibold tracking-tight">{card.slovene}</p>
             <p className="text-center text-lg text-muted-foreground">{card.german}</p>
+
+            {/* After answering, the audio stays available to imitate. */}
+            {card.audio.length && !isAudioFirst ? (
+              <AudioPlayer sources={card.audio} labels={audioLabels} key={`${card.cardId}-after`} />
+            ) : null}
 
             {result?.diacriticsOnly ? (
               <p className="text-center text-sm text-muted-foreground">{t("diacriticsHint")}</p>

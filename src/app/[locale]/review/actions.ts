@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db/client";
 import { requireUser } from "@/lib/auth";
-import { compareAnswer, type AnswerComparison } from "@/lib/answers/compare";
+import { compareAgainstAny, type AnswerComparison } from "@/lib/answers/compare";
 import { logger } from "@/lib/logger";
 import { getCardPrompt, submitReview } from "@/lib/session/service";
 import type { CardRating } from "@/lib/srs/scheduler";
@@ -56,7 +56,7 @@ export async function checkAnswer(input: z.input<typeof checkSchema>): Promise<C
   const prompt = await getCardPrompt(db, parsed.cardId);
   if (!prompt) throw new Error("card not found");
 
-  const comparison = compareAnswer(parsed.answer, prompt.answer);
+  const comparison = compareAgainstAny(parsed.answer, prompt.acceptableAnswers);
   const suggestedRating: CardRating =
     comparison.verdict === "correct" ? "good" : comparison.verdict === "almost" ? "hard" : "again";
 

@@ -98,6 +98,18 @@
       "body": "{count, plural, =1 {One card} other {# cards}} reviewed.",
       "home": "Back home",
       "again": "Keep reviewing"
+    },
+    "listen": "Listen",
+    "listenPrompt": "What does this mean?",
+    "typeGerman": "Type it in German",
+    "audio": {
+      "play": "Play",
+      "pause": "Pause",
+      "replay": "Play again",
+      "slow": "Play slower",
+      "otherVoices": "another voice",
+      "generatedVoice": "computer voice",
+      "unavailable": "There is no audio for this card yet."
     }
   }
 }

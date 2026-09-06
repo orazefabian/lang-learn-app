@@ -19,8 +19,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 1 | Scaffold, Docker/compose, Postgres, schema, migrations, auth, i18n | done |
 | 2 | Content model + seed import (1100-lemma deck, 39 lessons) | done |
 | 3 | FSRS, card generation, review sessions | done |
-| 4 | Piper TTS and the audio pipeline | next |
-| 5 | Whisper ASR and speaking exercises | |
+| 4 | Piper TTS and the audio pipeline | done |
+| 5 | Whisper ASR and speaking exercises | next |
 | 6 | Lessons, home screen, progress view | |
 | 7 | Teacher area: browser, quick-capture, recordings | |
 | 8 | "Ask me" questions inbox | |
@@ -167,6 +167,32 @@ The backlog rules are the part worth reading:
 Session state — the queue and the cursor — lives in the database, so closing
 the app mid-session loses nothing.
 
+## Audio
+
+Audio is generated when content is created or edited, never while she is
+waiting for a card. Files live on the media volume, addressed by a hash of
+(engine, voice, text) — so the same phrase is never synthesised twice, and an
+edited phrase gets a new path automatically. Opus is stored for size with an
+mp3 twin for compatibility.
+
+```bash
+pnpm audio:generate            # active content
+pnpm audio:generate --drafts   # drafts too, to review before approving
+```
+
+**Human recordings always win.** When someone has recorded a phrase, that is
+what plays; the generated voice becomes an alternate she can flick to. Hearing
+the actual voices of the people she will talk to is the point, not a
+nice-to-have.
+
+The TTS service (`docker/piper`) is a thin HTTP wrapper around Piper that also
+encodes, which keeps ffmpeg out of the deliberately slim Next.js image. It
+synthesises once at startup and refuses to start if that fails, so a broken
+image surfaces at deploy time rather than on her first listening card.
+
+Listening cards show no text at all until she answers — the audio is the whole
+prompt — and every card with audio keeps a replay and a 0.75x control.
+
 ## Known limitations
 
 - **The scheduler is FSRS-6, not FSRS-5.** The brief asked for FSRS-5, but
@@ -187,6 +213,14 @@ the app mid-session loses nothing.
   [artur_studio_tts](https://huggingface.co/datasets/ppisljar/artur_studio_tts/)
   dataset). Voice variety therefore has to come from human recordings, which is
   the intent anyway.
+- **Piper only runs in its container on this project's hardware.** The
+  `piper-tts` 1.8.0 wheel for macOS x64 has a broken espeak-ng data path: the
+  bundled phonemiser ignores the data directory it is given and looks for one
+  baked in at build time, then exits. Piper's own CLI fails the same way, so it
+  is the wheel, not this app. The Linux image sets `ESPEAK_DATA_PATH` explicitly
+  and self-tests during the build. Practical effect: run `pnpm audio:generate`
+  against the containerised Piper (`PIPER_URL=http://localhost:5000`), not
+  against a locally pip-installed one on an Intel Mac.
 
 ## Development
 
