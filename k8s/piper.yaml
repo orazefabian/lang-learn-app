@@ -1,0 +1,62 @@
+# Piper: Slovene text to speech.
+#
+# The voice is baked into the image, so this needs no volume and no network at
+# startup. Optional at runtime — if it is down, listening exercises disappear
+# from her session rather than failing.
+apiVersion: v1
+kind: Service
+metadata:
+  name: piper
+  namespace: slovenscina
+spec:
+  selector:
+    app.kubernetes.io/name: piper
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: piper
+  namespace: slovenscina
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: piper
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: piper
+    spec:
+      containers:
+        - name: piper
+          image: slovenscina/piper:latest
+          ports:
+            - name: http
+              containerPort: 5000
+          env:
+            - name: PIPER_VOICE
+              valueFrom:
+                configMapKeyRef: { name: slovenscina, key: PIPER_VOICE }
+          # CPU-bound and single-threaded per request; a short phrase takes
+          # roughly a second on a modest core. Audio is generated in batches
+          # after content changes, never on the path of a card being shown.
+          resources:
+            requests: { cpu: 200m, memory: 256Mi }
+            limits: { cpu: "2", memory: 1Gi }
+          readinessProbe:
+            httpGet: { path: /health, port: http }
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          livenessProbe:
+            httpGet: { path: /health, port: http }
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]

@@ -1,0 +1,100 @@
+# faster-whisper: Slovene speech recognition.
+#
+# The heaviest thing in the cluster. The model is downloaded on first start
+# into a PVC rather than baked into the image, so changing size is an
+# environment variable and a restart, not a rebuild.
+#
+# Optional at runtime: if it is down, speaking exercises fall back to
+# self-assessment. She records, the audio is kept, and she rates herself —
+# which she does anyway, since Whisper's output is never a verdict.
+apiVersion: v1
+kind: Service
+metadata:
+  name: whisper
+  namespace: slovenscina
+spec:
+  selector:
+    app.kubernetes.io/name: whisper
+  ports:
+    - name: http
+      port: 5001
+      targetPort: 5001
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: whisper-models
+  namespace: slovenscina
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      # medium is ~1.5 GB; large-v3 is ~3 GB. Sized for either.
+      storage: 8Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whisper
+  namespace: slovenscina
+spec:
+  replicas: 1
+  strategy:
+    # The model volume is ReadWriteOnce: a rolling update would leave the new
+    # pod unschedulable waiting for a volume the old one still holds.
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: whisper
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: whisper
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: whisper
+          image: slovenscina/whisper:latest
+          ports:
+            - name: http
+              containerPort: 5001
+          env:
+            - name: WHISPER_MODEL
+              valueFrom:
+                configMapKeyRef: { name: slovenscina, key: WHISPER_MODEL }
+            - name: WHISPER_COMPUTE_TYPE
+              valueFrom:
+                configMapKeyRef: { name: slovenscina, key: WHISPER_COMPUTE_TYPE }
+            - name: WHISPER_LANGUAGE
+              value: sl
+          volumeMounts:
+            - name: models
+              mountPath: /models
+          # medium/int8 needs roughly 2 GB resident and a few seconds per short
+          # phrase on a couple of cores. Drop to `small` on a constrained node;
+          # Slovene accuracy suffers noticeably, which the README covers.
+          resources:
+            requests: { cpu: 500m, memory: 2Gi }
+            limits: { cpu: "4", memory: 4Gi }
+          readinessProbe:
+            httpGet: { path: /health, port: http }
+            # The first start downloads ~1.5 GB. Nothing else depends on this
+            # being ready, so it is given a long time to get there.
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 60
+          livenessProbe:
+            httpGet: { path: /health, port: http }
+            initialDelaySeconds: 900
+            periodSeconds: 60
+            failureThreshold: 5
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: whisper-models

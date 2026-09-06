@@ -1,0 +1,34 @@
+# Ingress.
+#
+# Deliberately minimal and unopinionated: no controller, no cert-manager, no
+# TLS issuer. The brief says this may sit behind an existing reverse proxy and
+# certificate setup, so this only says "route this host to the app" and leaves
+# the rest to whatever is already there.
+#
+# Adjust the host, add your ingressClassName, and add TLS the way your cluster
+# already does it.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: slovenscina
+  namespace: slovenscina
+  annotations:
+    # Speech uploads and recordings. The app itself caps a recording at 10 MB;
+    # a proxy with a 1 MB default would reject them first.
+    nginx.ingress.kubernetes.io/proxy-body-size: "12m"
+spec:
+  # ingressClassName: nginx
+  rules:
+    - host: slovenscina.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app
+                port:
+                  number: 80
+  # tls:
+  #   - hosts: [slovenscina.example.com]
+  #     secretName: slovenscina-tls

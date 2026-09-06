@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: slovenscina
+
+resources:
+  - namespace.yaml
+  - config.yaml
+  - postgres.yaml
+  - piper.yaml
+  - whisper.yaml
+  - app.yaml
+  - backup-cronjob.yaml
+  - ingress.yaml
+  # secret.yaml is not listed: copy secret.example.yaml, fill it in, and apply
+  # it yourself, or generate it from whatever secret store you use.
+
+configMapGenerator:
+  # The backup script, mounted into the CronJob straight from the repo, so the
+  # file that runs nightly is the same one you can read and run by hand.
+  - name: backup-scripts
+    files:
+      - backup.sh=../scripts/ops/backup.sh
+      - restore.sh=../scripts/ops/restore.sh
+
+generatorOptions:
+  # A stable name: the CronJob refers to it by name, and a hash suffix that
+  # changes on every edit would leave the reference dangling.
+  disableNameSuffixHash: true
+
+commonLabels:
+  app.kubernetes.io/part-of: slovenscina

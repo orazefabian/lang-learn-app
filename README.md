@@ -27,7 +27,7 @@ Built in the order the brief lays out, kept runnable at each step.
 | 9 | AI generation with draft approval | done |
 | 10 | Weekly digest | done |
 | 11 | PWA and offline review | done |
-| 12 | K8s manifests, backups, E2E suite | next |
+| 12 | K8s manifests, backups, E2E suite | done |
 
 ## Stack
 
@@ -119,7 +119,77 @@ volume, the database on `db-data`.
 Migrations run automatically at server startup (`src/instrumentation.ts`) and are
 idempotent. Set `RUN_MIGRATIONS_ON_START=false` to manage them yourself.
 
-Kubernetes manifests arrive with step 12.
+### Kubernetes
+
+```bash
+cp k8s/secret.example.yaml k8s/secret.yaml   # fill in, gitignored
+kubectl apply -f k8s/secret.yaml
+kubectl apply -k k8s/
+
+kubectl -n slovenscina exec deploy/app -- node scripts/seed-users.mjs
+```
+
+`k8s/` is plain YAML with a kustomization, no chart and no templating engine —
+it is one small deployment and a Helm chart would be more machinery than the
+thing it deploys. Postgres is a StatefulSet with its own PVC; media, backups
+and the Whisper model each get a claim.
+
+Every volume is `ReadWriteOnce`, so the app and Whisper use the `Recreate`
+strategy: a rolling update would deadlock waiting for a volume the outgoing pod
+still holds. The app runs one replica by design — it is two people, and session
+state lives in Postgres, so there is nothing to gain from a second.
+
+`ingress.yaml` is deliberately unopinionated: a host, a backend, and a body-size
+annotation big enough for speech uploads. No controller, no cert-manager, no
+issuer — the brief assumes an existing reverse proxy and certificate setup.
+
+The weekly digest runs inside the app (`DIGEST_ENABLED=true`) rather than as a
+CronJob. The job is idempotent per week and the scheduler is a 15-minute
+interval, so a restart or a redeploy at the wrong moment resolves itself on the
+next tick; a CronJob would need either `tsx` in the production image or an
+authenticated trigger endpoint, and both are more surface than a loop that
+already works.
+
+`kubectl apply -k` is not the only supported path — every file applies
+individually with `kubectl apply -f`. The kustomization exists mainly to mount
+`scripts/ops/backup.sh` into the CronJob from the repo, so the script that runs
+nightly is the same file you can read.
+
+### Backups
+
+`scripts/ops/backup.sh` dumps Postgres in custom format, verifies the dump is
+readable with `pg_restore --list`, and prunes anything older than
+`RETENTION_DAYS` (30 by default). It writes to a `.partial` and moves the file
+into place only on success — a crash or a full disk must never leave a
+truncated file that looks like a good backup.
+
+Under compose or on a host:
+
+```bash
+DATABASE_URL=postgres://... BACKUP_DIR=/backups scripts/ops/backup.sh
+```
+
+In Kubernetes the `postgres-backup` CronJob runs it nightly at 02:30 into the
+`backups` PVC.
+
+**Restoring** drops and recreates the schema, so it refuses to run without an
+explicit confirmation:
+
+```bash
+CONFIRM_RESTORE=yes DATABASE_URL=postgres://... \
+  scripts/ops/restore.sh /backups/slovenscina-20260906T023000Z.dump
+```
+
+Stop the app first. On start it runs any migrations newer than the dump, so
+restoring an older backup onto a newer build is fine. Check `/api/ready`
+afterwards.
+
+**Media is not in the database.** Generated audio, human recordings and every
+speech attempt live on the media volume, and `pg_dump` does not touch them. The
+recordings of family voices are the part that cannot be regenerated, so back
+that volume up too — `restic`, `rsync`, or a volume snapshot, whatever the host
+already does. Generated TTS can be rebuilt with `pnpm audio:generate`; a
+recording of Oma cannot.
 
 ### Health endpoints
 
@@ -490,6 +560,24 @@ The teacher gets a count on the inbox and a badge on his tab.
   Slovene the differing word is usually a case ending. Longer phrases stay
   forgiving. The thresholds live in one place (`src/lib/speech/scoring.ts`) and
   are meant to be tuned once there is real data.
+- **The E2E suite has never been run.** Sixteen specs across the six journeys
+  the brief names are written and parse, but Playwright refuses to install a
+  browser on this machine (`Playwright does not support chromium on mac13`),
+  so not one of them has executed. They are the least-proven code in the
+  repository and should be treated as a first draft until they have run green
+  somewhere with a browser.
+- **Nothing has been deployed.** No Docker image has been built, no compose
+  stack has come up, and the Kubernetes manifests have never met a cluster —
+  there is no Docker and no kubectl here. The manifests are checked by
+  `tests/unit/k8s-manifests.test.ts` for the mistakes that are cheap to make
+  and expensive to find in a cluster (undefined Secret keys, unclaimed volumes,
+  probes on closed ports, rolling updates on RWO volumes), and that test was
+  itself verified by breaking each of those things on purpose. That is not the
+  same as a cluster accepting them.
+- **The backup scripts have not been run against a real database.** There is no
+  `pg_dump` here. Their guards — missing variables, absent dump file, the
+  refusal to restore without `CONFIRM_RESTORE=yes`, password redaction in
+  output — have been exercised; the dump and restore paths have not.
 - **Offline mode has not been exercised in a real browser.** The sync
   contract — idempotency, ordering, timestamps, rejection — is covered by
   integration tests and was driven end to end against the running server, but
@@ -524,6 +612,30 @@ The teacher gets a count on the inbox and a badge on his tab.
   and self-tests during the build. Practical effect: run `pnpm audio:generate`
   against the containerised Piper (`PIPER_URL=http://localhost:5000`), not
   against a locally pip-installed one on an Intel Mac.
+
+## Testing
+
+```bash
+pnpm test              # unit: scheduling, scoring, backlog, config, manifests
+pnpm test:integration  # against PGlite over its real wire protocol
+pnpm test:e2e          # Playwright, needs a browser and real PostgreSQL
+```
+
+The unit suite covers what the brief singles out as the places a bug would
+silently corrupt her learning: FSRS scheduling, the answer comparison, and the
+backlog cap. It also checks the deployment manifests and the environment
+parsing, both of which are cheap to get wrong in ways that only show up in
+production.
+
+Integration tests run against PGlite served over the PostgreSQL wire protocol,
+so the app's own driver and SQL are exercised rather than a stand-in. Piper,
+Whisper and the Anthropic API are stubbed behind their interfaces.
+
+The E2E suite needs real PostgreSQL — PGlite serves one connection at a time,
+and a browser plus a server is already more than that. See
+[`tests/e2e/README.md`](./tests/e2e/README.md). `pnpm e2e:seed` creates the two
+accounts and a small deck, and refuses to run against a database that has more
+content than a seeded one.
 
 ## Development
 

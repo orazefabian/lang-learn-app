@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: slovenscina
+  namespace: slovenscina
+data:
+  POSTGRES_USER: slo
+  POSTGRES_DB: slovenscina
+
+  SESSION_TTL_DAYS: "90"
+  LOG_LEVEL: info
+
+  PIPER_URL: http://piper:5000
+  # The only Slovene voice Piper ships (single speaker, CC BY 4.0).
+  PIPER_VOICE: sl_SI-artur-medium
+
+  WHISPER_URL: http://whisper:5001
+  # small | medium | large-v3. Slovene accuracy improves noticeably above
+  # small, which is why medium is the default. See the README.
+  WHISPER_MODEL: medium
+  WHISPER_COMPUTE_TYPE: int8
+
+  ANTHROPIC_MODEL: claude-sonnet-5
+
+  # The app runs the weekly digest itself. There is no CronJob for it on
+  # purpose: the job is idempotent per week and the scheduler is a 15-minute
+  # interval, so a restart, a redeploy, or the app being down at the boundary
+  # all resolve themselves on the next tick. A CronJob would need either tsx in
+  # the production image or an authenticated trigger endpoint — both are more
+  # surface than a loop that already works.
+  DIGEST_ENABLED: "true"
+  DIGEST_DAY: sunday
+  DIGEST_HOUR: "18"
+  DIGEST_TIMEZONE: Europe/Berlin
+  # Set to the address the app is actually reachable at, for the digest email.
+  APP_URL: ""
+  DIGEST_EMAIL_TO: ""

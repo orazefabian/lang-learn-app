@@ -1,0 +1,126 @@
+# The app.
+#
+# One replica, on purpose. Two people use this, and the media volume is
+# ReadWriteOnce — a second replica would need RWX storage for no benefit. The
+# app is stateless apart from that volume; session state lives in Postgres.
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: slovenscina
+spec:
+  selector:
+    app.kubernetes.io/name: app
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media
+  namespace: slovenscina
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      # Generated audio, human recordings and every speech attempt she makes.
+      # Recordings are kept rather than expired: it is two people, and hearing
+      # how she said something six weeks ago is worth more than the disk.
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: slovenscina
+spec:
+  replicas: 1
+  strategy:
+    # ReadWriteOnce media volume: a rolling update would deadlock on it.
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: app
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: app
+          image: slovenscina/app:latest
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: MEDIA_ROOT
+              value: /media
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: slovenscina, key: POSTGRES_PASSWORD }
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef: { name: slovenscina, key: POSTGRES_USER }
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef: { name: slovenscina, key: POSTGRES_DB }
+            - name: DATABASE_URL
+              value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef: { name: slovenscina, key: SESSION_SECRET }
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: slovenscina
+                  key: ANTHROPIC_API_KEY
+                  optional: true
+            - name: SMTP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: slovenscina
+                  key: SMTP_URL
+                  optional: true
+          envFrom:
+            # Everything else — service URLs, model names, digest schedule.
+            # Blank values here mean "not set", so an unused optional key is
+            # not a misconfiguration.
+            - configMapRef:
+                name: slovenscina
+          volumeMounts:
+            - name: media
+              mountPath: /media
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 1Gi }
+          startupProbe:
+            # Migrations run at boot. This is the probe that gives them room,
+            # so the liveness probe below can stay tight afterwards.
+            httpGet: { path: /api/health, port: http }
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            # Fails while the database is unreachable; Piper and Whisper are
+            # reported but never gate readiness, because their absence is a
+            # degradation and not an outage.
+            httpGet: { path: /api/ready, port: http }
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /api/health, port: http }
+            periodSeconds: 30
+            failureThreshold: 3
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: media

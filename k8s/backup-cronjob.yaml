@@ -1,0 +1,75 @@
+# Nightly Postgres backup.
+#
+# Runs scripts/ops/backup.sh out of the postgres image, which already has
+# pg_dump at exactly the right version. The script is mounted from a ConfigMap
+# rather than baked into an image, so the same file is the one you can read and
+# run by hand when something has gone wrong.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backups
+  namespace: slovenscina
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      # A dump of this database is small — two people's cards and history, no
+      # audio. 5Gi holds months of them.
+      storage: 5Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: slovenscina
+spec:
+  # 02:30 daily. Nobody is reviewing at half two in the morning.
+  schedule: "30 2 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      # A failed backup is worth one retry, not an endless loop.
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 999
+          containers:
+            - name: backup
+              image: postgres:17-alpine
+              command: ["sh", "/scripts/backup.sh"]
+              env:
+                - name: BACKUP_DIR
+                  value: /backups
+                - name: RETENTION_DAYS
+                  value: "30"
+                - name: POSTGRES_USER
+                  valueFrom:
+                    configMapKeyRef: { name: slovenscina, key: POSTGRES_USER }
+                - name: POSTGRES_DB
+                  valueFrom:
+                    configMapKeyRef: { name: slovenscina, key: POSTGRES_DB }
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef: { name: slovenscina, key: POSTGRES_PASSWORD }
+                - name: DATABASE_URL
+                  value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+                - name: scripts
+                  mountPath: /scripts
+              resources:
+                requests: { cpu: 50m, memory: 128Mi }
+                limits: { memory: 512Mi }
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: backups
+            - name: scripts
+              configMap:
+                name: backup-scripts
