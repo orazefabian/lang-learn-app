@@ -1,0 +1,124 @@
+{
+  "unit": {
+    "slug": "erzaehlen",
+    "titleDe": "Erzählen",
+    "descriptionDe": "Von gestern erzählen und von morgen reden. Ab hier führst du Gespräche, statt nur zu antworten.",
+    "position": 10
+  },
+  "grammarNotes": [
+    {
+      "slug": "vergangenheit-bauen",
+      "titleDe": "Die Vergangenheit — zwei Teile, fertig",
+      "bodyDe": "Slowenisch hat eine einzige Vergangenheitsform, und sie ist einfacher als die deutsche. Du brauchst zwei Teile:\n\n**sem / si / je** + das Verb auf **-l / -la**\n\n- *Sem bila doma.* — Ich war zu Hause. (Frau)\n- *Sem bil doma.* — Ich war zu Hause. (Mann)\n- *Smo jedli.* — Wir haben gegessen.\n\nDas Geschlecht steckt in der Endung des zweiten Teils: **-l** für Männer, **-la** für Frauen, **-li/-le** in der Mehrzahl. Verneint verschmilzt es: *nisem bila* — ich war nicht.",
+      "tags": ["zeiten", "geschlecht"]
+    },
+    {
+      "slug": "zukunft-bauen",
+      "titleDe": "Die Zukunft — bom plus -l",
+      "bodyDe": "Die Zukunft funktioniert wie die Vergangenheit, nur mit **bom** statt *sem*:\n\n- *Bom šla.* — Ich werde gehen. (Frau)\n- *Bom šel.* — Ich werde gehen. (Mann)\n- *Bomo jedli.* — Wir werden essen.\n\nFür nahe, sichere Zukunft nimmt man aber oft einfach die Gegenwart: *Jutri grem v Ljubljano.* — „Morgen gehe ich nach Ljubljana.\" Genau wie im Deutschen.",
+      "tags": ["zeiten"]
+    },
+    {
+      "slug": "zeitwoerter-erzaehlen",
+      "titleDe": "Wörter, die eine Geschichte ordnen",
+      "bodyDe": "Eine Erzählung hält zusammen, wenn ein paar Ordnungswörter darin vorkommen:\n\n- **najprej** — zuerst\n- **potem** — dann\n- **na koncu** — am Ende\n- **včeraj** — gestern\n- **prejšnji teden** — letzte Woche\n\nMit diesen fünf Wörtern und der Vergangenheitsform kannst du jede kleine Geschichte erzählen, auch mit sehr wenig Vokabular.",
+      "tags": ["zeiten", "erzaehlen"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "ich-war",
+      "titleDe": "Ich war, ich habe",
+      "goalDe": "Du kannst die Vergangenheitsform bilden und einfache Sätze über gestern sagen.",
+      "introDe": "Ein Baustein, den du ab jetzt überall einsetzen kannst. **sem** plus Verb auf **-la** (Frau) oder **-l** (Mann).\n\nDie häufigsten Verben zuerst: *biti* (sein) → *bila/bil*, *iti* (gehen) → *šla/šel*, *jesti* (essen) → *jedla/jedel*.",
+      "position": 1,
+      "estimatedMinutes": 6,
+      "grammarNoteSlugs": ["vergangenheit-bauen"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Sem bila doma.",
+          "german": "Ich war zu Hause.",
+          "contextNote": "So sagt es eine Frau. Ein Mann: Sem bil doma.",
+          "tags": ["zeiten", "geschlecht"],
+          "difficulty": 4,
+          "cloze": [{ "position": 1, "answer": "bila", "hintDe": "eine Frau spricht — Endung -la", "focusVerbForm": "past_participle" }]
+        },
+        { "kind": "phrase", "slovene": "Sem šla v trgovino.", "german": "Ich bin in den Laden gegangen.", "contextNote": "Wohin? → v trgovino im Akkusativ.", "tags": ["zeiten", "geschlecht"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Nisem razumela.", "german": "Ich habe nicht verstanden.", "contextNote": "Verneint verschmilzt ne + sem zu nisem.", "tags": ["zeiten", "ueberleben"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Smo jedli pri babici.", "german": "Wir haben bei der Oma gegessen.", "contextNote": "pri plus Lokativ: babica wird zu babici.", "tags": ["zeiten", "familie"], "difficulty": 5 },
+        { "kind": "phrase", "slovene": "Je bilo dobro?", "german": "War es gut?", "tags": ["zeiten"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Sem pozabila.", "german": "Ich habe es vergessen.", "tags": ["zeiten", "geschlecht"], "difficulty": 3 }
+      ]
+    },
+    {
+      "slug": "was-hast-du-gemacht",
+      "titleDe": "Was hast du gestern gemacht?",
+      "goalDe": "Du kannst fragen, was jemand erlebt hat, und selbst kurz antworten.",
+      "introDe": "Die Frage **Kaj si delala včeraj?** (an eine Frau) oder **Kaj si delal včeraj?** (an einen Mann) hält jedes Gespräch am Leben.\n\nAntworte kurz. Drei Wörter reichen: *Sem delala.* — „Ich habe gearbeitet.\"",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["vergangenheit-bauen"],
+      "items": [
+        { "kind": "phrase", "slovene": "Kaj si delala včeraj?", "german": "Was hast du gestern gemacht?", "contextNote": "An eine Frau. An einen Mann: Kaj si delal včeraj?", "tags": ["zeiten", "smalltalk"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Nič posebnega, sem bila doma.", "german": "Nichts Besonderes, ich war zu Hause.", "tags": ["zeiten", "smalltalk"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Sem se učila slovensko.", "german": "Ich habe Slowenisch gelernt.", "contextNote": "Der Satz, mit dem du jemandem eine Freude machst.", "tags": ["zeiten", "sprachen"], "difficulty": 5 },
+        { "kind": "phrase", "slovene": "Kje si bila?", "german": "Wo warst du?", "tags": ["zeiten"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Sem videla tvojo mamo.", "german": "Ich habe deine Mutter gesehen.", "tags": ["zeiten", "familie"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Je bilo zabavno.", "german": "Es war lustig.", "tags": ["zeiten"], "difficulty": 3 }
+      ]
+    },
+    {
+      "slug": "eine-kleine-geschichte",
+      "titleDe": "Eine kleine Geschichte",
+      "goalDe": "Du kannst mehrere Sätze zu einer kurzen Erzählung verbinden.",
+      "introDe": "Jetzt setzt du zusammen, was du hast. **Najprej … potem … na koncu.** Drei Wörter, und aus Einzelsätzen wird eine Geschichte.\n\nErzähl klein. Ein Vormittag reicht. Niemand erwartet einen Roman — man freut sich, dass du erzählst.",
+      "position": 3,
+      "estimatedMinutes": 6,
+      "grammarNoteSlugs": ["zeitwoerter-erzaehlen", "vergangenheit-bauen"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Najprej sva šla na kavo.",
+          "german": "Zuerst sind wir zwei einen Kaffee trinken gegangen.",
+          "contextNote": "Zweizahl: sva, weil genau zwei Personen.",
+          "tags": ["erzaehlen", "dvojina"],
+          "difficulty": 5,
+          "cloze": [{ "position": 1, "answer": "sva", "hintDe": "genau zwei Personen", "focusNumber": "dual" }]
+        },
+        { "kind": "phrase", "slovene": "Potem sva se sprehajala.", "german": "Dann sind wir spazieren gegangen.", "tags": ["erzaehlen", "dvojina"], "difficulty": 5 },
+        { "kind": "phrase", "slovene": "Na koncu sva šla domov.", "german": "Am Ende sind wir nach Hause gegangen.", "tags": ["erzaehlen", "dvojina"], "difficulty": 5 },
+        { "kind": "phrase", "slovene": "Prejšnji teden smo bili pri starših.", "german": "Letzte Woche waren wir bei den Eltern.", "tags": ["erzaehlen", "familie"], "difficulty": 5 },
+        { "kind": "phrase", "slovene": "Bilo je zelo lepo.", "german": "Es war sehr schön.", "contextNote": "Der Schlusssatz für jede Erzählung.", "tags": ["erzaehlen"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "najprej", "german": ["zuerst"], "partOfSpeech": "adverb", "tags": ["erzaehlen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "potem", "german": ["dann", "danach"], "partOfSpeech": "adverb", "tags": ["erzaehlen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "was-morgen-kommt",
+      "titleDe": "Was morgen kommt",
+      "goalDe": "Du kannst über Pläne sprechen und dich verabreden.",
+      "introDe": "Für Pläne reicht meistens die Gegenwart: *Jutri grem v Ljubljano.*\n\nDie echte Zukunft mit **bom** brauchst du, wenn es unsicherer oder weiter weg ist: *Naslednje leto bom bolje govorila slovensko.*",
+      "position": 4,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["zukunft-bauen"],
+      "items": [
+        { "kind": "phrase", "slovene": "Jutri grem v Ljubljano.", "german": "Morgen fahre ich nach Ljubljana.", "contextNote": "Gegenwart für nahe Zukunft — genau wie im Deutschen.", "tags": ["zeiten"], "difficulty": 3 },
+        {
+          "kind": "phrase",
+          "slovene": "Bom poklicala jutri.",
+          "german": "Ich rufe morgen an.",
+          "contextNote": "So sagt es eine Frau. Ein Mann: Bom poklical jutri.",
+          "tags": ["zeiten", "geschlecht"],
+          "difficulty": 4,
+          "cloze": [{ "position": 0, "answer": "Bom", "hintDe": "Zukunft: bom plus Verb auf -la", "focusVerbForm": "future" }]
+        },
+        { "kind": "phrase", "slovene": "Kdaj se vidiva?", "german": "Wann sehen wir zwei uns?", "tags": ["zeiten", "dvojina"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Naslednji teden imam čas.", "german": "Nächste Woche habe ich Zeit.", "tags": ["zeiten"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Se slišimo!", "german": "Wir hören uns!", "contextNote": "Der übliche Abschluss eines Telefonats.", "tags": ["zeiten", "gruss"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Naslednjič bom govorila več.", "german": "Nächstes Mal werde ich mehr sprechen.", "contextNote": "Ein guter Satz zum Abschied nach einem anstrengenden Abend.", "tags": ["zeiten", "sprachen"], "difficulty": 5 },
+        { "kind": "lexeme", "slovene": "čas", "german": ["die Zeit"], "partOfSpeech": "noun", "gender": "m", "tags": ["zeit"], "difficulty": 2 }
+      ]
+    }
+  ]
+}

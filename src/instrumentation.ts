@@ -7,6 +7,11 @@
  */
 export async function register(): Promise<void> {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
+
+  // Fail at boot, not at the first login attempt.
+  const { sessionSecret } = await import("@/lib/env");
+  sessionSecret();
+
   if (process.env.RUN_MIGRATIONS_ON_START === "false") return;
 
   const [{ drizzle }, { migrate }, postgres, { logger }] = await Promise.all([

@@ -2,7 +2,7 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { eq, lt } from "drizzle-orm";
 import { db } from "@/db/client";
 import { sessions, users } from "@/db/schema";
-import { env } from "@/lib/env";
+import { env, sessionSecret } from "@/lib/env";
 
 export const SESSION_COOKIE = "slo_session";
 
@@ -15,7 +15,7 @@ export type SessionUser = {
 };
 
 function sign(sessionId: string): string {
-  return createHmac("sha256", env().SESSION_SECRET).update(sessionId).digest("base64url");
+  return createHmac("sha256", sessionSecret()).update(sessionId).digest("base64url");
 }
 
 /** Cookie value is `<id>.<hmac>`; the id alone is never enough. */

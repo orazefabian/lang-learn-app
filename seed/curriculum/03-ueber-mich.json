@@ -1,0 +1,126 @@
+{
+  "unit": {
+    "slug": "ueber-mich",
+    "titleDe": "Über mich",
+    "descriptionDe": "Name, Herkunft, Wohnort, Sprachen, Arbeit — die Fragen, die dir beim ersten Treffen garantiert gestellt werden.",
+    "position": 3
+  },
+  "grammarNotes": [
+    {
+      "slug": "lokativ-wo",
+      "titleDe": "Wo? — der Lokativ",
+      "bodyDe": "Wenn du sagst, **wo** etwas ist, ändert sich die Endung des Ortes. Diesen Fall nennt man Lokativ, und er kommt fast nur nach **v** (in) und **na** (auf/an) vor.\n\n- Nemčija (Deutschland) → *v Nemčiji* (in Deutschland)\n- Ljubljana → *v Ljubljani*\n- München → *v Münchnu*\n\nFaustregel für weibliche Wörter auf -a: das -a wird zu **-i**. Du brauchst die Regel nicht auswendig — du brauchst die zwei, drei Ortsnamen, die du ständig sagst.",
+      "tags": ["faelle", "lokativ"]
+    },
+    {
+      "slug": "genitiv-woher",
+      "titleDe": "Woher? — iz plus Genitiv",
+      "bodyDe": "„Aus\" heißt **iz**, und danach steht der Genitiv:\n\n- Nemčija → *iz Nemčije* (aus Deutschland)\n- Avstrija → *iz Avstrije*\n- Slovenija → *iz Slovenije*\n\nBei weiblichen Wörtern auf -a wird daraus verlässlich **-e**. Das ist eine der wenigen Regeln, die du dir wirklich merken solltest, weil die Frage *Od kod si?* immer kommt.",
+      "tags": ["faelle", "genitiv"]
+    },
+    {
+      "slug": "sprachen-adverb",
+      "titleDe": "Sprachen sind Adverbien",
+      "bodyDe": "„Ich spreche Deutsch\" heißt nicht *govorim nemški*, sondern **govorim nemško** — die Sprache steht als Umstandswort, wie im Deutschen „ich spreche deutsch\".\n\n- nemško (deutsch), slovensko (slowenisch), angleško (englisch), italijansko (italienisch)\n\nDieselbe Form nach *Kako se reče po slovensko?*",
+      "tags": ["adverbien", "sprachen"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "wie-heisst-du",
+      "titleDe": "Wie heißt du?",
+      "goalDe": "Du kannst nach dem Namen fragen und deinen eigenen nennen — auf beide üblichen Arten.",
+      "introDe": "Es gibt zwei gebräuchliche Wege. **Ime mi je Anna** ist wörtlich „der Name ist mir Anna\". Kürzer und genauso richtig: **Sem Anna**.\n\nDie Frage dazu: *Kako ti je ime?* oder einfach *Kdo si?* — letzteres allerdings nur unter Freunden, sonst klingt es nach Verhör.",
+      "position": 1,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["du-und-sie"],
+      "items": [
+        { "kind": "phrase", "slovene": "Kako ti je ime?", "german": "Wie heißt du?", "contextNote": "Die normale Frage unter Leuten, die sich duzen.", "tags": ["vorstellen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Kako vam je ime?", "german": "Wie heißen Sie?", "contextNote": "Die höfliche Variante.", "tags": ["vorstellen", "hoeflichkeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Ime mi je Anna.", "german": "Ich heiße Anna.", "contextNote": "Setz deinen eigenen Namen ein — das ist der Satz, den du am häufigsten sagst.", "tags": ["vorstellen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Sem Anna.", "german": "Ich bin Anna.", "contextNote": "Die kurze Variante. Klingt locker, nicht unhöflich.", "tags": ["vorstellen"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Kdo je to?", "german": "Wer ist das?", "contextNote": "Wenn du wissen willst, wer da auf dem Foto ist oder gerade hereinkam.", "tags": ["vorstellen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "ime", "german": ["der Name"], "partOfSpeech": "noun", "gender": "n", "tags": ["basis"], "difficulty": 1 }
+      ]
+    },
+    {
+      "slug": "woher-kommst-du",
+      "titleDe": "Woher kommst du?",
+      "goalDe": "Du kannst sagen, woher du kommst und wo du wohnst.",
+      "introDe": "Zwei Fragen, zwei Fälle. **Od kod si?** — woher — verlangt *iz* plus Genitiv. **Kje živiš?** — wo — verlangt *v* plus Lokativ.\n\nDu musst die Fälle nicht benennen können. Du musst nur deine zwei Antworten sicher können: woher du kommst und wo du wohnst.",
+      "position": 2,
+      "estimatedMinutes": 6,
+      "grammarNoteSlugs": ["genitiv-woher", "lokativ-wo"],
+      "items": [
+        { "kind": "phrase", "slovene": "Od kod si?", "german": "Woher kommst du?", "contextNote": "Kommt garantiert innerhalb der ersten fünf Minuten.", "tags": ["vorstellen"], "difficulty": 2 },
+        {
+          "kind": "phrase",
+          "slovene": "Sem iz Nemčije.",
+          "german": "Ich komme aus Deutschland.",
+          "contextNote": "Wörtlich „ich bin aus Deutschland\".",
+          "tags": ["vorstellen"],
+          "difficulty": 3,
+          "cloze": [{ "position": 2, "answer": "Nemčije", "hintDe": "nach iz steht der Genitiv", "focusCase": "genitive", "focusNumber": "singular" }]
+        },
+        {
+          "kind": "phrase",
+          "slovene": "Živim v Münchnu.",
+          "german": "Ich wohne in München.",
+          "tags": ["vorstellen"],
+          "difficulty": 3,
+          "cloze": [{ "position": 2, "answer": "Münchnu", "hintDe": "wo? → Lokativ nach v", "focusCase": "locative", "focusNumber": "singular" }]
+        },
+        { "kind": "phrase", "slovene": "Kje živiš?", "german": "Wo wohnst du?", "tags": ["vorstellen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Sem Nemka.", "german": "Ich bin Deutsche.", "contextNote": "Ein Mann sagt Sem Nemec.", "tags": ["vorstellen", "geschlecht"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Prvič sem v Sloveniji.", "german": "Ich bin zum ersten Mal in Slowenien.", "contextNote": "Öffnet fast immer ein Gespräch — und man wird dir sofort Tipps geben.", "tags": ["smalltalk"], "difficulty": 4 },
+        { "kind": "lexeme", "slovene": "živeti", "german": ["leben", "wohnen"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["basis"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "Slovenija", "german": ["Slowenien"], "partOfSpeech": "noun", "gender": "f", "tags": ["orte"], "difficulty": 1 }
+      ]
+    },
+    {
+      "slug": "sprachen",
+      "titleDe": "Sprachen",
+      "goalDe": "Du kannst sagen, welche Sprachen du sprichst und dass du Slowenisch lernst.",
+      "introDe": "**Učim se slovensko** — „ich lerne Slowenisch\" — ist einer der nützlichsten Sätze, die du besitzt. Er erklärt jede Pause, jeden Fehler und jedes Nachfragen, bevor es unangenehm wird.\n\nDas *se* gehört fest zum Verb: *učiti se* heißt „lernen\", *učiti* allein heißt „unterrichten\".",
+      "position": 3,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["sprachen-adverb"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Učim se slovensko.",
+          "german": "Ich lerne Slowenisch.",
+          "contextNote": "Der Satz, der dir Geduld verschafft. Sag ihn früh.",
+          "tags": ["sprachen"],
+          "difficulty": 3,
+          "cloze": [{ "position": 2, "answer": "slovensko", "hintDe": "Sprachen stehen als Umstandswort" }]
+        },
+        { "kind": "phrase", "slovene": "Govorim nemško in angleško.", "german": "Ich spreche Deutsch und Englisch.", "tags": ["sprachen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Slovensko govorim samo malo.", "german": "Slowenisch spreche ich nur ein bisschen.", "tags": ["sprachen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Razumem več, kot govorim.", "german": "Ich verstehe mehr, als ich spreche.", "contextNote": "Stimmt fast immer und ermutigt die anderen, weiter mit dir zu reden.", "tags": ["sprachen"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Slovenščina je težka.", "german": "Slowenisch ist schwer.", "contextNote": "Darauf folgt zuverlässig Widerspruch und Ermutigung.", "tags": ["sprachen"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "govoriti", "german": ["sprechen"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["basis"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "slovenščina", "german": ["das Slowenische", "die slowenische Sprache"], "partOfSpeech": "noun", "gender": "f", "tags": ["sprachen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "arbeit-und-studium",
+      "titleDe": "Arbeit und Studium",
+      "goalDe": "Du kannst sagen, was du beruflich machst, und danach fragen.",
+      "introDe": "**Kaj delaš?** ist doppeldeutig — „was machst du (gerade)?\" und „was arbeitest du?\". Der Zusammenhang klärt es; wenn du sichergehen willst: *Kaj delaš po poklicu?*\n\nBerufsbezeichnungen haben männliche und weibliche Formen: *učitelj / učiteljica*, *zdravnik / zdravnica*.",
+      "position": 4,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["geschlecht-bei-sein"],
+      "items": [
+        { "kind": "phrase", "slovene": "Kaj delaš?", "german": "Was machst du?", "contextNote": "Je nach Situation „was arbeitest du?\" oder „was machst du gerade?\".", "tags": ["smalltalk", "arbeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Delam v pisarni.", "german": "Ich arbeite im Büro.", "tags": ["arbeit"], "difficulty": 3, "cloze": [{ "position": 2, "answer": "pisarni", "hintDe": "wo? → Lokativ nach v", "focusCase": "locative", "focusNumber": "singular" }] },
+        { "kind": "phrase", "slovene": "Študiram.", "german": "Ich studiere.", "tags": ["arbeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Sem učiteljica.", "german": "Ich bin Lehrerin.", "contextNote": "Ein Mann sagt Sem učitelj. Setz deinen eigenen Beruf ein.", "tags": ["arbeit", "geschlecht"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Danes ne delam.", "german": "Heute arbeite ich nicht.", "tags": ["arbeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Delo mi je všeč.", "german": "Meine Arbeit gefällt mir.", "contextNote": "všeč mi je — „mir gefällt\" — kommt in Einheit 6 ausführlich.", "tags": ["arbeit"], "difficulty": 4 },
+        { "kind": "lexeme", "slovene": "delati", "german": ["arbeiten", "machen"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["basis"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "služba", "german": ["die Arbeit", "die Arbeitsstelle"], "partOfSpeech": "noun", "gender": "f", "tags": ["arbeit"], "difficulty": 2 }
+      ]
+    }
+  ]
+}

@@ -7,8 +7,12 @@ import { z } from "zod";
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DATABASE_URL: z.string().min(1),
-  /** HMAC key for session cookies. Must be at least 32 chars. */
-  SESSION_SECRET: z.string().min(32),
+  /**
+   * HMAC key for session cookies. Optional here so CLI tools that only touch
+   * the database can run with DATABASE_URL alone; the server checks for it at
+   * startup and signing throws loudly if it is missing.
+   */
+  SESSION_SECRET: z.string().min(32).optional(),
   SESSION_TTL_DAYS: z.coerce.number().int().positive().default(90),
 
   /** Where audio lives. Mounted as a volume in every deployment target. */
@@ -51,6 +55,18 @@ let cached: Env | null = null;
 export function env(): Env {
   cached ??= loadEnv();
   return cached;
+}
+
+/**
+ * The session signing key. Throws rather than silently signing with a
+ * placeholder, which would hand out forgeable cookies.
+ */
+export function sessionSecret(): string {
+  const secret = env().SESSION_SECRET;
+  if (!secret) {
+    throw new Error("SESSION_SECRET is not set (needs at least 32 characters)");
+  }
+  return secret;
 }
 
 /** True when the optional service is configured; features degrade, never crash. */

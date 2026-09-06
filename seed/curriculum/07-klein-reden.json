@@ -1,0 +1,97 @@
+{
+  "unit": {
+    "slug": "klein-reden",
+    "titleDe": "Small Talk",
+    "descriptionDe": "Wetter, Wochenende, Arbeit, Kinder — die Themen, mit denen man Zeit überbrückt, bis das echte Gespräch anfängt.",
+    "position": 7
+  },
+  "grammarNotes": [
+    {
+      "slug": "unpersoenliche-saetze",
+      "titleDe": "Sätze ohne Subjekt",
+      "bodyDe": "Wetter und Befinden kommen im Slowenischen oft ohne Subjekt aus:\n\n- *Mrzlo je.* — Es ist kalt.\n- *Dežuje.* — Es regnet.\n- *Lepo je.* — Es ist schön.\n\nEs gibt kein Wort für „es\". Das *je* trägt den Satz allein. Für dich heißt das: kürzere Sätze als im Deutschen.",
+      "tags": ["saetze", "wetter"]
+    },
+    {
+      "slug": "za-vikend",
+      "titleDe": "„am Wochenende\" — za vikend",
+      "bodyDe": "**vikend** ist aus dem Englischen entlehnt und völlig üblich. „Am Wochenende\" heißt *za vikend* oder *čez vikend*.\n\nDas offiziellere Wort wäre *konec tedna* — „Ende der Woche\" —, aber gesprochen wird meistens *vikend*.",
+      "tags": ["zeit", "umgangssprache"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "wetter",
+      "titleDe": "Wetter",
+      "goalDe": "Du kannst über das Wetter reden — der zuverlässigste Gesprächseinstieg der Welt.",
+      "introDe": "Wetter ist der sichere Hafen jedes Gesprächs, und im Slowenischen sind die Sätze angenehm kurz, weil das „es\" fehlt.\n\n*Lepo vreme danes.* — Schönes Wetter heute. Mehr braucht es nicht.",
+      "position": 1,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["unpersoenliche-saetze"],
+      "items": [
+        { "kind": "phrase", "slovene": "Lepo vreme danes.", "german": "Schönes Wetter heute.", "contextNote": "Der Standardeinstieg, wenn man sich draußen trifft.", "tags": ["wetter", "smalltalk"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Mrzlo je.", "german": "Es ist kalt.", "tags": ["wetter"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Vroče je.", "german": "Es ist heiß.", "tags": ["wetter"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Dežuje.", "german": "Es regnet.", "contextNote": "Ein Wort, ein ganzer Satz.", "tags": ["wetter"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Sneži.", "german": "Es schneit.", "tags": ["wetter"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Sonce sije.", "german": "Die Sonne scheint.", "tags": ["wetter"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Kakšno vreme je pri vas?", "german": "Wie ist das Wetter bei euch?", "contextNote": "Am Telefon nach Hause — die Frage kommt garantiert zurück.", "tags": ["wetter", "smalltalk"], "difficulty": 4 },
+        { "kind": "lexeme", "slovene": "vreme", "german": ["das Wetter"], "partOfSpeech": "noun", "gender": "n", "tags": ["wetter"], "difficulty": 1 }
+      ]
+    },
+    {
+      "slug": "wochenende",
+      "titleDe": "Wochenende",
+      "goalDe": "Du kannst fragen und erzählen, was am Wochenende ansteht.",
+      "introDe": "Am Montag fragt jeder dasselbe, am Freitag auch. Zwei Sätze decken beides ab: *Kaj delaš za vikend?* und *Kako je bil vikend?*\n\nZum Antworten reicht oft ein einzelnes Wort plus *bilo je* — „es war\".",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["za-vikend"],
+      "items": [
+        { "kind": "phrase", "slovene": "Kaj delaš za vikend?", "german": "Was machst du am Wochenende?", "tags": ["smalltalk", "zeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Nič posebnega.", "german": "Nichts Besonderes.", "contextNote": "Die ehrlichste und häufigste Antwort.", "tags": ["smalltalk"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Doma bom.", "german": "Ich werde zu Hause sein.", "tags": ["smalltalk"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Gremo v hribe.", "german": "Wir gehen in die Berge.", "contextNote": "In Slowenien eine sehr wahrscheinliche Antwort — Wandern ist Nationalsport.", "tags": ["smalltalk", "freizeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kako je bil vikend?", "german": "Wie war das Wochenende?", "tags": ["smalltalk", "zeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Bilo je lepo.", "german": "Es war schön.", "tags": ["smalltalk"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "vikend", "german": ["das Wochenende"], "partOfSpeech": "noun", "gender": "m", "register": "colloquial", "tags": ["zeit"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "doma", "german": ["zu Hause"], "partOfSpeech": "adverb", "tags": ["basis"], "difficulty": 1 }
+      ]
+    },
+    {
+      "slug": "arbeit-smalltalk",
+      "titleDe": "Über Arbeit reden",
+      "goalDe": "Du kannst über Arbeit sprechen, ohne ins Detail gehen zu müssen.",
+      "introDe": "Arbeit ist ein Höflichkeitsthema — niemand erwartet eine Abhandlung. Ein Adjektiv reicht: *naporno* (anstrengend), *v redu* (in Ordnung), *zanimivo* (interessant).\n\nWenn du das Thema wechseln willst, hilft *Pa ti?* — und schon redet der andere.",
+      "position": 3,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["unpersoenliche-saetze"],
+      "items": [
+        { "kind": "phrase", "slovene": "Kako je v službi?", "german": "Wie läuft es in der Arbeit?", "tags": ["arbeit", "smalltalk"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Veliko dela je.", "german": "Es gibt viel Arbeit.", "tags": ["arbeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Naporno je.", "german": "Es ist anstrengend.", "tags": ["arbeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Danes imam prosto.", "german": "Heute habe ich frei.", "tags": ["arbeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Sem na dopustu.", "german": "Ich bin im Urlaub.", "tags": ["arbeit"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "dopust", "german": ["der Urlaub"], "partOfSpeech": "noun", "gender": "m", "tags": ["arbeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "naporno", "german": ["anstrengend"], "partOfSpeech": "adverb", "tags": ["arbeit"], "difficulty": 3 }
+      ]
+    },
+    {
+      "slug": "familie-smalltalk",
+      "titleDe": "Nach der Familie fragen",
+      "goalDe": "Du kannst nach den Angehörigen anderer fragen — das erwartete Zeichen von Interesse.",
+      "introDe": "In slowenischen Familien fragt man nacheinander. Nicht zu fragen wirkt distanziert.\n\n*Kako so tvoji?* — „Wie geht es deinen Leuten?\" — deckt Eltern, Kinder und alles dazwischen ab, ohne dass du Namen wissen musst.",
+      "position": 4,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["possessiv-mein"],
+      "items": [
+        { "kind": "phrase", "slovene": "Kako so tvoji?", "german": "Wie geht es deiner Familie?", "contextNote": "Wörtlich „wie sind deine?\". Der bequemste Weg, nach allen zu fragen.", "tags": ["familie", "smalltalk"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kako je mama?", "german": "Wie geht es deiner Mutter?", "tags": ["familie", "smalltalk"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Vsi so dobro.", "german": "Allen geht es gut.", "tags": ["familie"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Imaš otroke?", "german": "Hast du Kinder?", "tags": ["familie", "smalltalk"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Pozdravi jih!", "german": "Grüß sie von mir!", "contextNote": "Der übliche Abschluss, wenn über Abwesende geredet wurde.", "tags": ["familie", "hoeflichkeit"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "vsi", "german": ["alle"], "partOfSpeech": "pronoun", "tags": ["basis"], "difficulty": 2 }
+      ]
+    }
+  ]
+}

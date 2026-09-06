@@ -1,0 +1,141 @@
+{
+  "unit": {
+    "slug": "am-tisch",
+    "titleDe": "Am Tisch",
+    "descriptionDe": "Die wichtigste Einheit. Familienessen sind der Ort, an dem Slowenisch tatsächlich stattfindet — hier lernst du, was dort gesagt wird.",
+    "position": 5
+  },
+  "grammarNotes": [
+    {
+      "slug": "akkusativ-was",
+      "titleDe": "Wen oder was? — der Akkusativ",
+      "bodyDe": "Nach Verben wie *hočem* (ich will), *imam* (ich habe), *jem* (ich esse) steht das Objekt im Akkusativ.\n\nBei weiblichen Wörtern auf -a wird daraus **-o**:\n- kava → *Hočem kavo.*\n- juha → *Jem juho.*\n- voda → *Pijem vodo.*\n\nMännliche Wörter für Dinge ändern sich nicht: *Jem kruh.* Bei Lebewesen schon: *Vidim brata.*\n\nDas ist der nützlichste Fall im Alltag — mit ihm bestellst du alles.",
+      "tags": ["faelle", "akkusativ"]
+    },
+    {
+      "slug": "hoefliches-bitten",
+      "titleDe": "Höflich bitten: rad bi",
+      "bodyDe": "Direkt *hočem* („ich will\") klingt fordernd. Höflich ist **rad bi** / **rada bi** — „ich hätte gern\".\n\n- Ein Mann: *Rad bi kavo.*\n- Eine Frau: *Rada bi kavo.*\n\nNoch weicher: *Lahko dobim …?* — „kann ich … bekommen?\"",
+      "tags": ["hoeflichkeit", "geschlecht"]
+    },
+    {
+      "slug": "satt-und-geschlecht",
+      "titleDe": "sit / sita — auch „satt\" hat ein Geschlecht",
+      "bodyDe": "Am Tisch wirst du das ständig brauchen:\n\n- Eine Frau: *Sita sem.* — Ich bin satt.\n- Ein Mann: *Sit sem.*\n\nUnd wenn noch Platz ist: *Še malo, prosim.* — noch ein bisschen, bitte. Wichtiger Hinweis: Ablehnen musst du in slowenischen Familien oft mehrfach. Einmal *ne, hvala* wird gern als Höflichkeit gelesen, nicht als Antwort.",
+      "tags": ["geschlecht", "essen"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "essen-und-trinken",
+      "titleDe": "Essen und Trinken",
+      "goalDe": "Du kennst die Wörter für das, was auf dem Tisch steht.",
+      "introDe": "Die Grundwörter für Essen und Trinken. Achte auf das Geschlecht — es entscheidet gleich in der nächsten Lektion darüber, wie du das Wort beim Bestellen veränderst.\n\n*kava* (f) → *kavo*, aber *kruh* (m) bleibt *kruh*.",
+      "position": 1,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["akkusativ-was"],
+      "items": [
+        { "kind": "lexeme", "slovene": "kruh", "german": ["das Brot"], "partOfSpeech": "noun", "gender": "m", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "voda", "german": ["das Wasser"], "partOfSpeech": "noun", "gender": "f", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "kava", "german": ["der Kaffee"], "partOfSpeech": "noun", "gender": "f", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "vino", "german": ["der Wein"], "partOfSpeech": "noun", "gender": "n", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "juha", "german": ["die Suppe"], "partOfSpeech": "noun", "gender": "f", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "meso", "german": ["das Fleisch"], "partOfSpeech": "noun", "gender": "n", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "solata", "german": ["der Salat"], "partOfSpeech": "noun", "gender": "f", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "sir", "german": ["der Käse"], "partOfSpeech": "noun", "gender": "m", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "krompir", "german": ["die Kartoffel"], "partOfSpeech": "noun", "gender": "m", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "sladica", "german": ["die Nachspeise"], "partOfSpeech": "noun", "gender": "f", "tags": ["essen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "guten-appetit",
+      "titleDe": "Guten Appetit",
+      "goalDe": "Du kannst die festen Wendungen, die zu Beginn und während eines Essens gesagt werden.",
+      "introDe": "**Dober tek!** ist „guten Appetit\" — es wird gesagt, bevor jemand anfängt, und du sagst es zurück.\n\n**Izvoli** heißt „hier, bitte\" beim Reichen. Zur Sie-Form: *izvolite*. Das hörst du an einem Familientisch alle zwei Minuten.",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["satt-und-geschlecht"],
+      "items": [
+        { "kind": "phrase", "slovene": "Dober tek!", "german": "Guten Appetit!", "contextNote": "Wird gesagt, sobald das Essen auf dem Tisch steht. Antwort: Hvala, enako.", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Hvala, enako.", "german": "Danke, gleichfalls.", "contextNote": "Die Antwort auf Dober tek.", "tags": ["essen", "hoeflichkeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Izvoli.", "german": "Hier, bitte.", "contextNote": "Beim Reichen der Schüssel. Zur Sie-Form: Izvolite.", "tags": ["essen", "hoeflichkeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Zelo je dobro.", "german": "Es ist sehr gut.", "contextNote": "Das Lob, das erwartet wird — und ehrlich gemeint ankommt.", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Sita sem, hvala.", "german": "Ich bin satt, danke.", "contextNote": "So sagt es eine Frau. Ein Mann: Sit sem, hvala.", "tags": ["essen", "geschlecht"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Še malo, prosim.", "german": "Noch ein bisschen, bitte.", "contextNote": "Wenn du wirklich noch willst — sonst wird nachgelegt, bis du es sagst.", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ne morem več.", "german": "Ich kann nicht mehr.", "contextNote": "Die freundliche Kapitulation. Wird lachend akzeptiert.", "tags": ["essen"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "jesti", "german": ["essen"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "piti", "german": ["trinken"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["essen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "ich-haette-gern",
+      "titleDe": "Ich hätte gern",
+      "goalDe": "Du kannst höflich um etwas bitten — und dabei die richtige Endung treffen.",
+      "introDe": "Jetzt wird der Akkusativ nützlich. **Rada bi kavo** — das *-o* am Ende von *kava* ist der ganze Trick.\n\nDrei Bausteine, mit denen du alles bekommst, was auf dem Tisch steht:\n- *Rad/Rada bi …* — ich hätte gern\n- *Lahko dobim …?* — kann ich … haben?\n- *Prosim, podaj mi …* — reich mir bitte …",
+      "position": 3,
+      "estimatedMinutes": 6,
+      "grammarNoteSlugs": ["akkusativ-was", "hoefliches-bitten"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Rada bi kavo.",
+          "german": "Ich hätte gern einen Kaffee.",
+          "contextNote": "So sagt es eine Frau. Ein Mann: Rad bi kavo.",
+          "tags": ["essen", "hoeflichkeit"],
+          "difficulty": 3,
+          "cloze": [{ "position": 2, "answer": "kavo", "hintDe": "was hätte ich gern? → Akkusativ", "focusCase": "accusative", "focusNumber": "singular" }]
+        },
+        {
+          "kind": "phrase",
+          "slovene": "Lahko dobim vodo?",
+          "german": "Kann ich Wasser bekommen?",
+          "tags": ["essen", "hoeflichkeit"],
+          "difficulty": 3,
+          "cloze": [{ "position": 2, "answer": "vodo", "hintDe": "was bekomme ich? → Akkusativ", "focusCase": "accusative", "focusNumber": "singular" }]
+        },
+        { "kind": "phrase", "slovene": "Prosim, podaj mi kruh.", "german": "Reich mir bitte das Brot.", "contextNote": "kruh ist männlich und ändert sich nicht.", "tags": ["essen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kaj boš pil?", "german": "Was wirst du trinken?", "contextNote": "Zu einem Mann. Zu einer Frau: Kaj boš pila?", "tags": ["essen", "geschlecht"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Za mene vodo, prosim.", "german": "Für mich Wasser, bitte.", "tags": ["essen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Brez mesa, prosim.", "german": "Ohne Fleisch, bitte.", "contextNote": "Nach brez steht der Genitiv: meso wird zu mesa.", "tags": ["essen"], "difficulty": 4, "cloze": [{ "position": 1, "answer": "mesa", "hintDe": "nach brez steht der Genitiv", "focusCase": "genitive", "focusNumber": "singular" }] },
+        { "kind": "lexeme", "slovene": "dobiti", "german": ["bekommen"], "partOfSpeech": "verb", "aspect": "perfective", "tags": ["basis"], "difficulty": 3 }
+      ]
+    },
+    {
+      "slug": "nachschlag-und-ablehnen",
+      "titleDe": "Nachschlag und Ablehnen",
+      "goalDe": "Du kannst annehmen und ablehnen, ohne unhöflich zu wirken.",
+      "introDe": "An einem slowenischen Familientisch wird nachgelegt. Das ist Zuwendung, keine Aufdringlichkeit — und die Regel lautet: einmal ablehnen zählt als Höflichkeit, zweimal als Antwort.\n\nWenn du wirklich nicht mehr kannst, hilft ein Grund: *Zelo dobro je, ampak ne morem več.*",
+      "position": 4,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["satt-und-geschlecht"],
+      "items": [
+        { "kind": "phrase", "slovene": "Boš še?", "german": "Willst du noch?", "contextNote": "Die Frage, die dir dreimal gestellt wird.", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ne, hvala, dovolj je.", "german": "Nein danke, es reicht.", "contextNote": "Freundlich und bestimmt. Wiederhole es ruhig.", "tags": ["essen", "hoeflichkeit"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Zelo dobro je, ampak ne morem več.", "german": "Es ist sehr gut, aber ich kann nicht mehr.", "contextNote": "Lob plus Grenze — die Kombination, die immer funktioniert.", "tags": ["essen", "hoeflichkeit"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Samo malo, prosim.", "german": "Nur ein bisschen, bitte.", "contextNote": "Der Kompromiss, wenn du nicht ganz ablehnen willst.", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Prav, še malo.", "german": "Gut, noch ein bisschen.", "contextNote": "Das Nachgeben. Damit machst du jemandem eine Freude.", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Res ne morem.", "german": "Ich kann wirklich nicht.", "tags": ["essen"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "dovolj", "german": ["genug"], "partOfSpeech": "adverb", "tags": ["essen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "lob-fuer-die-kueche",
+      "titleDe": "Lob für die Küche",
+      "goalDe": "Du kannst das Essen loben und nach dem Rezept fragen — der schnellste Weg zu einem echten Gespräch.",
+      "introDe": "Wer kocht, will hören, dass es geschmeckt hat. Ein Lob auf Slowenisch, auch holprig, wiegt mehr als drei perfekte Sätze über das Wetter.\n\nUnd die Frage nach dem Rezept öffnet ein Gespräch, das von allein weiterläuft.",
+      "position": 5,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["akkusativ-was"],
+      "items": [
+        { "kind": "phrase", "slovene": "Odlično je!", "german": "Es ist ausgezeichnet!", "contextNote": "Ein Stück stärker als dobro. Sag es einmal pro Essen.", "tags": ["essen", "lob"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Kako si to naredila?", "german": "Wie hast du das gemacht?", "contextNote": "Zu einer Frau. Zu einem Mann: Kako si to naredil?", "tags": ["essen", "geschlecht"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "To je moja najljubša jed.", "german": "Das ist mein Lieblingsessen.", "tags": ["essen", "lob"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Nikoli nisem jedla česa takega.", "german": "So etwas habe ich noch nie gegessen.", "contextNote": "So sagt es eine Frau. Ein Mann: nisem jedel.", "tags": ["essen", "lob", "geschlecht"], "difficulty": 5 },
+        { "kind": "phrase", "slovene": "Hvala za kosilo.", "german": "Danke für das Mittagessen.", "contextNote": "Beim Aufstehen vom Tisch. Für das Abendessen: za večerjo.", "tags": ["essen", "hoeflichkeit"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "kosilo", "german": ["das Mittagessen"], "partOfSpeech": "noun", "gender": "n", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "večerja", "german": ["das Abendessen"], "partOfSpeech": "noun", "gender": "f", "tags": ["essen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "zajtrk", "german": ["das Frühstück"], "partOfSpeech": "noun", "gender": "m", "tags": ["essen"], "difficulty": 2 }
+      ]
+    }
+  ]
+}

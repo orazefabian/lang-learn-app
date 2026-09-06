@@ -1,0 +1,111 @@
+{
+  "unit": {
+    "slug": "moegen-und-meinen",
+    "titleDe": "Mögen und meinen",
+    "descriptionDe": "Sagen, was dir gefällt, was du gern machst, und einer Meinung zustimmen oder widersprechen.",
+    "position": 6
+  },
+  "grammarNotes": [
+    {
+      "slug": "vsec-mi-je",
+      "titleDe": "„mir gefällt\" — všeč mi je",
+      "bodyDe": "Für „ich mag etwas\" sagt Slowenisch am liebsten **všeč mi je** — wörtlich „es ist mir gefällig\". Das Ding, das dir gefällt, ist dabei das Satzsubjekt, genau wie im deutschen „mir gefällt\".\n\n- *Všeč mi je.* — Es gefällt mir.\n- *Ta juha mi je všeč.* — Diese Suppe gefällt mir.\n- *Ni mi všeč.* — Es gefällt mir nicht.\n\nDas **mi** ist der Dativ von *jaz*. Für andere: *ti* (dir), *mu* (ihm), *ji* (ihr), *nam* (uns).",
+      "tags": ["faelle", "dativ", "meinung"]
+    },
+    {
+      "slug": "rad-imam",
+      "titleDe": "rad — gern und lieben",
+      "bodyDe": "**rad / rada** heißt „gern\" und richtet sich nach dir, nicht nach dem Ding:\n\n- Eine Frau: *Rada kuham.* — Ich koche gern.\n- Ein Mann: *Rad kuham.*\n\nMit *imeti* wird daraus Zuneigung: **Rada te imam** heißt „ich hab dich lieb\" — die alltägliche, warme Form. Das große *Ljubim te* („ich liebe dich\") ist selten und feierlich; in Familien und zwischen Paaren sagt man *rada te imam*.",
+      "tags": ["geschlecht", "gefuehle"]
+    },
+    {
+      "slug": "meinung-sagen",
+      "titleDe": "Meinen und widersprechen",
+      "bodyDe": "**Mislim, da …** — „ich denke, dass …\". Das *da* darf nie wegfallen, anders als im Deutschen, wo man „ich denke, es ist gut\" sagen kann.\n\nZustimmen: *Se strinjam.* Widersprechen: *Se ne strinjam.* Das *se* gehört zum Verb *strinjati se*.",
+      "tags": ["meinung", "saetze"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "das-gefaellt-mir",
+      "titleDe": "Das gefällt mir",
+      "goalDe": "Du kannst sagen, dass dir etwas gefällt oder nicht gefällt.",
+      "introDe": "**Všeč mi je** ist eine der Wendungen, die du sofort einsetzen kannst, ohne Grammatik zu verstehen. Du hängst sie an alles, was du zeigen kannst.\n\nAussprache: *všeč* klingt ungefähr wie „wschetsch\" — das erste Stück ist ein Rutsch von w zu sch.",
+      "position": 1,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["vsec-mi-je"],
+      "items": [
+        { "kind": "phrase", "slovene": "Všeč mi je.", "german": "Das gefällt mir.", "contextNote": "Funktioniert für alles: Essen, Musik, eine Wohnung, eine Idee.", "tags": ["meinung"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ni mi všeč.", "german": "Das gefällt mir nicht.", "contextNote": "Die Verneinung steckt in ni — „ist nicht\".", "tags": ["meinung"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ta juha mi je zelo všeč.", "german": "Diese Suppe gefällt mir sehr.", "tags": ["meinung", "essen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Ti je všeč?", "german": "Gefällt es dir?", "contextNote": "Die Rückfrage — kommt oft direkt nach dem ersten Bissen.", "tags": ["meinung"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Slovenija mi je zelo všeč.", "german": "Slowenien gefällt mir sehr.", "contextNote": "Ein Satz, der Türen öffnet. Er wird dich beliebt machen.", "tags": ["meinung"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Bolj mi je všeč kava.", "german": "Kaffee mag ich lieber.", "contextNote": "bolj heißt „mehr, lieber\" — der einfachste Vergleich.", "tags": ["meinung"], "difficulty": 4 },
+        { "kind": "lexeme", "slovene": "všeč", "german": ["gefällig"], "partOfSpeech": "adverb", "notes": "Kommt fast nur in všeč mi je vor. Als einzelnes Wort selten.", "tags": ["meinung"], "difficulty": 3 }
+      ]
+    },
+    {
+      "slug": "das-mache-ich-gern",
+      "titleDe": "Das mache ich gern",
+      "goalDe": "Du kannst sagen, was du gern tust — und jemandem sagen, dass du ihn magst.",
+      "introDe": "**rad** und **rada** stehen direkt vor dem Verb: *Rada berem.* — „Ich lese gern.\"\n\nDie Form richtet sich nach dir. Das ist eine der wenigen Stellen, an denen Slowenisch dich zwingt, ständig an dein eigenes grammatisches Geschlecht zu denken.",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["rad-imam"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Rada kuham.",
+          "german": "Ich koche gern.",
+          "contextNote": "So sagt es eine Frau. Ein Mann: Rad kuham.",
+          "tags": ["freizeit", "geschlecht"],
+          "difficulty": 3,
+          "cloze": [{ "position": 0, "answer": "Rada", "hintDe": "eine Frau spricht" }]
+        },
+        { "kind": "phrase", "slovene": "Rada berem.", "german": "Ich lese gern.", "tags": ["freizeit", "geschlecht"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Rada te imam.", "german": "Ich hab dich lieb.", "contextNote": "Die alltägliche, warme Form. Sagt man in der Familie und zum Partner.", "tags": ["gefuehle"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kaj rad delaš?", "german": "Was machst du gern?", "contextNote": "Zu einem Mann. Zu einer Frau: Kaj rada delaš?", "tags": ["smalltalk", "geschlecht"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Ne maram kave.", "german": "Ich mag keinen Kaffee.", "contextNote": "Nach verneintem marati steht der Genitiv: kava wird zu kave.", "tags": ["meinung"], "difficulty": 4 },
+        { "kind": "lexeme", "slovene": "rad", "german": ["gern"], "partOfSpeech": "adjective", "notes": "Weiblich rada, Mehrzahl radi/rade.", "tags": ["basis", "geschlecht"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "kuhati", "german": ["kochen"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["essen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "zustimmen-und-widersprechen",
+      "titleDe": "Zustimmen und widersprechen",
+      "goalDe": "Du kannst in einem Gespräch Position beziehen, ohne einen ganzen Satz bauen zu müssen.",
+      "introDe": "In einer lebhaften Tischrunde sind kurze Reaktionen wichtiger als vollständige Sätze. **Točno tako** („genau so\") und **Se ne strinjam** („ich stimme nicht zu\") reichen, um dabei zu sein.\n\nWichtig: Widerspruch ist am slowenischen Familientisch kein Problem. Er gehört dazu.",
+      "position": 3,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["meinung-sagen"],
+      "items": [
+        { "kind": "phrase", "slovene": "Se strinjam.", "german": "Ich stimme zu.", "tags": ["meinung"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Se ne strinjam.", "german": "Ich stimme nicht zu.", "contextNote": "Völlig normal am Tisch. Niemand nimmt es persönlich.", "tags": ["meinung"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Točno tako!", "german": "Genau so!", "contextNote": "Die schnellste Zustimmung. Kurz, klar, wirkt beteiligt.", "tags": ["meinung"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Mislim, da imaš prav.", "german": "Ich denke, du hast recht.", "contextNote": "Das da darf nicht wegfallen.", "tags": ["meinung"], "difficulty": 4, "cloze": [{ "position": 1, "answer": "da", "hintDe": "im Slowenischen nie weglassbar" }] },
+        { "kind": "phrase", "slovene": "Mogoče.", "german": "Vielleicht.", "contextNote": "Wenn du dich nicht festlegen willst.", "tags": ["meinung"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Ne vem točno.", "german": "Ich weiß es nicht genau.", "tags": ["meinung"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Kaj misliš ti?", "german": "Was denkst du?", "contextNote": "Gib das Gespräch zurück, wenn dir die Worte ausgehen.", "tags": ["meinung"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "misliti", "german": ["denken", "meinen"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["basis"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "vergleichen",
+      "titleDe": "Vergleichen",
+      "goalDe": "Du kannst zwei Dinge vergleichen und eine Vorliebe ausdrücken.",
+      "introDe": "Der einfachste Vergleich braucht nur zwei Wörter: **bolj** (mehr) und **manj** (weniger), plus **kot** für „als\".\n\n*Kava je boljša kot čaj.* — Kaffee ist besser als Tee. Und wenn du ganz sicher gehen willst: *Imam rajši kavo.* — „Ich habe lieber Kaffee.\"",
+      "position": 4,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["vsec-mi-je"],
+      "items": [
+        { "kind": "phrase", "slovene": "Imam rajši kavo kot čaj.", "german": "Ich mag Kaffee lieber als Tee.", "tags": ["meinung"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "To je bolje.", "german": "Das ist besser.", "tags": ["meinung"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ta je večji.", "german": "Der ist größer.", "tags": ["meinung"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Enako mi je.", "german": "Das ist mir gleich.", "contextNote": "Wenn du wirklich keine Präferenz hast — höflich und unaufgeregt.", "tags": ["meinung"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kaj je bolje?", "german": "Was ist besser?", "tags": ["meinung"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "bolj", "german": ["mehr", "eher"], "partOfSpeech": "adverb", "tags": ["basis"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "kot", "german": ["als", "wie"], "partOfSpeech": "conjunction", "tags": ["basis"], "difficulty": 2 }
+      ]
+    }
+  ]
+}

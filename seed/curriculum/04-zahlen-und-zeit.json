@@ -1,0 +1,119 @@
+{
+  "unit": {
+    "slug": "zahlen-und-zeit",
+    "titleDe": "Zahlen und Zeit",
+    "descriptionDe": "Zählen, Alter, Wochentage, Uhrzeit — und verabreden, wann man sich sieht.",
+    "position": 4
+  },
+  "grammarNotes": [
+    {
+      "slug": "zahlen-und-endungen",
+      "titleDe": "Nach Zahlen ändert sich das Substantiv",
+      "bodyDe": "Slowenisch macht nach Zahlen etwas Ungewohntes:\n\n- **1**: *en dan* (Einzahl)\n- **2**: *dva dneva* (Zweizahl)\n- **3, 4**: *trije dnevi* (Mehrzahl)\n- **ab 5**: *pet dni* (Genitiv Plural)\n\nAb fünf steht das Gezählte also im Genitiv. Merk dir das nicht als Tabelle — merk dir *pet minut*, *deset let*, *sto evrov* als fertige Wendungen.",
+      "tags": ["zahlen", "faelle"]
+    },
+    {
+      "slug": "wochentage-na",
+      "titleDe": "„am Montag\" — v plus Akkusativ",
+      "bodyDe": "Wochentage bekommen **v**: *v ponedeljek* (am Montag), *v soboto* (am Samstag).\n\nDas ist derselbe Fall wie bei „wohin?\" — der Akkusativ. Deshalb *sobota* → *v soboto*. Bei den männlichen Tagen sieht man nichts: *ponedeljek* bleibt *ponedeljek*.",
+      "tags": ["zeit", "faelle"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "null-bis-zehn",
+      "titleDe": "Null bis zehn",
+      "goalDe": "Du kannst bis zehn zählen und einfache Mengen verstehen.",
+      "introDe": "Die ersten zehn Zahlen brauchst du ständig: beim Einkaufen, beim Bestellen, beim Uhrzeitverstehen.\n\nAchtung bei **ena**: als reine Zahl sagt man *ena*, vor einem männlichen Wort *en* (*en kruh*), vor einem weiblichen *ena* (*ena kava*).",
+      "position": 1,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["zahlen-und-endungen"],
+      "items": [
+        { "kind": "lexeme", "slovene": "nič", "german": ["null"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "ena", "german": ["eins"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "tri", "german": ["drei"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "štiri", "german": ["vier"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "pet", "german": ["fünf"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "šest", "german": ["sechs"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "sedem", "german": ["sieben"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "osem", "german": ["acht"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "devet", "german": ["neun"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "deset", "german": ["zehn"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 1 }
+      ]
+    },
+    {
+      "slug": "groessere-zahlen-und-alter",
+      "titleDe": "Größere Zahlen und Alter",
+      "goalDe": "Du kannst dein Alter sagen und größere Zahlen verstehen.",
+      "introDe": "Die Zehner bis hundert sind regelmäßig gebaut: *dvajset* (20), *trideset* (30), *štirideset* (40).\n\nBei den Zwischenzahlen steht die Einer**zahl vorn**, wie im Deutschen: *enaindvajset* — „einundzwanzig\".\n\nAlter sagt man mit *imam … let* — „ich habe … Jahre\".",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["zahlen-und-endungen"],
+      "items": [
+        { "kind": "lexeme", "slovene": "dvajset", "german": ["zwanzig"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "trideset", "german": ["dreißig"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "sto", "german": ["hundert"], "partOfSpeech": "numeral", "tags": ["zahlen"], "difficulty": 2 },
+        {
+          "kind": "phrase",
+          "slovene": "Imam trideset let.",
+          "german": "Ich bin dreißig Jahre alt.",
+          "contextNote": "Wörtlich „ich habe dreißig Jahre\". let ist Genitiv Plural — nach Zahlen ab fünf.",
+          "tags": ["zahlen", "vorstellen"],
+          "difficulty": 3,
+          "cloze": [{ "position": 2, "answer": "let", "hintDe": "nach Zahlen ab fünf: Genitiv Plural", "focusCase": "genitive", "focusNumber": "plural" }]
+        },
+        { "kind": "phrase", "slovene": "Koliko si stara?", "german": "Wie alt bist du?", "contextNote": "Zu einer Frau. Zu einem Mann: Koliko si star?", "tags": ["zahlen", "geschlecht"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Koliko stane?", "german": "Was kostet das?", "contextNote": "Der wichtigste Zahlensatz beim Einkaufen.", "tags": ["zahlen", "einkaufen"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "leto", "german": ["das Jahr"], "partOfSpeech": "noun", "gender": "n", "tags": ["zeit"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "wochentage",
+      "titleDe": "Wochentage",
+      "goalDe": "Du kennst die Wochentage und kannst sagen, wann etwas stattfindet.",
+      "introDe": "Die slowenischen Wochentage sind teilweise durchsichtig: **ponedeljek** kommt von „nach dem Sonntag\", **sreda** heißt „Mitte\", **četrtek** ist der vierte, **petek** der fünfte.\n\nMit **v** davor wird daraus „am\": *v petek* — am Freitag.",
+      "position": 3,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["wochentage-na"],
+      "items": [
+        { "kind": "lexeme", "slovene": "ponedeljek", "german": ["der Montag"], "partOfSpeech": "noun", "gender": "m", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "torek", "german": ["der Dienstag"], "partOfSpeech": "noun", "gender": "m", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "sreda", "german": ["der Mittwoch"], "partOfSpeech": "noun", "gender": "f", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "četrtek", "german": ["der Donnerstag"], "partOfSpeech": "noun", "gender": "m", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "petek", "german": ["der Freitag"], "partOfSpeech": "noun", "gender": "m", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "sobota", "german": ["der Samstag"], "partOfSpeech": "noun", "gender": "f", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "nedelja", "german": ["der Sonntag"], "partOfSpeech": "noun", "gender": "f", "tags": ["zeit"], "difficulty": 2 },
+        {
+          "kind": "phrase",
+          "slovene": "Se vidimo v soboto.",
+          "german": "Wir sehen uns am Samstag.",
+          "contextNote": "sobota wird zu soboto — nach v steht hier der Akkusativ.",
+          "tags": ["zeit"],
+          "difficulty": 3,
+          "cloze": [{ "position": 3, "answer": "soboto", "hintDe": "wann? → nach v im Akkusativ", "focusCase": "accusative", "focusNumber": "singular" }]
+        },
+        { "kind": "phrase", "slovene": "Kdaj se vidimo?", "german": "Wann sehen wir uns?", "tags": ["zeit"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "uhrzeit-und-tageszeit",
+      "titleDe": "Uhrzeit und Tageszeit",
+      "goalDe": "Du kannst nach der Uhrzeit fragen, sie grob verstehen und Tageszeiten benennen.",
+      "introDe": "**Koliko je ura?** — „wie viel ist die Uhr?\". Die Antwort: *Ura je sedem.*\n\nFür den Alltag reicht oft die grobe Angabe: *zjutraj* (morgens), *popoldne* (nachmittags), *zvečer* (abends). Die halben Stunden funktionieren wie im Süddeutschen: *pol sedmih* ist halb sieben, also 6:30.",
+      "position": 4,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["zahlen-und-endungen"],
+      "items": [
+        { "kind": "phrase", "slovene": "Koliko je ura?", "german": "Wie spät ist es?", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ura je sedem.", "german": "Es ist sieben Uhr.", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ob osmih zvečer.", "german": "Um acht Uhr abends.", "contextNote": "Für Verabredungen: ob plus Uhrzeit.", "tags": ["zeit"], "difficulty": 4 },
+        { "kind": "lexeme", "slovene": "zjutraj", "german": ["morgens", "am Morgen"], "partOfSpeech": "adverb", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "zvečer", "german": ["abends", "am Abend"], "partOfSpeech": "adverb", "tags": ["zeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "danes", "german": ["heute"], "partOfSpeech": "adverb", "tags": ["zeit"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "jutri", "german": ["morgen"], "partOfSpeech": "adverb", "tags": ["zeit"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "včeraj", "german": ["gestern"], "partOfSpeech": "adverb", "tags": ["zeit"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "zdaj", "german": ["jetzt"], "partOfSpeech": "adverb", "tags": ["zeit"], "difficulty": 1 }
+      ]
+    }
+  ]
+}

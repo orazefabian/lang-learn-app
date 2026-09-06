@@ -1,0 +1,97 @@
+{
+  "unit": {
+    "slug": "unterwegs",
+    "titleDe": "Unterwegs",
+    "descriptionDe": "Einkaufen, bestellen, sich zurechtfinden — die Sätze für alles außerhalb der Wohnung.",
+    "position": 8
+  },
+  "grammarNotes": [
+    {
+      "slug": "bestellen-akkusativ",
+      "titleDe": "Bestellen: Zahl plus Akkusativ",
+      "bodyDe": "Beim Bestellen steht das Bestellte im Akkusativ, und die Zahl davor richtet sich nach dem Geschlecht:\n\n- *Eno kavo, prosim.* — einen Kaffee (kava ist weiblich → eno … kavo)\n- *En čaj, prosim.* — einen Tee (čaj ist männlich → en … čaj)\n- *Dve pivi, prosim.* — zwei Bier (Zweizahl!)\n\nWenn du unsicher bist: zeigen und *to, prosim* sagen. Das funktioniert immer.",
+      "tags": ["faelle", "akkusativ", "einkaufen"]
+    },
+    {
+      "slug": "richtungen-kje-kam",
+      "titleDe": "kje und kam — wo und wohin",
+      "bodyDe": "Slowenisch trennt sauber zwischen Ort und Richtung, und beide Fragewörter sind kurz:\n\n- **Kje?** — Wo? Antwort im Lokativ: *v trgovini* (im Laden)\n- **Kam?** — Wohin? Antwort im Akkusativ: *v trgovino* (in den Laden)\n\nDasselbe Wort *v*, zwei verschiedene Endungen. Genau wie im Deutschen „im Laden\" gegen „in den Laden\".",
+      "tags": ["faelle", "orte"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "im-laden",
+      "titleDe": "Im Laden",
+      "goalDe": "Du kannst nach etwas fragen, nach dem Preis fragen und bezahlen.",
+      "introDe": "Vier Sätze reichen für fast jeden Einkauf: *Imate …?*, *Koliko stane?*, *To bo vse.* und *Hvala, nasvidenje.*\n\nGesiezt wird im Laden immer — deshalb *imate*, nicht *imaš*.",
+      "position": 1,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["bestellen-akkusativ"],
+      "items": [
+        { "kind": "phrase", "slovene": "Imate kruh?", "german": "Haben Sie Brot?", "tags": ["einkaufen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Koliko stane?", "german": "Was kostet das?", "tags": ["einkaufen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "To bo vse, hvala.", "german": "Das wäre alles, danke.", "contextNote": "An der Kasse, wenn gefragt wird, ob es noch etwas sein darf.", "tags": ["einkaufen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Lahko plačam s kartico?", "german": "Kann ich mit Karte zahlen?", "tags": ["einkaufen"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Samo gledam, hvala.", "german": "Ich schaue nur, danke.", "contextNote": "Wenn dich jemand im Laden anspricht.", "tags": ["einkaufen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kje je blagajna?", "german": "Wo ist die Kasse?", "tags": ["einkaufen", "orte"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "trgovina", "german": ["der Laden", "das Geschäft"], "partOfSpeech": "noun", "gender": "f", "tags": ["orte"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "denar", "german": ["das Geld"], "partOfSpeech": "noun", "gender": "m", "tags": ["einkaufen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "im-lokal",
+      "titleDe": "Im Café und im Lokal",
+      "goalDe": "Du kannst etwas bestellen und die Rechnung verlangen.",
+      "introDe": "Slowenien ist ein Kaffeeland. **Eno kavo, prosim** ist wahrscheinlich der Satz, den du am häufigsten sagen wirst.\n\nZahlen: *Račun, prosim.* Getrennt: *Vsak zase, prosim.*",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["bestellen-akkusativ"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Eno kavo, prosim.",
+          "german": "Einen Kaffee, bitte.",
+          "contextNote": "eno, weil kava weiblich ist. Bei čaj hieße es en čaj.",
+          "tags": ["einkaufen", "essen"],
+          "difficulty": 3,
+          "cloze": [{ "position": 1, "answer": "kavo", "hintDe": "was bestelle ich? → Akkusativ", "focusCase": "accusative", "focusNumber": "singular" }]
+        },
+        { "kind": "phrase", "slovene": "Dve pivi, prosim.", "german": "Zwei Bier, bitte.", "contextNote": "Zweizahl: dve pivi, nicht dve piva.", "tags": ["einkaufen", "dvojina"], "difficulty": 4, "cloze": [{ "position": 1, "answer": "pivi", "hintDe": "genau zwei — Zweizahl", "focusNumber": "dual" }] },
+        { "kind": "phrase", "slovene": "Račun, prosim.", "german": "Die Rechnung, bitte.", "tags": ["einkaufen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Je ta miza prosta?", "german": "Ist dieser Tisch frei?", "tags": ["einkaufen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kaj priporočate?", "german": "Was empfehlen Sie?", "contextNote": "Führt zuverlässig zu einem Gespräch und meistens zu gutem Essen.", "tags": ["einkaufen", "essen"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Brez sladkorja, prosim.", "german": "Ohne Zucker, bitte.", "tags": ["einkaufen", "essen"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "pivo", "german": ["das Bier"], "partOfSpeech": "noun", "gender": "n", "tags": ["essen"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "račun", "german": ["die Rechnung"], "partOfSpeech": "noun", "gender": "m", "tags": ["einkaufen"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "den-weg-finden",
+      "titleDe": "Den Weg finden",
+      "goalDe": "Du kannst nach dem Weg fragen und eine einfache Wegbeschreibung verstehen.",
+      "introDe": "Beim Fragen nach dem Weg ist Verstehen schwerer als Sprechen. Konzentrier dich auf drei Wörter: **levo** (links), **desno** (rechts), **naravnost** (geradeaus).\n\nWenn es zu schnell geht: *Počasi, prosim* — den Satz kennst du schon.",
+      "position": 3,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["richtungen-kje-kam"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Kje je postaja?",
+          "german": "Wo ist der Bahnhof?",
+          "tags": ["orte"],
+          "difficulty": 3,
+          "cloze": [{ "position": 0, "answer": "Kje", "hintDe": "wo, nicht wohin" }]
+        },
+        { "kind": "phrase", "slovene": "Kam greš?", "german": "Wohin gehst du?", "contextNote": "kam für die Richtung, kje für den Ort.", "tags": ["orte"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Naravnost, potem levo.", "german": "Geradeaus, dann links.", "tags": ["orte"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Je daleč?", "german": "Ist es weit?", "tags": ["orte"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Grem peš.", "german": "Ich gehe zu Fuß.", "tags": ["orte"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Ne najdem poti.", "german": "Ich finde den Weg nicht.", "tags": ["orte", "ueberleben"], "difficulty": 4 },
+        { "kind": "lexeme", "slovene": "levo", "german": ["links"], "partOfSpeech": "adverb", "tags": ["orte"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "desno", "german": ["rechts"], "partOfSpeech": "adverb", "tags": ["orte"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "iti", "german": ["gehen"], "partOfSpeech": "verb", "aspect": "imperfective", "notes": "Sehr unregelmäßig: grem, greš, gre.", "tags": ["basis"], "difficulty": 3 }
+      ]
+    }
+  ]
+}

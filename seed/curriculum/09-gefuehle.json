@@ -1,0 +1,97 @@
+{
+  "unit": {
+    "slug": "gefuehle",
+    "titleDe": "Wie es mir geht",
+    "descriptionDe": "Gefühle, kleine Beschwerden und die kurzen Reaktionen, mit denen man zeigt, dass man zuhört.",
+    "position": 9
+  },
+  "grammarNotes": [
+    {
+      "slug": "boli-me",
+      "titleDe": "„mir tut weh\" — boli me",
+      "bodyDe": "Für Schmerzen dreht Slowenisch den Satz um: nicht „mein Kopf tut weh\", sondern **boli me glava** — wörtlich „es schmerzt mich der Kopf\".\n\n- *Boli me glava.* — Ich habe Kopfschmerzen.\n- *Boli me grlo.* — Ich habe Halsschmerzen.\n- *Boli me trebuh.* — Ich habe Bauchschmerzen.\n\nDas **me** bleibt immer gleich, nur das Körperteil wechselt. Ein Muster, beliebig viele Sätze.",
+      "tags": ["koerper", "saetze"]
+    },
+    {
+      "slug": "gefuehle-geschlecht",
+      "titleDe": "Gefühle haben ein Geschlecht",
+      "bodyDe": "Wie bei *utrujen/utrujena* richten sich alle Gefühlswörter nach der Person, die spricht:\n\n| Mann | Frau | Deutsch |\n| --- | --- | --- |\n| vesel | vesela | froh |\n| žalosten | žalostna | traurig |\n| jezen | jezna | wütend |\n| zaskrbljen | zaskrbljena | besorgt |\n| presenečen | presenečena | überrascht |\n\nBeachte: bei *žalosten* und *jezen* fällt in der weiblichen Form ein Vokal weg — *žalostna*, *jezna*.",
+      "tags": ["geschlecht", "gefuehle"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "wie-ich-mich-fuehle",
+      "titleDe": "Wie ich mich fühle",
+      "goalDe": "Du kannst sagen, wie es dir geht — jenseits von „gut, danke\".",
+      "introDe": "„Gut, danke\" ist höflich, aber es beendet Gespräche. Diese Wörter machen sie auf.\n\nDenk daran, dass die Endung von dir abhängt: eine Frau ist *vesela*, ein Mann *vesel*.",
+      "position": 1,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["gefuehle-geschlecht"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Vesela sem.",
+          "german": "Ich bin froh.",
+          "contextNote": "So sagt es eine Frau. Ein Mann: Vesel sem.",
+          "tags": ["gefuehle", "geschlecht"],
+          "difficulty": 3,
+          "cloze": [{ "position": 0, "answer": "Vesela", "hintDe": "eine Frau spricht" }]
+        },
+        { "kind": "phrase", "slovene": "Utrujena sem.", "german": "Ich bin müde.", "tags": ["gefuehle", "geschlecht"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Malo sem živčna.", "german": "Ich bin ein bisschen nervös.", "contextNote": "Ehrlich und entwaffnend — vor dem ersten Familientreffen völlig angebracht.", "tags": ["gefuehle", "geschlecht"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Lačna sem.", "german": "Ich habe Hunger.", "contextNote": "Wörtlich „ich bin hungrig\". Ein Mann: Lačen sem.", "tags": ["gefuehle", "essen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Žejna sem.", "german": "Ich habe Durst.", "tags": ["gefuehle", "essen"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Vse je v redu.", "german": "Es ist alles in Ordnung.", "contextNote": "Wenn dich jemand besorgt anschaut.", "tags": ["gefuehle"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "vesel", "german": ["froh", "fröhlich"], "partOfSpeech": "adjective", "notes": "Weiblich vesela.", "tags": ["gefuehle"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "utrujen", "german": ["müde"], "partOfSpeech": "adjective", "notes": "Weiblich utrujena.", "tags": ["gefuehle"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "mir-tut-weh",
+      "titleDe": "Mir tut etwas weh",
+      "goalDe": "Du kannst sagen, dass dir etwas weh tut, und einfache Beschwerden benennen.",
+      "introDe": "Ein Muster, viele Sätze: **Boli me** plus Körperteil.\n\nDas brauchst du hoffentlich selten — aber wenn, dann sofort und ohne nachzudenken.",
+      "position": 2,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["boli-me"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Boli me glava.",
+          "german": "Ich habe Kopfschmerzen.",
+          "contextNote": "Wörtlich „es schmerzt mich der Kopf\".",
+          "tags": ["koerper"],
+          "difficulty": 3,
+          "cloze": [{ "position": 1, "answer": "me", "hintDe": "mich — das bleibt immer gleich" }]
+        },
+        { "kind": "phrase", "slovene": "Boli me grlo.", "german": "Ich habe Halsschmerzen.", "tags": ["koerper"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Slabo mi je.", "german": "Mir ist schlecht.", "tags": ["koerper"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Prehlajena sem.", "german": "Ich bin erkältet.", "contextNote": "Ein Mann: Prehlajen sem.", "tags": ["koerper", "geschlecht"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Rabim zdravnika.", "german": "Ich brauche einen Arzt.", "tags": ["koerper", "ueberleben"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Bolje mi je.", "german": "Mir geht es besser.", "tags": ["koerper"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "glava", "german": ["der Kopf"], "partOfSpeech": "noun", "gender": "f", "tags": ["koerper"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "zdravnik", "german": ["der Arzt"], "partOfSpeech": "noun", "gender": "m", "notes": "Weiblich: zdravnica.", "tags": ["koerper"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "reagieren",
+      "titleDe": "Reagieren",
+      "goalDe": "Du kannst zeigen, dass du zuhörst, ohne einen Satz bauen zu müssen.",
+      "introDe": "Diese kurzen Wörter machen aus Zuhören sichtbares Zuhören. Sie kosten dich nichts und verändern, wie ein Gespräch sich anfühlt.\n\n**Res?** („wirklich?\") und **Aha** halten jede Erzählung am Laufen, auch wenn du nur die Hälfte verstehst.",
+      "position": 3,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": [],
+      "items": [
+        { "kind": "phrase", "slovene": "Res?", "german": "Wirklich?", "contextNote": "Der billigste Weg, interessiert zu wirken — und meistens ist es sogar ehrlich.", "tags": ["reaktion"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Super!", "german": "Super!", "tags": ["reaktion"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Žal mi je.", "german": "Es tut mir leid.", "contextNote": "Bei schlechten Nachrichten — nicht als Entschuldigung, dafür ist oprosti da.", "tags": ["reaktion"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ojoj!", "german": "Oh je!", "contextNote": "Mitgefühl bei kleinen Katastrophen.", "tags": ["reaktion"], "register": "colloquial", "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Kako lepo!", "german": "Wie schön!", "tags": ["reaktion"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ne me basat!", "german": "Das gibt's ja nicht!", "contextNote": "Sehr umgangssprachlich, unter Freunden. Wörtlich etwa „verkohl mich nicht\".", "register": "colloquial", "tags": ["reaktion"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Vse najboljše!", "german": "Alles Gute!", "contextNote": "Zum Geburtstag und zu allen anderen Anlässen.", "tags": ["reaktion"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Na zdravje!", "german": "Prost! / Gesundheit!", "contextNote": "Beim Anstoßen und beim Niesen — dasselbe Wort.", "tags": ["reaktion", "essen"], "difficulty": 2 }
+      ]
+    }
+  ]
+}

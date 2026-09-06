@@ -1,0 +1,133 @@
+{
+  "unit": {
+    "slug": "erste-begegnung",
+    "titleDe": "Erste Begegnung",
+    "descriptionDe": "Grüßen, sich bedanken, höflich sein — und sagen können, dass man etwas nicht versteht. Damit kommst du durch jede erste Begegnung.",
+    "position": 1
+  },
+  "grammarNotes": [
+    {
+      "slug": "du-und-sie",
+      "titleDe": "ti und vi — duzen und siezen",
+      "bodyDe": "Slowenisch unterscheidet wie Deutsch zwischen **ti** (du) und **vi** (Sie). Die Verbendung verrät, welches gemeint ist: *Kako si?* ist „Wie geht's dir?\", *Kako ste?* ist „Wie geht es Ihnen?\".\n\nIn der Familie wird fast immer geduzt — auch Großeltern. Sieze Menschen, die du zum ersten Mal triffst und die deutlich älter sind, und warte ab, bis dir das Du angeboten wird.",
+      "tags": ["hoeflichkeit", "verben"]
+    },
+    {
+      "slug": "geschlecht-bei-sein",
+      "titleDe": "Bei „ich bin …\" hängt das Wort von dir ab",
+      "bodyDe": "Adjektive richten sich im Slowenischen nach dem Geschlecht der Person, die spricht. Eine Frau sagt *utrujena sem* („ich bin müde\"), ein Mann *utrujen sem*.\n\nDas gilt für alle Eigenschaften: *vesela/vesel* (froh), *sita/sit* (satt), *žalostna/žalosten* (traurig). Als Faustregel: weibliche Form endet auf **-a**, männliche auf einen Konsonanten.",
+      "tags": ["geschlecht", "adjektive"]
+    },
+    {
+      "slug": "dual-erste-begegnung",
+      "titleDe": "Zwei Personen haben eine eigene Form",
+      "bodyDe": "Slowenisch hat neben Einzahl und Mehrzahl noch die **Dvojina**, die Zweizahl. Wenn genau zwei Menschen gemeint sind, ändert sich das Verb.\n\n*Se vidimo!* heißt „Wir sehen uns\" (drei oder mehr). Zu einer einzelnen Person sagst du *Se vidiva!* — wir zwei sehen uns. Das ist keine Feinheit, sondern Alltag: du wirst es ständig hören.",
+      "tags": ["dvojina", "verben"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "gruessen",
+      "titleDe": "Grüßen",
+      "goalDe": "Du kannst jemanden begrüßen und dich verabschieden — zu jeder Tageszeit.",
+      "introDe": "Slowenisch grüßt tageszeitabhängig, ganz wie Deutsch. **Živjo** ist das lockere „Hallo\" unter Freunden und in der Familie, **Dober dan** die neutrale, immer passende Variante.\n\nDas *j* in *Živjo* klingt wie das deutsche *j*, das *ž* wie das *g* in „Garage\".",
+      "position": 1,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["dual-erste-begegnung"],
+      "items": [
+        { "kind": "phrase", "slovene": "Živjo!", "german": "Hallo!", "contextNote": "Der lockere Gruß unter Freunden und in der Familie. Funktioniert auch zum Abschied.", "tags": ["gruss"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Dober dan!", "german": "Guten Tag!", "contextNote": "Die sichere Wahl, wenn du jemanden nicht kennst oder siezt.", "tags": ["gruss"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Dobro jutro!", "german": "Guten Morgen!", "contextNote": "Bis etwa zehn Uhr. Am Frühstückstisch das erste Wort des Tages.", "tags": ["gruss"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Dober večer!", "german": "Guten Abend!", "contextNote": "Ab dem frühen Abend, etwa wenn man sich zum Essen setzt.", "tags": ["gruss"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Lahko noč!", "german": "Gute Nacht!", "contextNote": "Nur beim Verabschieden vor dem Schlafengehen, nicht als Begrüßung.", "tags": ["gruss"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Nasvidenje!", "german": "Auf Wiedersehen!", "contextNote": "Förmlicher Abschied. Etwas lang, aber du hörst es überall.", "tags": ["gruss"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Adijo!", "german": "Tschüss!", "contextNote": "Locker, unter Bekannten. Kommt vom italienischen addio.", "tags": ["gruss"], "difficulty": 1 },
+        {
+          "kind": "phrase",
+          "slovene": "Se vidiva!",
+          "german": "Wir sehen uns!",
+          "contextNote": "Zu genau einer Person — die Zweizahl. Zu mehreren sagst du Se vidimo!",
+          "tags": ["gruss", "dvojina"],
+          "difficulty": 3,
+          "cloze": [
+            { "position": 1, "answer": "vidiva", "hintDe": "zu genau einer Person — Zweizahl", "focusNumber": "dual", "focusVerbForm": "present" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "wie-geht-es-dir",
+      "titleDe": "Wie geht's?",
+      "goalDe": "Du kannst fragen, wie es jemandem geht, und selbst antworten.",
+      "introDe": "*Kako si?* ist wörtlich „Wie bist du?\". Die Antwort ist meistens kurz: *Dobro, hvala.*\n\nAchte auf die Endung: **si** zu einer Person, die du duzt, **ste** zu jemandem, den du siezt — oder zu mehreren.",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["du-und-sie", "geschlecht-bei-sein"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Kako si?",
+          "german": "Wie geht's dir?",
+          "contextNote": "Zu jemandem, den du duzt — in der Familie also zu allen.",
+          "tags": ["smalltalk"],
+          "difficulty": 1,
+          "cloze": [{ "position": 1, "answer": "si", "hintDe": "du-Form von „sein\"", "focusNumber": "singular", "focusVerbForm": "present" }]
+        },
+        { "kind": "phrase", "slovene": "Kako ste?", "german": "Wie geht es Ihnen?", "contextNote": "Höflich, zu jemandem, den du siezt — oder zu mehreren Personen gleichzeitig.", "tags": ["smalltalk", "hoeflichkeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Dobro, hvala.", "german": "Gut, danke.", "contextNote": "Die Standardantwort. Damit kommst du immer durch.", "tags": ["smalltalk"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Vse v redu.", "german": "Alles in Ordnung.", "contextNote": "Wörtlich „alles in Ordnung\". Auch als Antwort auf „Ist alles ok?\".", "tags": ["smalltalk"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Tako tako.", "german": "So lala.", "contextNote": "Ehrlich, aber ohne Drama. Lädt zum Nachfragen ein.", "tags": ["smalltalk"], "register": "colloquial", "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Pa ti?", "german": "Und du?", "contextNote": "Gib die Frage zurück — das erwartet man.", "tags": ["smalltalk"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Utrujena sem.", "german": "Ich bin müde.", "contextNote": "So sagt es eine Frau. Ein Mann sagt Utrujen sem.", "tags": ["gefuehle", "geschlecht"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "dobro", "german": ["gut"], "partOfSpeech": "adverb", "tags": ["basis"], "difficulty": 1 }
+      ]
+    },
+    {
+      "slug": "bitte-und-danke",
+      "titleDe": "Bitte und danke",
+      "goalDe": "Du kannst dich bedanken, dich entschuldigen und höflich um etwas bitten.",
+      "introDe": "**Prosim** ist ein Allzweckwort: „bitte\", „wie bitte?\" und „gern geschehen\" — je nach Situation.\n\n**Hvala** ist danke. Wenn du es verstärken willst: *najlepša hvala*, wörtlich „schönsten Dank\".",
+      "position": 3,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["du-und-sie"],
+      "items": [
+        { "kind": "phrase", "slovene": "Prosim.", "german": "Bitte.", "contextNote": "Beim Bitten, beim Reichen von etwas, und als „wie bitte?\", wenn du nachfragst.", "tags": ["hoeflichkeit"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Hvala.", "german": "Danke.", "contextNote": "Das wichtigste Wort am Tisch.", "tags": ["hoeflichkeit"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Najlepša hvala!", "german": "Vielen Dank!", "contextNote": "Wenn danke allein zu wenig ist — nach einem Essen, einem Geschenk.", "tags": ["hoeflichkeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Ni za kaj.", "german": "Keine Ursache.", "contextNote": "Die Antwort auf hvala. Wörtlich „nicht wofür\".", "tags": ["hoeflichkeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Oprosti.", "german": "Entschuldige.", "contextNote": "Zu jemandem, den du duzt. Auch wenn du dich durchdrängen musst.", "tags": ["hoeflichkeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Oprostite.", "german": "Entschuldigung.", "contextNote": "Die Sie-Form — und die Art, Fremde anzusprechen.", "tags": ["hoeflichkeit"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Seveda!", "german": "Natürlich!", "contextNote": "Freundliche Zustimmung, wenn dich jemand um etwas bittet.", "tags": ["hoeflichkeit"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "ja", "german": ["ja"], "partOfSpeech": "particle", "tags": ["basis"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "ne", "german": ["nein", "nicht"], "partOfSpeech": "particle", "notes": "ne ist beides: „nein\" als Antwort und „nicht\" vor einem Verb — ne razumem = ich verstehe nicht.", "tags": ["basis"], "difficulty": 1 }
+      ]
+    },
+    {
+      "slug": "ich-verstehe-nicht",
+      "titleDe": "Ich verstehe nicht",
+      "goalDe": "Du kannst sagen, dass du etwas nicht verstanden hast, und um Wiederholung bitten — ohne aus dem Gespräch auszusteigen.",
+      "introDe": "Diese Sätze sind wichtiger als jede Vokabelliste. Wer sagen kann „langsamer, bitte\", bleibt im Gespräch. Wer es nicht kann, steigt aus.\n\nMerke dir vor allem **Ne razumem** und **Počasi, prosim** — die beiden tragen dich durch das erste Familienessen.",
+      "position": 4,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["du-und-sie"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Ne razumem.",
+          "german": "Ich verstehe nicht.",
+          "contextNote": "Ohne Entschuldigung sagen — das ist völlig normal und niemand nimmt es krumm.",
+          "tags": ["ueberleben"],
+          "difficulty": 2,
+          "cloze": [{ "position": 0, "answer": "Ne", "hintDe": "die Verneinung steht vor dem Verb" }]
+        },
+        { "kind": "phrase", "slovene": "Počasi, prosim.", "german": "Langsam, bitte.", "contextNote": "Der nützlichste Satz überhaupt, wenn alle durcheinanderreden.", "tags": ["ueberleben"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "Prosim, ponovi.", "german": "Bitte wiederhole.", "contextNote": "Zu jemandem, den du duzt. Zur Sie-Form: Prosim, ponovite.", "tags": ["ueberleben"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Kako se reče to po slovensko?", "german": "Wie sagt man das auf Slowenisch?", "contextNote": "Damit machst du aus jedem Gegenstand am Tisch eine Vokabel.", "tags": ["ueberleben"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Ne vem.", "german": "Ich weiß nicht.", "contextNote": "Kurz und ehrlich.", "tags": ["ueberleben"], "difficulty": 1 },
+        { "kind": "phrase", "slovene": "Malo govorim slovensko.", "german": "Ich spreche ein bisschen Slowenisch.", "contextNote": "Der Satz, der erklärt, warum du langsam sprichst. Er wirkt Wunder.", "tags": ["ueberleben"], "difficulty": 3 },
+        { "kind": "phrase", "slovene": "Govoriš nemško?", "german": "Sprichst du Deutsch?", "contextNote": "Der Notausgang. In Slowenien überraschend oft mit ja beantwortet.", "tags": ["ueberleben"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "razumeti", "german": ["verstehen"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["basis"], "difficulty": 2 }
+      ]
+    }
+  ]
+}

@@ -17,8 +17,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | Step | Scope | State |
 | ---- | ----- | ----- |
 | 1 | Scaffold, Docker/compose, Postgres, schema, migrations, auth, i18n | done |
-| 2 | Content model + seed import | next |
-| 3 | FSRS, card generation, review sessions | |
+| 2 | Content model + seed import (1100-lemma deck, 39 lessons) | done |
+| 3 | FSRS, card generation, review sessions | next |
 | 4 | Piper TTS and the audio pipeline | |
 | 5 | Whisper ASR and speaking exercises | |
 | 6 | Lessons, home screen, progress view | |
@@ -46,10 +46,21 @@ pnpm install
 cp .env.example .env          # fill in SESSION_SECRET and DATABASE_URL
 pnpm db:migrate               # or let the app migrate itself on startup
 pnpm seed:users               # creates the two accounts
+pnpm seed:content             # imports the deck and the curriculum as drafts
 pnpm dev
 ```
 
-`SESSION_SECRET` needs at least 32 characters — `openssl rand -base64 48`.
+`SESSION_SECRET` needs at least 32 characters — `openssl rand -base64 48`. The
+server refuses to start without it; CLI scripts that only touch the database
+need `DATABASE_URL` alone.
+
+### Seeding content
+
+`pnpm seed:content` imports the frequency deck and the curriculum from
+[`seed/`](./seed/README.md). Everything lands as `draft`, so nothing reaches her
+deck before it has been reviewed; `--activate` makes it live immediately.
+Re-running is safe — items are matched on their normalised Slovene form and
+updated in place, and every match is reported rather than silently skipped.
 
 ### Seeding the two accounts
 
@@ -96,6 +107,19 @@ Every setting is an environment variable, documented in
 no `PIPER_URL` means no generated audio, no `WHISPER_URL` means speaking
 exercises fall back to self-assessment, no `ANTHROPIC_API_KEY` means the
 teacher-side generation tool is unavailable.
+
+## Content
+
+The seed corpus is 1100 high-frequency lemmas with ~22 600 inflected forms,
+built from OpenSubtitles frequencies, Sloleks 3.0 paradigms and German
+Wiktionary glosses — all openly licensed, sources and caveats documented in
+[`seed/README.md`](./seed/README.md).
+
+On top of that sit 39 hand-written lessons across 10 units, sequenced for
+talking to family: greetings, family, personal details, numbers and time, the
+table, opinions, small talk, getting around, feelings, and telling a story about
+yesterday. 26 plain-German grammar notes hang off the items that need them,
+available on demand and never blocking practice.
 
 ## Domain model notes
 

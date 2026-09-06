@@ -1,0 +1,143 @@
+{
+  "unit": {
+    "slug": "familie",
+    "titleDe": "Familie",
+    "descriptionDe": "Die Menschen, um die es geht. Wer wer ist, wie man über sie spricht — und die slowenische Zweizahl, die hier zum ersten Mal richtig wichtig wird.",
+    "position": 2
+  },
+  "grammarNotes": [
+    {
+      "slug": "dvojina-grundlagen",
+      "titleDe": "Die Dvojina — Slowenisch zählt bis zwei",
+      "bodyDe": "Slowenisch hat drei Zahlen: Einzahl, **Zweizahl (dvojina)** und Mehrzahl. Genau zwei von etwas bekommt eine eigene Form — beim Substantiv und beim Verb.\n\n- ein Bruder: *en brat* · zwei Brüder: *dva brata* · drei Brüder: *trije bratje*\n- eine Schwester: *ena sestra* · zwei Schwestern: *dve sestri* · drei: *tri sestre*\n- ich bin: *sem* · wir zwei sind: *sva* · wir (drei+) sind: *smo*\n\nDas ist keine Kuriosität für Sprachwissenschaftler. Ein Paar spricht ständig in der Zweizahl über sich: *Midva sva …* — „wir beide sind …\". Slowenen freuen sich sichtbar, wenn Ausländer die Dvojina benutzen.",
+      "tags": ["dvojina"]
+    },
+    {
+      "slug": "possessiv-mein",
+      "titleDe": "mein, meine — moj, moja, moje",
+      "bodyDe": "„Mein\" richtet sich nach dem Geschlecht des besessenen Dings, nicht nach dir:\n\n- **moj** brat (männlich) — mein Bruder\n- **moja** sestra (weiblich) — meine Schwester\n- **moje** ime (sächlich) — mein Name\n\nDas Muster **-Ø / -a / -e** kehrt bei fast allen Begleitwörtern wieder. Wenn du das Geschlecht eines Substantivs kennst, kennst du auch die Endung.",
+      "tags": ["geschlecht", "possessiv"]
+    },
+    {
+      "slug": "to-je",
+      "titleDe": "„Das ist …\" — to je",
+      "bodyDe": "Um jemanden vorzustellen oder etwas zu zeigen, reicht **to je**: *To je moja mama.* — „Das ist meine Mama.\"\n\n*To* ändert sich dabei nicht, egal wen du vorstellst. Bei zwei Personen wird das Verb zur Zweizahl: *To sta moja starša.* — „Das sind meine Eltern.\"",
+      "tags": ["saetze"]
+    }
+  ],
+  "lessons": [
+    {
+      "slug": "wer-ist-wer",
+      "titleDe": "Wer ist wer",
+      "goalDe": "Du kennst die Wörter für die Menschen in der Familie und erkennst sie, wenn über sie geredet wird.",
+      "introDe": "Slowenisch hat für die engste Familie warme, kurze Wörter. **Mama** und **ata** sind das, was in der Familie tatsächlich gesagt wird; *oče* ist die formellere Variante für „Vater\".\n\nAchte auf das Geschlecht: Wörter auf **-a** sind meistens weiblich, Wörter auf Konsonant meistens männlich. Das bestimmt später fast alles andere.",
+      "position": 1,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["possessiv-mein"],
+      "items": [
+        { "kind": "lexeme", "slovene": "mama", "german": ["die Mama", "die Mutter"], "partOfSpeech": "noun", "gender": "f", "tags": ["familie"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "ata", "german": ["der Papa"], "partOfSpeech": "noun", "gender": "m", "notes": "Das Wort, das in der Familie fällt. Formeller: oče.", "register": "colloquial", "tags": ["familie"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "oče", "german": ["der Vater"], "partOfSpeech": "noun", "gender": "m", "tags": ["familie"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "brat", "german": ["der Bruder"], "partOfSpeech": "noun", "gender": "m", "tags": ["familie"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "sestra", "german": ["die Schwester"], "partOfSpeech": "noun", "gender": "f", "tags": ["familie"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "babica", "german": ["die Oma", "die Großmutter"], "partOfSpeech": "noun", "gender": "f", "tags": ["familie"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "dedek", "german": ["der Opa", "der Großvater"], "partOfSpeech": "noun", "gender": "m", "tags": ["familie"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "starši", "german": ["die Eltern"], "partOfSpeech": "noun", "gender": "m", "notes": "Gibt es nur im Plural — wie im Deutschen.", "tags": ["familie"], "difficulty": 2 },
+        { "kind": "lexeme", "slovene": "otrok", "german": ["das Kind"], "partOfSpeech": "noun", "gender": "m", "notes": "Mehrzahl: otroci.", "tags": ["familie"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "meine-familie",
+      "titleDe": "Meine Familie",
+      "goalDe": "Du kannst sagen, wer zu deiner Familie gehört, und jemanden vorstellen.",
+      "introDe": "Mit **moj / moja / moje** und **to je** kannst du schon ganze Sätze bauen. Die Endung richtet sich nach dem Wort dahinter: *moj brat*, aber *moja sestra*.\n\nDas ist der Moment, in dem Grammatik nützlich wird statt lästig: ein Muster, drei Endungen, und du kannst über alle Menschen im Raum sprechen.",
+      "position": 2,
+      "estimatedMinutes": 5,
+      "grammarNoteSlugs": ["possessiv-mein", "to-je"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "To je moja mama.",
+          "german": "Das ist meine Mama.",
+          "contextNote": "Wenn du jemanden vorstellst — Hand zeigen, Satz sagen, fertig.",
+          "tags": ["familie"],
+          "difficulty": 2,
+          "cloze": [{ "position": 2, "answer": "moja", "hintDe": "mama ist weiblich", "focusNumber": "singular" }]
+        },
+        {
+          "kind": "phrase",
+          "slovene": "To je moj brat.",
+          "german": "Das ist mein Bruder.",
+          "tags": ["familie"],
+          "difficulty": 2,
+          "cloze": [{ "position": 2, "answer": "moj", "hintDe": "brat ist männlich", "focusNumber": "singular" }]
+        },
+        { "kind": "phrase", "slovene": "Imam brata in sestro.", "german": "Ich habe einen Bruder und eine Schwester.", "contextNote": "Nach imam („ich habe\") steht der Akkusativ: brat wird zu brata, sestra zu sestro.", "tags": ["familie"], "difficulty": 4, "cloze": [{ "position": 1, "answer": "brata", "hintDe": "wen habe ich? → Akkusativ", "focusCase": "accusative", "focusNumber": "singular" }] },
+        { "kind": "phrase", "slovene": "Nimam bratov.", "german": "Ich habe keine Brüder.", "contextNote": "Verneintes „haben\" verlangt den Genitiv — deshalb bratov, nicht brate.", "tags": ["familie"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Kako je ime tvoji mami?", "german": "Wie heißt deine Mutter?", "contextNote": "Wörtlich „wie ist der Name deiner Mama\".", "tags": ["familie"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Moja družina je majhna.", "german": "Meine Familie ist klein.", "tags": ["familie"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "družina", "german": ["die Familie"], "partOfSpeech": "noun", "gender": "f", "tags": ["familie"], "difficulty": 1 },
+        { "kind": "lexeme", "slovene": "imeti", "german": ["haben"], "partOfSpeech": "verb", "aspect": "imperfective", "tags": ["basis"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "zu-zweit",
+      "titleDe": "Zu zweit — die Dvojina",
+      "goalDe": "Du erkennst und benutzt die Zweizahl bei Menschen und beim Verb „sein\".",
+      "introDe": "Jetzt kommt das, was Slowenisch von fast allen anderen Sprachen Europas unterscheidet. Für **genau zwei** gibt es eigene Formen.\n\nDu brauchst sie sofort, denn über euch beide wird ständig geredet: *Kdaj prideta?* — „Wann kommt ihr zwei?\"\n\nKeine Sorge, wenn es anfangs nicht sitzt. Alle verstehen dich auch mit der Mehrzahl. Aber es hören und erkennen zu können, ist der halbe Weg.",
+      "position": 3,
+      "estimatedMinutes": 6,
+      "grammarNoteSlugs": ["dvojina-grundlagen"],
+      "items": [
+        {
+          "kind": "phrase",
+          "slovene": "Midva sva iz Nemčije.",
+          "german": "Wir beide sind aus Deutschland.",
+          "contextNote": "Der Satz, den ihr als Paar am häufigsten braucht. midva für zwei Männer oder gemischt, midve für zwei Frauen.",
+          "tags": ["dvojina"],
+          "difficulty": 4,
+          "cloze": [{ "position": 1, "answer": "sva", "hintDe": "genau zwei Personen — Zweizahl von „sein\"", "focusNumber": "dual", "focusVerbForm": "present" }]
+        },
+        {
+          "kind": "phrase",
+          "slovene": "Imam dva brata.",
+          "german": "Ich habe zwei Brüder.",
+          "tags": ["dvojina", "familie"],
+          "difficulty": 4,
+          "cloze": [{ "position": 2, "answer": "brata", "hintDe": "genau zwei — Zweizahl", "focusNumber": "dual" }]
+        },
+        {
+          "kind": "phrase",
+          "slovene": "Imam dve sestri.",
+          "german": "Ich habe zwei Schwestern.",
+          "contextNote": "dve, nicht dva — die Zahl richtet sich nach dem Geschlecht.",
+          "tags": ["dvojina", "familie"],
+          "difficulty": 4,
+          "cloze": [{ "position": 2, "answer": "sestri", "hintDe": "genau zwei — Zweizahl", "focusNumber": "dual" }]
+        },
+        { "kind": "phrase", "slovene": "Kdaj prideta?", "german": "Wann kommt ihr zwei?", "contextNote": "Genau die Frage, die dir gestellt wird, wenn ihr zu zweit erwartet werdet.", "tags": ["dvojina"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Midve sva sestri.", "german": "Wir beide sind Schwestern.", "contextNote": "midve, weil zwei Frauen.", "tags": ["dvojina"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Se vidimo jutri!", "german": "Wir sehen uns morgen!", "contextNote": "Mehrzahl — mit drei oder mehr Leuten. Zu zweit: Se vidiva jutri!", "tags": ["dvojina", "gruss"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "dva", "german": ["zwei"], "partOfSpeech": "numeral", "notes": "Männlich dva, weiblich dve.", "tags": ["zahlen", "dvojina"], "difficulty": 2 }
+      ]
+    },
+    {
+      "slug": "jemanden-vorstellen",
+      "titleDe": "Jemanden vorstellen",
+      "goalDe": "Du kannst dich und andere vorstellen und angemessen reagieren, wenn du vorgestellt wirst.",
+      "introDe": "Beim ersten Treffen gibt es feste Formeln. **Me veseli** — „freut mich\" — ist die Antwort, die immer passt, egal wie das Gespräch weitergeht.\n\nWenn du den Namen nicht verstanden hast: *Oprosti, še enkrat?*",
+      "position": 4,
+      "estimatedMinutes": 4,
+      "grammarNoteSlugs": ["to-je"],
+      "items": [
+        { "kind": "phrase", "slovene": "Me veseli.", "german": "Freut mich.", "contextNote": "Beim Händeschütteln. Kurz, warm, immer richtig.", "tags": ["vorstellen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "To je moj fant.", "german": "Das ist mein Freund.", "contextNote": "fant = fester Freund. Ein Kumpel wäre prijatelj.", "tags": ["vorstellen"], "difficulty": 2 },
+        { "kind": "phrase", "slovene": "To je moje dekle.", "german": "Das ist meine Freundin.", "contextNote": "dekle ist grammatisch sächlich — deshalb moje, nicht moja.", "tags": ["vorstellen"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Se poznata?", "german": "Kennt ihr zwei euch?", "contextNote": "Wieder die Zweizahl — die Frage an genau zwei Leute.", "tags": ["vorstellen", "dvojina"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Veliko sem slišala o tebi.", "german": "Ich habe viel von dir gehört.", "contextNote": "So sagt es eine Frau. Ein Mann: Veliko sem slišal o tebi.", "tags": ["vorstellen", "geschlecht"], "difficulty": 4 },
+        { "kind": "phrase", "slovene": "Oprosti, še enkrat?", "german": "Entschuldige, noch einmal?", "contextNote": "Wenn der Name zu schnell kam. Höflich und völlig normal.", "tags": ["vorstellen", "ueberleben"], "difficulty": 3 },
+        { "kind": "lexeme", "slovene": "prijatelj", "german": ["der Freund"], "partOfSpeech": "noun", "gender": "m", "notes": "Freundschaftlich, nicht romantisch. Weiblich: prijateljica.", "tags": ["familie"], "difficulty": 2 }
+      ]
+    }
+  ]
+}
