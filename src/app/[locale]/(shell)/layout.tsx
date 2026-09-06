@@ -1,4 +1,5 @@
 import { BottomNav } from "@/components/bottom-nav";
+import { OfflineBanner } from "@/components/offline-banner";
 import { db } from "@/db/client";
 import { requireUser } from "@/lib/auth";
 import { getInboxCounts } from "@/lib/questions/service";
@@ -16,6 +17,7 @@ export default async function ShellLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <OfflineBanner />
       <div className="flex-1">{children}</div>
       <BottomNav role={user.role} openQuestions={inbox?.open ?? 0} />
     </div>

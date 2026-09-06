@@ -26,8 +26,8 @@ Built in the order the brief lays out, kept runnable at each step.
 | 8 | "Ask me" questions inbox | done |
 | 9 | AI generation with draft approval | done |
 | 10 | Weekly digest | done |
-| 11 | PWA and offline review | next |
-| 12 | K8s manifests, backups, E2E suite | |
+| 11 | PWA and offline review | done |
+| 12 | K8s manifests, backups, E2E suite | next |
 
 ## Stack
 
@@ -362,6 +362,49 @@ that or did I?" has an answer.
 Without `ANTHROPIC_API_KEY` the generate screen and the auto-fill button are
 simply absent. Nothing else changes.
 
+## Offline
+
+She will use this on a phone, and phones lose signal. A review session works
+with no connection at all: the cards, their answers and their audio are already
+on the device, and what she answers is queued and sent back when the signal
+returns.
+
+**The bundle.** While she is online and idle, the app fetches the next session
+in one response and stores it in IndexedDB, with the audio going into the Cache
+API. The home screen says so in one quiet line — the point is that "will this
+work on the train" is answered *before* she is on the train.
+
+That bundle carries the answers, which the online path deliberately never sends
+ahead of time. Offline there is nobody to ask later, so the trade is
+unavoidable; it is confined to that one route, and it is her own deck on her
+own phone. Typed answers are then graded by the same pure comparison the server
+runs, so `zivjo` without the diacritics is still counted right in a tunnel.
+
+**The queue.** Every answer is stored with a **client-minted id**, and the
+server rejects an id it has already seen. This is the part that had to be right:
+a lost answer is an annoyance, but a double-applied one moves her schedule
+silently and permanently. Recordings are queued the same way as blobs, uploaded
+one at a time on reconnect, and transcribed then — she judges her own speaking
+either way, so a deferred transcript changes nothing about the card.
+
+Replay uses **her timestamps, oldest first**. FSRS schedules from the moment of
+the answer, so applying a Tuesday answer as though it happened on Thursday
+would corrupt the interval. An event that cannot be applied — usually a card
+that no longer exists — is dropped rather than retried forever, because one bad
+event must not block every answer behind it.
+
+**The service worker** is hand-written and small: network-first for pages with
+an offline fallback, cache-first for audio, cached build assets, and it never
+touches `/api/offline/*` or anything under `/teacher`. Pages are personal and
+server-rendered, so a cached page would be a lie about her deck. Lessons and
+the teacher area need a connection, by design.
+
+**Installable** with a manifest, maskable icons and shortcuts straight to a
+review session or to quick capture. The icon is **Č** — the caron is what makes
+Slovene look like Slovene, and the app treats those three letters as a
+first-class concern. `pnpm icons:build` rasterises the PNGs from geometry with
+no image library; the output is committed and changes about once a year.
+
 ## The weekly digest
 
 One person reads it, and its only job is to tell him what to record or explain
@@ -447,6 +490,12 @@ The teacher gets a count on the inbox and a badge on his tab.
   Slovene the differing word is usually a case ending. Longer phrases stay
   forgiving. The thresholds live in one place (`src/lib/speech/scoring.ts`) and
   are meant to be tuned once there is real data.
+- **Offline mode has not been exercised in a real browser.** The sync
+  contract — idempotency, ordering, timestamps, rejection — is covered by
+  integration tests and was driven end to end against the running server, but
+  no service worker has actually installed, no IndexedDB write has happened
+  outside a type checker, and no phone has gone into a tunnel. That is the next
+  thing to test on a real device.
 - **No SMTP server has been talked to.** The digest email is rendered, escaped
   and covered by tests, and the send path is behind an interface that the tests
   drive with a stub, but nothing has been handed to a real mail server. The

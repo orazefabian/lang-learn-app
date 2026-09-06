@@ -8,6 +8,7 @@ import { getNextLesson } from "@/lib/lessons/service";
 import { getCapabilities, getProgressSummary } from "@/lib/progress/service";
 import { getUnseenAnswers } from "@/lib/questions/service";
 import { getSessionOverview } from "@/lib/session/service";
+import { OfflineReady } from "@/components/offline-ready";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -98,6 +99,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <Button asChild size="lg" block className="mt-4">
             <Link href="/review">{t("reviewCta")}</Link>
           </Button>
+
+          {/* Answers "will this work on the train" before she is on the train. */}
+          <div className="mt-3">
+            <OfflineReady />
+          </div>
         </div>
 
         {nextLesson ? (

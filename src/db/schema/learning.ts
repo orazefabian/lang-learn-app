@@ -110,11 +110,20 @@ export const reviewLogs = pgTable(
     durationMs: integer("duration_ms"),
     /** Set when the review was recorded offline and synced later. */
     syncedAt: timestamp("synced_at", { withTimezone: true }),
+    /*
+     * Idempotency key minted by the browser when the answer was given.
+     *
+     * A sync that half-succeeds gets retried, and without this a card would be
+     * graded twice — which does not just duplicate a row, it moves her
+     * schedule. Unique, so the retry collides instead.
+     */
+    clientEventId: text("client_event_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
     index("review_logs_card_idx").on(t.cardId),
     index("review_logs_user_time_idx").on(t.userId, t.reviewedAt),
+    unique("review_logs_client_event_unique").on(t.clientEventId),
   ],
 );
 
@@ -147,11 +156,14 @@ export const speechAttempts = pgTable(
     engine: text("engine"),
     engineModel: text("engine_model"),
     errorMessage: text("error_message"),
+    /** Same idempotency key, for recordings that were made offline. */
+    clientEventId: text("client_event_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     scoredAt: timestamp("scored_at", { withTimezone: true }),
   },
   (t) => [
     index("speech_attempts_user_time_idx").on(t.userId, t.createdAt),
+    unique("speech_attempts_client_event_unique").on(t.clientEventId),
     index("speech_attempts_card_idx").on(t.cardId),
     index("speech_attempts_status_idx").on(t.status),
   ],

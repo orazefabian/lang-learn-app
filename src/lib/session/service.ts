@@ -491,6 +491,10 @@ export async function submitReview(
     ratingSource?: "manual" | "auto_speech" | "overridden";
     durationMs?: number;
     now?: Date;
+    /** Set for answers replayed from an offline queue; unique, so a retried
+     * sync collides here instead of grading the card a second time. */
+    clientEventId?: string;
+    syncedAt?: Date;
   },
 ): Promise<SubmitResult> {
   const now = params.now ?? new Date();
@@ -555,6 +559,8 @@ export async function submitReview(
         state: next.state,
       },
       durationMs: params.durationMs ?? null,
+      clientEventId: params.clientEventId ?? null,
+      syncedAt: params.syncedAt ?? null,
     });
 
     const [session] = await tx

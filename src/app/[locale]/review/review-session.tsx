@@ -3,6 +3,15 @@
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { AudioPlayer } from "@/components/audio-player";
+import { useOffline } from "@/components/offline-provider";
+import { compareAgainstAny } from "@/lib/answers/compare";
+import {
+  loadBundle,
+  loadCursor,
+  newEventId,
+  queueReview,
+  saveCursor,
+} from "@/lib/offline/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
@@ -54,6 +63,11 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
   const [finished, setFinished] = useState(!initialCard);
   const [pending, startTransition] = useTransition();
 
+  const { online, refreshQueue } = useOffline();
+  /** The cached session, used only when the network is gone. */
+  const offlineCards = useRef<CardPrompt[] | null>(null);
+  const offlineIndex = useRef(0);
+
   const shownAt = useRef<number>(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -62,50 +76,147 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
     if (card && TYPED_EXERCISES.has(card.exerciseType)) inputRef.current?.focus();
   }, [card]);
 
+  /*
+   * Offline, the cached bundle takes over.
+   *
+   * It carries the whole queue including the answers, which the online path
+   * deliberately never sends ahead of time — offline there is nobody to ask
+   * later, so the trade is unavoidable and stops here.
+   */
+  useEffect(() => {
+    if (online) return;
+    let cancelled = false;
+
+    void (async () => {
+      const bundle = await loadBundle();
+      if (cancelled || !bundle || bundle.sessionId !== sessionId) return;
+
+      offlineCards.current = bundle.cards;
+      const saved = await loadCursor();
+      const at = saved?.sessionId === sessionId ? saved.cursor : bundle.cursor;
+      offlineIndex.current = at;
+
+      if (!card) {
+        const next = bundle.cards[at];
+        if (next) {
+          setCard(next);
+          setPosition(at);
+          setFinished(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [card, online, sessionId]);
+
+  const clearCardState = useCallback(() => {
+    setRevealed(false);
+    setTyped("");
+    setResult(null);
+    setSpeechSuggestion(null);
+  }, []);
+
   const advance = useCallback(() => {
+    if (!online && offlineCards.current) {
+      const at = offlineIndex.current;
+      clearCardState();
+      setPosition(at);
+      void saveCursor(sessionId, at);
+      const next = offlineCards.current[at];
+      if (next) setCard(next);
+      else setFinished(true);
+      return;
+    }
+
     startTransition(async () => {
       const next = await getNextCard({ sessionId });
-      setRevealed(false);
-      setTyped("");
-      setResult(null);
-      setSpeechSuggestion(null);
+      clearCardState();
       setPosition(next.cursor);
       if (next.card) setCard(next.card);
       else setFinished(true);
     });
-  }, [sessionId]);
+  }, [clearCardState, online, sessionId]);
 
   const rate = useCallback(
     (rating: CardRating) => {
       if (!card || pending) return;
       const durationMs = Date.now() - shownAt.current;
       setAnswered((n) => n + 1);
+
+      const ratingSource = speechSuggestion
+        ? rating === speechSuggestion
+          ? ("auto_speech" as const)
+          : ("overridden" as const)
+        : ("manual" as const);
+
+      if (!online && offlineCards.current) {
+        // Queued, then straight on to the next card. She never waits for a
+        // network that is not there.
+        void queueReview({
+          clientEventId: newEventId(),
+          sessionId,
+          cardId: card.cardId,
+          rating,
+          reviewedAt: new Date().toISOString(),
+          durationMs,
+          ratingSource,
+        }).then(refreshQueue);
+
+        offlineIndex.current += 1;
+        if (offlineIndex.current >= offlineCards.current.length) {
+          clearCardState();
+          setFinished(true);
+        } else {
+          advance();
+        }
+        return;
+      }
+
       startTransition(async () => {
         const outcome = await submitAnswer({
           sessionId,
           cardId: card.cardId,
           rating,
           durationMs,
-          ratingSource: speechSuggestion
-            ? rating === speechSuggestion
-              ? "auto_speech"
-              : "overridden"
-            : "manual",
+          ratingSource,
         });
         if (outcome.finished) setFinished(true);
         else advance();
       });
     },
-    [advance, card, pending, sessionId, speechSuggestion],
+    [advance, card, clearCardState, online, pending, refreshQueue, sessionId, speechSuggestion],
   );
 
   const check = useCallback(() => {
     if (!card || pending) return;
+
+    if (!online && offlineCards.current) {
+      /*
+       * The same pure comparison the server runs, on the answers that came
+       * down with the bundle — so "kavo" typed without the diacritic is still
+       * counted right when she is on a train.
+       */
+      const comparison = compareAgainstAny(typed, card.acceptableAnswers);
+      setResult({
+        ...comparison,
+        suggestedRating:
+          comparison.verdict === "correct"
+            ? "good"
+            : comparison.verdict === "almost"
+              ? "hard"
+              : "again",
+      });
+      setRevealed(true);
+      return;
+    }
+
     startTransition(async () => {
       setResult(await checkAnswer({ cardId: card.cardId, answer: typed }));
       setRevealed(true);
     });
-  }, [card, pending, typed]);
+  }, [card, online, pending, typed]);
 
   // Keyboard shortcuts for desktop: 1–4 rate, space reveals.
   useEffect(() => {
@@ -179,6 +290,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
             prompt={card.german}
             slovene={card.slovene}
             audio={card.audio}
+            online={online}
             onResult={(suggested) => {
               setSpeechSuggestion(suggested);
               setRevealed(true);

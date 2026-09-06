@@ -36,6 +36,8 @@ export type RecordAttemptInput = {
   durationMs?: number;
   client?: AsrClient;
   now?: Date;
+  /** Set for a recording made offline; unique, so a retried upload collides. */
+  clientEventId?: string;
 };
 
 export async function recordSpeechAttempt(
@@ -62,6 +64,7 @@ export async function recordSpeechAttempt(
       durationMs: input.durationMs ?? null,
       status: "pending",
       engine: client.engine,
+      clientEventId: input.clientEventId ?? null,
       createdAt: now,
     })
     .returning({ id: speechAttempts.id });

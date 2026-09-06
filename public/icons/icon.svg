@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Slovenščina">
+  <!--
+    Č. The caron is the mark that makes Slovene look like Slovene — č, š, ž —
+    and this app treats those three letters as a first-class concern: typed
+    without them and still counted right, always shown and spoken with them.
+    The PNGs in this directory are rasterised from the same geometry by
+    scripts/build-icons.mjs; keep the two in step.
+  -->
+  <rect width="512" height="512" fill="#16202b"/>
+  <g fill="none" stroke="#dd9c42" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M354.5 387 A125 125 0 1 1 354.5 233" stroke-width="44"/>
+    <path d="M198 72 L256 130 L314 72" stroke-width="34"/>
+  </g>
+</svg>

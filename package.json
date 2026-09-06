@@ -27,7 +27,8 @@
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "build:standalone": "next build && sh scripts/stage-standalone.sh",
     "audio:generate": "tsx --env-file-if-exists=.env scripts/generate-audio.ts",
-    "digest:run": "tsx --env-file-if-exists=.env scripts/run-digest.ts"
+    "digest:run": "tsx --env-file-if-exists=.env scripts/run-digest.ts",
+    "icons:build": "node scripts/build-icons.mjs"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.0",

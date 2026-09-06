@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
+import { OfflineProvider } from "@/components/offline-provider";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -51,8 +52,16 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: t("name"), template: `%s · ${t("name")}` },
     description: t("tagline"),
     applicationName: t("name"),
+    manifest: "/manifest.webmanifest",
     appleWebApp: { capable: true, statusBarStyle: "default", title: t("name") },
     formatDetection: { telephone: false },
+    icons: {
+      icon: [
+        { url: "/icons/icon.svg", type: "image/svg+xml" },
+        { url: "/icons/favicon.png", sizes: "48x48", type: "image/png" },
+      ],
+      apple: "/icons/apple-touch-icon.png",
+    },
   };
 }
 
@@ -83,7 +92,9 @@ export default async function LocaleLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-dvh antialiased">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <OfflineProvider>{children}</OfflineProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

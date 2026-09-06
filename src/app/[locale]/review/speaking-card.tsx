@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { AudioPlayer, type AudioSource } from "@/components/audio-player";
 import { SpeechRecorder, type RecordingResult } from "@/components/speech-recorder";
 import { Button } from "@/components/ui/button";
+import { newEventId, queueSpeech } from "@/lib/offline/store";
 import { cn } from "@/lib/utils";
 import type { CardRating } from "@/lib/srs/scheduler";
 import { submitSpeechAttempt, type SpeechAttemptResponse } from "./actions";
@@ -17,6 +18,8 @@ type Props = {
   /** The Slovene target, revealed once she has recorded. */
   slovene: string;
   audio: AudioSource[];
+  /** Offline the recording is kept and scored on reconnect. */
+  online: boolean;
   onResult: (suggested: CardRating | null) => void;
 };
 
@@ -27,7 +30,15 @@ type Props = {
  * verdict on her pronunciation, because Whisper cannot judge pronunciation.
  * She always taps the rating herself, so a misheard word costs her nothing.
  */
-export function SpeakingCard({ cardId, sessionId, prompt, slovene, audio, onResult }: Props) {
+export function SpeakingCard({
+  cardId,
+  sessionId,
+  prompt,
+  slovene,
+  audio,
+  online,
+  onResult,
+}: Props) {
   const t = useTranslations("review");
   const [result, setResult] = useState<SpeechAttemptResponse | null>(null);
   const [pending, startTransition] = useTransition();
@@ -44,6 +55,36 @@ export function SpeakingCard({ cardId, sessionId, prompt, slovene, audio, onResu
 
   const handleRecorded = useCallback(
     (recording: RecordingResult) => {
+      if (!online) {
+        /*
+         * Kept, not scored. Whisper is not reachable, so the recording waits in
+         * IndexedDB and is uploaded and transcribed on reconnect. She judges
+         * this one herself — which she does online too, so nothing about the
+         * card changes except that the transcript arrives later or not at all.
+         */
+        void queueSpeech({
+          clientEventId: newEventId(),
+          cardId,
+          sessionId,
+          recordedAt: new Date().toISOString(),
+          durationMs: recording.durationMs,
+          mimeType: recording.mimeType,
+          blob: recording.blob,
+        });
+
+        setResult({
+          status: "pending",
+          transcript: null,
+          band: null,
+          suggestedRating: null,
+          charSimilarity: null,
+          diff: [],
+          reason: "offline",
+        });
+        onResult(null);
+        return;
+      }
+
       const form = new FormData();
       form.set("cardId", cardId);
       form.set("sessionId", sessionId);
@@ -70,7 +111,7 @@ export function SpeakingCard({ cardId, sessionId, prompt, slovene, audio, onResu
         }
       });
     },
-    [cardId, onResult, sessionId],
+    [cardId, onResult, online, sessionId],
   );
 
   return (

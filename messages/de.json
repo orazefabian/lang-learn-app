@@ -429,5 +429,13 @@
       "toInbox": "Zu den Fragen",
       "weeksTitle": "Frühere Wochen"
     }
+  },
+  "offline": {
+    "offline": "Offline — deine Antworten werden gespeichert.",
+    "syncing": "Wird übertragen …",
+    "waiting": "{count, plural, =1 {1 Antwort wartet auf Netz} other {# Antworten warten auf Netz}}",
+    "readyTitle": "Für unterwegs bereit",
+    "readyBody": "{count, plural, =1 {1 Karte liegt auf dem Gerät} other {# Karten liegen auf dem Gerät}}. Üben geht auch ohne Netz.",
+    "preparing": "Wird vorbereitet …"
   }
 }

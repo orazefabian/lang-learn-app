@@ -429,5 +429,13 @@
       "toInbox": "To the questions",
       "weeksTitle": "Earlier weeks"
     }
+  },
+  "offline": {
+    "offline": "Offline — your answers are being saved.",
+    "syncing": "Syncing …",
+    "waiting": "{count, plural, =1 {1 answer waiting for a connection} other {# answers waiting for a connection}}",
+    "readyTitle": "Ready to go",
+    "readyBody": "{count, plural, =1 {1 card is on the device} other {# cards are on the device}}. Practising works without a connection.",
+    "preparing": "Preparing …"
   }
 }

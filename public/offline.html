@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Offline · Slovenščina</title>
+    <!--
+      Served by the service worker when a page cannot be fetched. Standalone on
+      purpose: it has to work when nothing else loads, so it carries its own
+      styles and links only to routes that survive offline.
+    -->
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f1f4f6;
+        --fg: #16202b;
+        --muted: #5b6672;
+        --card: #ffffff;
+        --border: #d9dfe4;
+        --accent: #dd9c42;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #12181e;
+          --fg: #e6eaee;
+          --muted: #96a1ad;
+          --card: #1b232b;
+          --border: #2b353f;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 2rem 1.25rem;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+      main { max-width: 24rem; text-align: center; }
+      .mark { width: 4rem; height: 4rem; margin: 0 auto 1.5rem; display: block; }
+      h1 { font-size: 1.5rem; margin: 0 0 0.5rem; letter-spacing: -0.01em; }
+      p { color: var(--muted); margin: 0 0 1.5rem; }
+      a {
+        display: block;
+        padding: 0.875rem 1.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: inherit;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      a:active { opacity: 0.7; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <svg class="mark" viewBox="0 0 512 512" aria-hidden="true">
+        <g fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M354.5 387 A125 125 0 1 1 354.5 233" stroke-width="44" />
+          <path d="M198 72 L256 130 L314 72" stroke-width="34" />
+        </g>
+      </svg>
+      <h1>Gerade offline</h1>
+      <!-- No apology and no instruction: her answers are safe and she knows it. -->
+      <p>Was du geübt hast, ist gespeichert und geht raus, sobald du wieder Netz hast.</p>
+      <a href="/review">Weiter üben</a>
+    </main>
+  </body>
+</html>
