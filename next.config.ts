@@ -8,6 +8,22 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   serverExternalPackages: ["@node-rs/argon2", "postgres", "pino"],
+  /*
+   * argon2's native binding, which the tracer cannot see.
+   *
+   * @node-rs/argon2 picks its platform binary through a chain of try/catch
+   * requires, so static tracing copies the JavaScript wrapper and none of the
+   * .node files it actually loads. The standalone image then builds, starts,
+   * serves pages — and throws "Cannot find native binding" the first time
+   * anyone tries to log in.
+   *
+   * The glob is deliberately loose: it matches whichever platform package the
+   * install produced, so the same config is right on x64 and on the arm64
+   * cluster this deploys to.
+   */
+  outputFileTracingIncludes: {
+    "/**": ["./node_modules/.pnpm/@node-rs+argon2-*/**"],
+  },
   experimental: {
     // Audio blobs and speech uploads travel through server actions.
     serverActions: { bodySizeLimit: "12mb" },

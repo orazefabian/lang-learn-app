@@ -38,11 +38,26 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/seed ./seed
-# The standalone tree only links packages the server imports by name; the
-# one-off seeding script needs `postgres` resolvable from /app as well.
-RUN cd /app/node_modules \
- && ln -sfn "$(ls -d .pnpm/postgres@*/node_modules/postgres | head -n1)" postgres \
- && mkdir -p /media && chown -R nextjs:nodejs /media
+# Two things the standalone tree gets wrong, both about resolution rather than
+# missing files.
+#
+# `postgres` is only linked at the top level for packages the server imports by
+# name, and the one-off seeding script needs it too.
+#
+# argon2's platform binary is copied in by outputFileTracingIncludes but
+# without the symlink that makes it findable: the wrapper requires
+# `@node-rs/argon2-linux-<arch>-gnu` from its own node_modules, and a bare
+# directory in .pnpm is not that. Relinked here from whatever the install
+# produced, so this is correct on x64 and arm64 alike.
+RUN set -eu; \
+    cd /app/node_modules; \
+    ln -sfn "$(ls -d .pnpm/postgres@*/node_modules/postgres | head -n1)" postgres; \
+    wrapper="$(ls -d /app/node_modules/.pnpm/@node-rs+argon2@*/node_modules/@node-rs)"; \
+    for binding in /app/node_modules/.pnpm/@node-rs+argon2-*/node_modules/@node-rs/*; do \
+      ln -sfn "$binding" "$wrapper/$(basename "$binding")"; \
+    done; \
+    node -e "import('@node-rs/argon2').then(m=>m.hash('x')).then(()=>console.log('argon2 binding ok'))"; \
+    mkdir -p /media && chown -R nextjs:nodejs /media
 
 USER nextjs
 EXPOSE 3000

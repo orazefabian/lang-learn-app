@@ -12,15 +12,31 @@ ENV WHISPER_MODEL=medium \
     WHISPER_LANGUAGE=sl \
     WHISPER_PORT=5001 \
     PYTHONUNBUFFERED=1 \
-    OMP_NUM_THREADS=4
+    OMP_NUM_THREADS=4 \
+    # huggingface_hub's downloader wants a writable home for its cache and its
+    # xet logs. This runs as a system user with no home directory, so without
+    # these it fails partway through the download with a bare
+    # "Permission denied (os error 13)" and the model never loads. Pointed at
+    # the mounted volume, which is the one place guaranteed to be writable.
+    HOME=/models \
+    HF_HOME=/models/.huggingface
 
-RUN pip install --no-cache-dir "faster-whisper==1.2.0"
+# `requests` is imported by faster_whisper.utils but missing from its declared
+# dependencies, so a plain install produces a container that dies on its first
+# import. Pinned here rather than left to chance.
+RUN pip install --no-cache-dir "faster-whisper==1.2.0" "requests>=2.31"
 
 COPY server.py /app/server.py
 WORKDIR /app
 
+# Import the server at build time. It costs a second and it turns a missing
+# dependency into a failed build rather than a container that crash-loops in
+# the cluster with the real error buried in kubectl logs. The model is not
+# loaded here — that happens at runtime, against the mounted volume.
+RUN python -c "import server; print('whisper server imports cleanly')"
+
 RUN useradd --system --uid 1001 whisper \
- && mkdir -p /models \
+ && mkdir -p /models/.huggingface \
  && chown -R whisper /app /models
 USER whisper
 

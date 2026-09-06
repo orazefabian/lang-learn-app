@@ -71,3 +71,29 @@ async function runMigrations(): Promise<void> {
     await client.end();
   }
 }
+
+/**
+ * Every server-side error, with its stack.
+ *
+ * Next reports uncaught server errors to the client as an opaque digest, which
+ * is right for a browser and useless in a log. This is the hook that gets the
+ * real thing, and it is how the "Connection closed" that broke login was
+ * finally located — the digest alone said nothing at all.
+ */
+export async function onRequestError(
+  error: unknown,
+  request: { path: string; method: string },
+  context: { routeType: string; routePath: string },
+): Promise<void> {
+  const { logger } = await import("@/lib/logger");
+  logger.error(
+    {
+      err: error,
+      path: request.path,
+      method: request.method,
+      routeType: context.routeType,
+      routePath: context.routePath,
+    },
+    "unhandled server error",
+  );
+}

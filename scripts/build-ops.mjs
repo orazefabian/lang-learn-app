@@ -30,9 +30,20 @@ await build({
   platform: "node",
   target: "node22",
   format: "esm",
-  // Anything from node_modules is left alone; the image already has the ones
-  // the server itself uses, which is the same set these need.
-  packages: "external",
+  /*
+   * Bundled, not external.
+   *
+   * The standalone tree only links a package at the top level if the server
+   * imports it by name; everything else is compiled into the server output and
+   * left unresolvable from outside it. Leaving these external means the script
+   * dies on `Cannot find package 'drizzle-orm'` the first time it runs in the
+   * image — after building, starting and looking entirely healthy.
+   *
+   * Only the two that must not be bundled stay external: argon2 loads a
+   * platform .node binary, and pino resolves its transports by path at
+   * runtime. Both are top-level in the standalone tree already.
+   */
+  external: ["@node-rs/argon2", "pino"],
   alias: { "@": path.resolve("src") },
   logLevel: "warning",
 });
