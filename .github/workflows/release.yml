@@ -4,7 +4,7 @@
 #
 #   git tag v0.2.0 && git push origin v0.2.0
 #
-# Then bump the tag in homecluster's apps/slovenscina/*/manifests, or let
+# Then bump the tag in homecluster's apps/dober-dan/*/manifests, or let
 # Renovate open that PR for you.
 name: release
 

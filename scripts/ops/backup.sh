@@ -21,7 +21,7 @@ RETENTION_DAYS="${RETENTION_DAYS:-30}"
 
 timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
 label="${BACKUP_LABEL:+-$BACKUP_LABEL}"
-target="$BACKUP_DIR/slovenscina-$timestamp$label.dump"
+target="$BACKUP_DIR/dober-dan-$timestamp$label.dump"
 
 mkdir -p "$BACKUP_DIR"
 
@@ -48,7 +48,7 @@ echo "verified: pg_restore can read it"
 
 if [ "$RETENTION_DAYS" -gt 0 ]; then
   # Only ever deletes files this script's own naming produced.
-  removed="$(find "$BACKUP_DIR" -maxdepth 1 -name 'slovenscina-*.dump' \
+  removed="$(find "$BACKUP_DIR" -maxdepth 1 -name 'dober-dan-*.dump' \
              -type f -mtime "+$RETENTION_DAYS" -print -delete | wc -l | tr -d ' ')"
   echo "retention: removed $removed dump(s) older than $RETENTION_DAYS days"
 fi

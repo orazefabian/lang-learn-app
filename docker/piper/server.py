@@ -1,5 +1,5 @@
 """
-Slovene text-to-speech for Slovenščina.
+Slovene text-to-speech for Dober dan.
 
 A thin HTTP wrapper around Piper. It exists for two reasons:
 

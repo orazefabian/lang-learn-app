@@ -7,7 +7,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: app
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   selector:
     app.kubernetes.io/name: app
@@ -20,7 +20,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: media
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   accessModes: [ReadWriteOnce]
   resources:
@@ -34,7 +34,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   replicas: 1
   strategy:
@@ -52,7 +52,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: app
-          image: slovenscina/app:latest
+          image: dober-dan/app:latest
           ports:
             - name: http
               containerPort: 3000
@@ -63,28 +63,28 @@ spec:
               value: /media
             - name: POSTGRES_PASSWORD
               valueFrom:
-                secretKeyRef: { name: slovenscina, key: POSTGRES_PASSWORD }
+                secretKeyRef: { name: dober-dan, key: POSTGRES_PASSWORD }
             - name: POSTGRES_USER
               valueFrom:
-                configMapKeyRef: { name: slovenscina, key: POSTGRES_USER }
+                configMapKeyRef: { name: dober-dan, key: POSTGRES_USER }
             - name: POSTGRES_DB
               valueFrom:
-                configMapKeyRef: { name: slovenscina, key: POSTGRES_DB }
+                configMapKeyRef: { name: dober-dan, key: POSTGRES_DB }
             - name: DATABASE_URL
               value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)
             - name: SESSION_SECRET
               valueFrom:
-                secretKeyRef: { name: slovenscina, key: SESSION_SECRET }
+                secretKeyRef: { name: dober-dan, key: SESSION_SECRET }
             - name: ANTHROPIC_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: slovenscina
+                  name: dober-dan
                   key: ANTHROPIC_API_KEY
                   optional: true
             - name: SMTP_URL
               valueFrom:
                 secretKeyRef:
-                  name: slovenscina
+                  name: dober-dan
                   key: SMTP_URL
                   optional: true
           envFrom:
@@ -92,7 +92,7 @@ spec:
             # Blank values here mean "not set", so an unused optional key is
             # not a misconfiguration.
             - configMapRef:
-                name: slovenscina
+                name: dober-dan
           volumeMounts:
             - name: media
               mountPath: /media

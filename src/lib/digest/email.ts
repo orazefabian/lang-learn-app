@@ -30,7 +30,7 @@ export function renderDigestEmail(input: {
   const end = new Date(data.period.end);
   const range = `${dateFormat.format(start)}–${dateFormat.format(end)}`;
 
-  const subject = `Slovenščina: Woche ${range}`;
+  const subject = `Dober dan: Woche ${range}`;
 
   const blocks: string[] = [];
 

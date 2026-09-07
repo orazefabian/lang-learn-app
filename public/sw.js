@@ -16,8 +16,8 @@
  */
 
 const VERSION = "v1";
-const SHELL_CACHE = `slovenscina-shell-${VERSION}`;
-const AUDIO_CACHE = "slovenscina-audio-v1";
+const SHELL_CACHE = `dober-dan-shell-${VERSION}`;
+const AUDIO_CACHE = "dober-dan-audio-v1";
 const OFFLINE_URL = "/offline.html";
 
 const SHELL_ASSETS = [OFFLINE_URL, "/manifest.webmanifest", "/icons/icon.svg"];
@@ -40,7 +40,7 @@ self.addEventListener("activate", (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((key) => key.startsWith("slovenscina-shell-") && key !== SHELL_CACHE)
+            .filter((key) => key.startsWith("dober-dan-shell-") && key !== SHELL_CACHE)
             .map((key) => caches.delete(key)),
         ),
       )

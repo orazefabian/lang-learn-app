@@ -7,7 +7,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   # Headless: the StatefulSet gets a stable DNS name and no load balancing,
   # which is what a single writer wants.
@@ -23,7 +23,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgres
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   serviceName: postgres
   replicas: 1
@@ -46,13 +46,13 @@ spec:
           env:
             - name: POSTGRES_USER
               valueFrom:
-                configMapKeyRef: { name: slovenscina, key: POSTGRES_USER }
+                configMapKeyRef: { name: dober-dan, key: POSTGRES_USER }
             - name: POSTGRES_DB
               valueFrom:
-                configMapKeyRef: { name: slovenscina, key: POSTGRES_DB }
+                configMapKeyRef: { name: dober-dan, key: POSTGRES_DB }
             - name: POSTGRES_PASSWORD
               valueFrom:
-                secretKeyRef: { name: slovenscina, key: POSTGRES_PASSWORD }
+                secretKeyRef: { name: dober-dan, key: POSTGRES_PASSWORD }
             # The mount point is the volume root, which on some storage classes
             # contains a lost+found; initdb refuses a non-empty directory.
             - name: PGDATA

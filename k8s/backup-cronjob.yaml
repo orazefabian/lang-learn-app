@@ -8,7 +8,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: backups
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   accessModes: [ReadWriteOnce]
   resources:
@@ -21,7 +21,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: postgres-backup
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   # 02:30 daily. Nobody is reviewing at half two in the morning.
   schedule: "30 2 * * *"
@@ -49,13 +49,13 @@ spec:
                   value: "30"
                 - name: POSTGRES_USER
                   valueFrom:
-                    configMapKeyRef: { name: slovenscina, key: POSTGRES_USER }
+                    configMapKeyRef: { name: dober-dan, key: POSTGRES_USER }
                 - name: POSTGRES_DB
                   valueFrom:
-                    configMapKeyRef: { name: slovenscina, key: POSTGRES_DB }
+                    configMapKeyRef: { name: dober-dan, key: POSTGRES_DB }
                 - name: POSTGRES_PASSWORD
                   valueFrom:
-                    secretKeyRef: { name: slovenscina, key: POSTGRES_PASSWORD }
+                    secretKeyRef: { name: dober-dan, key: POSTGRES_PASSWORD }
                 - name: DATABASE_URL
                   value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)
               volumeMounts:

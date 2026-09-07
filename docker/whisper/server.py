@@ -1,5 +1,5 @@
 """
-Slovene speech recognition for Slovenščina.
+Slovene speech recognition for Dober dan.
 
 A thin HTTP wrapper around faster-whisper. It exists so the app has one stable
 contract to code against: when a better Slovene model appears, it replaces this

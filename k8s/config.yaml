@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: slovenscina
-  namespace: slovenscina
+  name: dober-dan
+  namespace: dober-dan
 data:
   POSTGRES_USER: slo
-  POSTGRES_DB: slovenscina
+  POSTGRES_DB: dober_dan
 
   SESSION_TTL_DAYS: "90"
   LOG_LEVEL: info

@@ -1,4 +1,4 @@
-# Slovenščina
+# Dober dan
 
 A self-hosted Slovene learning app for exactly two people: one learner (German
 native speaker, absolute beginner) and one teacher. Built because no major
@@ -122,7 +122,7 @@ idempotent. Set `RUN_MIGRATIONS_ON_START=false` to manage them yourself.
 ### The home cluster
 
 The real target is a k3s cluster running ArgoCD, and the manifests for it live
-in that cluster's own repo under `apps/slovenscina/` — namespace `halo`,
+in that cluster's own repo under `apps/dober-dan/` — namespace `halo`,
 Longhorn volumes, the existing ingress-nginx and wildcard certificate. The
 `k8s/` directory here is the portable version for anyone else.
 
@@ -150,7 +150,7 @@ cp k8s/secret.example.yaml k8s/secret.yaml   # fill in, gitignored
 kubectl apply -f k8s/secret.yaml
 kubectl apply -k k8s/
 
-kubectl -n slovenscina exec deploy/app -- node scripts/seed-users.mjs
+kubectl -n dober-dan exec deploy/app -- node scripts/seed-users.mjs
 ```
 
 `k8s/` is plain YAML with a kustomization, no chart and no templating engine —
@@ -201,7 +201,7 @@ explicit confirmation:
 
 ```bash
 CONFIRM_RESTORE=yes DATABASE_URL=postgres://... \
-  scripts/ops/restore.sh /backups/slovenscina-20260906T023000Z.dump
+  scripts/ops/restore.sh /backups/dober-dan-20260906T023000Z.dump
 ```
 
 Stop the app first. On start it runs any migrations newer than the dump, so

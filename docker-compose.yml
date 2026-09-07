@@ -7,11 +7,11 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-slo}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
-      POSTGRES_DB: ${POSTGRES_DB:-slovenscina}
+      POSTGRES_DB: ${POSTGRES_DB:-dober_dan}
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-slo} -d ${POSTGRES_DB:-slovenscina}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-slo} -d ${POSTGRES_DB:-dober_dan}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
       args:
         PIPER_VOICE: ${PIPER_VOICE:-sl_SI-artur-medium}
-    image: slovenscina/piper:latest
+    image: dober-dan/piper:latest
     restart: unless-stopped
     environment:
       PIPER_VOICE: ${PIPER_VOICE:-sl_SI-artur-medium}
@@ -51,7 +51,7 @@ services:
     build:
       context: ./docker/whisper
       dockerfile: Dockerfile
-    image: slovenscina/whisper:latest
+    image: dober-dan/whisper:latest
     restart: unless-stopped
     environment:
       # small | medium | large-v3. Slovene accuracy improves noticeably above
@@ -87,7 +87,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: slovenscina/app:latest
+    image: dober-dan/app:latest
     restart: unless-stopped
     depends_on:
       db:
@@ -100,7 +100,7 @@ services:
         condition: service_started
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgres://${POSTGRES_USER:-slo}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-slovenscina}
+      DATABASE_URL: postgres://${POSTGRES_USER:-slo}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-dober_dan}
       SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
       SESSION_TTL_DAYS: ${SESSION_TTL_DAYS:-90}
       MEDIA_ROOT: /media

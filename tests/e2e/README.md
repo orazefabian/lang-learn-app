@@ -4,7 +4,7 @@ Six journeys, run against a built app and a real PostgreSQL.
 
 ```bash
 # A database these tests may destroy — not the one with her actual history.
-export DATABASE_URL=postgres://slo:slo@localhost:5432/slovenscina_e2e
+export DATABASE_URL=postgres://slo:slo@localhost:5432/dober-dan_e2e
 export SESSION_SECRET="$(openssl rand -base64 48)"
 
 pnpm db:migrate

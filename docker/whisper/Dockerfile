@@ -5,6 +5,24 @@
 # switching model size is an environment variable, not a rebuild.
 FROM python:3.12-slim-bookworm
 
+# The expensive layer, and deliberately the first: everything that changes more
+# often is below it, so editing a setting does not re-download 200 MB of wheels.
+#
+# `requests` is imported by faster_whisper.utils but missing from its declared
+# dependencies, so a plain install produces a container that dies on its first
+# import. Pinned here rather than left to chance.
+#
+# The retries are not defensive padding — this install genuinely times out on a
+# slow connection, and a failed build after twenty minutes of downloading is a
+# bad way to find that out.
+RUN pip install --no-cache-dir --retries 10 --timeout 120 \
+      "faster-whisper==1.2.0" "requests>=2.31"
+
+# HOME and HF_HOME point at the mounted volume because huggingface_hub's
+# downloader needs a writable home for its cache and its xet logs. This runs as
+# a system user with no home directory, so without them the model download dies
+# partway through with a bare "Permission denied (os error 13)" and the service
+# never becomes ready. The volume is the one place guaranteed to be writable.
 ENV WHISPER_MODEL=medium \
     WHISPER_MODEL_DIR=/models \
     WHISPER_DEVICE=cpu \
@@ -13,18 +31,8 @@ ENV WHISPER_MODEL=medium \
     WHISPER_PORT=5001 \
     PYTHONUNBUFFERED=1 \
     OMP_NUM_THREADS=4 \
-    # huggingface_hub's downloader wants a writable home for its cache and its
-    # xet logs. This runs as a system user with no home directory, so without
-    # these it fails partway through the download with a bare
-    # "Permission denied (os error 13)" and the model never loads. Pointed at
-    # the mounted volume, which is the one place guaranteed to be writable.
     HOME=/models \
     HF_HOME=/models/.huggingface
-
-# `requests` is imported by faster_whisper.utils but missing from its declared
-# dependencies, so a plain install produces a container that dies on its first
-# import. Pinned here rather than left to chance.
-RUN pip install --no-cache-dir "faster-whisper==1.2.0" "requests>=2.31"
 
 COPY server.py /app/server.py
 WORKDIR /app

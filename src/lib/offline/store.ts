@@ -13,7 +13,7 @@ import type { OfflineBundle } from "./bundle";
  * windows, storage denied). Offline review stops working; the app does not.
  */
 
-const DB_NAME = "slovenscina-offline";
+const DB_NAME = "dober-dan-offline";
 const DB_VERSION = 1;
 
 const BUNDLE_STORE = "bundle";

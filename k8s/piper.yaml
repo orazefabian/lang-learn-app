@@ -7,7 +7,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: piper
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   selector:
     app.kubernetes.io/name: piper
@@ -20,7 +20,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: piper
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   replicas: 1
   selector:
@@ -33,14 +33,14 @@ spec:
     spec:
       containers:
         - name: piper
-          image: slovenscina/piper:latest
+          image: dober-dan/piper:latest
           ports:
             - name: http
               containerPort: 5000
           env:
             - name: PIPER_VOICE
               valueFrom:
-                configMapKeyRef: { name: slovenscina, key: PIPER_VOICE }
+                configMapKeyRef: { name: dober-dan, key: PIPER_VOICE }
           # CPU-bound and single-threaded per request; a short phrase takes
           # roughly a second on a modest core. Audio is generated in batches
           # after content changes, never on the path of a card being shown.

@@ -11,7 +11,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: whisper
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   selector:
     app.kubernetes.io/name: whisper
@@ -24,7 +24,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: whisper-models
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   accessModes: [ReadWriteOnce]
   resources:
@@ -36,7 +36,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: whisper
-  namespace: slovenscina
+  namespace: dober-dan
 spec:
   replicas: 1
   strategy:
@@ -55,17 +55,17 @@ spec:
         fsGroup: 1001
       containers:
         - name: whisper
-          image: slovenscina/whisper:latest
+          image: dober-dan/whisper:latest
           ports:
             - name: http
               containerPort: 5001
           env:
             - name: WHISPER_MODEL
               valueFrom:
-                configMapKeyRef: { name: slovenscina, key: WHISPER_MODEL }
+                configMapKeyRef: { name: dober-dan, key: WHISPER_MODEL }
             - name: WHISPER_COMPUTE_TYPE
               valueFrom:
-                configMapKeyRef: { name: slovenscina, key: WHISPER_COMPUTE_TYPE }
+                configMapKeyRef: { name: dober-dan, key: WHISPER_COMPUTE_TYPE }
             - name: WHISPER_LANGUAGE
               value: sl
           volumeMounts:

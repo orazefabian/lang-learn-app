@@ -13,7 +13,9 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ffmpeg \
  && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir "piper-tts==1.8.0"
+# Retries because this genuinely times out on a slow connection, and a build
+# that fails after twenty minutes of downloading is a bad way to find out.
+RUN pip install --no-cache-dir --retries 10 --timeout 120 "piper-tts==1.8.0"
 
 # Piper phonemises through a bundled espeak-ng whose data path is baked in at
 # compile time. Pointing at the copy that actually shipped in the wheel keeps

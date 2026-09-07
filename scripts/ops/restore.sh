@@ -4,7 +4,7 @@
 # The counterpart to backup.sh, written down because the moment you need it is
 # the worst moment to be improvising.
 #
-#   DATABASE_URL=postgres://... scripts/ops/restore.sh /backups/slovenscina-....dump
+#   DATABASE_URL=postgres://... scripts/ops/restore.sh /backups/dober-dan-....dump
 #
 # This DROPS AND RECREATES the schema in the target database. It refuses to run
 # without CONFIRM_RESTORE=yes, because the one thing worse than losing data is

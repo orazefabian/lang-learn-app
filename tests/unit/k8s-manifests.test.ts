@@ -53,7 +53,7 @@ function collectRefs(kind: "secretKeyRef" | "configMapKeyRef"): { file: string; 
     for (const [property, value] of Object.entries(node as Record<string, unknown>)) {
       if (property === kind && value && typeof value === "object") {
         const ref = value as { name?: string; key?: string };
-        if (ref.name === "slovenscina" && ref.key) found.push({ file, key: ref.key });
+        if (ref.name === "dober-dan" && ref.key) found.push({ file, key: ref.key });
       }
       walk(value, file);
     }
@@ -71,7 +71,7 @@ describe("every manifest", () => {
       expect(doc.kind, `${file} has no kind`).toBeTruthy();
       if (doc.kind !== "Namespace" && doc.kind !== "Kustomization") {
         expect(doc.metadata?.namespace, `${file}/${doc.kind} has no namespace`).toBe(
-          "slovenscina",
+          "dober-dan",
         );
       }
     }

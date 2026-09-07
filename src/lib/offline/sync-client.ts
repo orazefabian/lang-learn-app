@@ -111,7 +111,7 @@ export async function refreshBundle(): Promise<OfflineBundle | null> {
   }
 }
 
-const AUDIO_CACHE = "slovenscina-audio-v1";
+const AUDIO_CACHE = "dober-dan-audio-v1";
 
 /**
  * Pulls the session's audio into the cache the service worker reads from.

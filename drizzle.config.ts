@@ -13,7 +13,7 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "postgres://slo:slo@localhost:5432/slovenscina",
+    url: process.env.DATABASE_URL ?? "postgres://slo:slo@localhost:5432/dober_dan",
   },
   strict: true,
   verbose: true,
