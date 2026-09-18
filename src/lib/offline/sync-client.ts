@@ -66,7 +66,7 @@ export async function syncPending(): Promise<SyncResult> {
   return result;
 }
 
-async function uploadSpeech(record: QueuedSpeechRecord): Promise<boolean> {
+export async function uploadSpeech(record: QueuedSpeechRecord): Promise<boolean> {
   const form = new FormData();
   form.set("clientEventId", record.clientEventId);
   form.set("cardId", record.cardId);
@@ -79,11 +79,16 @@ async function uploadSpeech(record: QueuedSpeechRecord): Promise<boolean> {
     const response = await fetch("/api/offline/speech", { method: "POST", body: form });
     if (response.ok) return true;
     /*
-     * A 4xx will never succeed on a retry — a card that has been deleted, or
-     * audio the server will not take. Dropping it loses one recording; keeping
-     * it would mean retrying forever on every reconnect.
+     * Only content-level rejections the server can meaningfully make about
+     * *this* upload are safe to drop: bad/missing payload, a card that no
+     * longer exists, or audio the server will not take. 401/403 mean "we
+     * don't know who you are right now" — orthogonal to whether the
+     * recording is valid — so those are treated like a network failure and
+     * left queued for the next reconnect/re-login, matching the
+     * /api/offline/sync review-answers path's "only the server's own
+     * confirmation causes deletion" principle.
      */
-    return response.status >= 400 && response.status < 500;
+    return [400, 404, 413, 415].includes(response.status);
   } catch {
     return false;
   }
