@@ -82,7 +82,12 @@ async function uploadSpeech(record: QueuedSpeechRecord): Promise<boolean> {
      * A 4xx will never succeed on a retry — a card that has been deleted, or
      * audio the server will not take. Dropping it loses one recording; keeping
      * it would mean retrying forever on every reconnect.
+     *
+     * 401/403 are excluded: they mean "we don't know who you are right now",
+     * not "this recording is invalid" — an expired session must not cost her
+     * an irreplaceable recording. Treat those like a network failure instead.
      */
+    if (response.status === 401 || response.status === 403) return false;
     return response.status >= 400 && response.status < 500;
   } catch {
     return false;
