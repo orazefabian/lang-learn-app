@@ -79,11 +79,13 @@ async function uploadSpeech(record: QueuedSpeechRecord): Promise<boolean> {
     const response = await fetch("/api/offline/speech", { method: "POST", body: form });
     if (response.ok) return true;
     /*
-     * A 4xx will never succeed on a retry — a card that has been deleted, or
-     * audio the server will not take. Dropping it loses one recording; keeping
-     * it would mean retrying forever on every reconnect.
+     * Only drop the recording for rejections that are about the upload
+     * itself (bad payload, unsupported audio, card gone) — those will never
+     * succeed on a retry. 401/403 mean the session is invalid, which is
+     * orthogonal to whether the recording is good, so treat those like a
+     * network failure and keep the recording queued.
      */
-    return response.status >= 400 && response.status < 500;
+    return response.status === 400 || response.status === 404 || response.status === 413 || response.status === 415;
   } catch {
     return false;
   }
