@@ -1,15 +1,23 @@
 /**
  * Service worker.
  *
- * Deliberately small and hand-written. The app needs exactly three behaviours,
+ * Deliberately small and hand-written. The app needs exactly four behaviours,
  * and a generated worker would bring a caching framework plus a build step for
  * rules that fit on one screen.
  *
  * 1. Navigations: network first, falling back to the offline page. Pages are
- *    server-rendered and personal, so a cached page is a lie about her deck.
+ *    server-rendered and personal, so a cached page is a lie about her deck —
+ *    with one exception, see (4).
  * 2. Audio: cache first. Content-hashed and immutable, and the whole point of
  *    pre-caching a session.
  * 3. Everything the app needs to boot: cached on install.
+ * 4. /review is additionally kept as a last-known-good page shell. A cold
+ *    offline open (closed app reopened, the PWA's "review session" shortcut)
+ *    has no warm tab to fall back on, so without this it can only ever hit
+ *    the static offline page. The shell's own props are stale, but the
+ *    client-side offline logic in ReviewSession re-sources the actual cards
+ *    from IndexedDB once it mounts, same as it already does for a tab that
+ *    was open before the connection dropped.
  *
  * What it never touches: server actions, the sync and bundle routes, and
  * anything under /teacher. Those are online-only by design.
@@ -18,9 +26,15 @@
 const VERSION = "v1";
 const SHELL_CACHE = `dober-dan-shell-${VERSION}`;
 const AUDIO_CACHE = "dober-dan-audio-v1";
+const PAGE_CACHE = "dober-dan-pages-v1";
 const OFFLINE_URL = "/offline.html";
 
 const SHELL_ASSETS = [OFFLINE_URL, "/manifest.webmanifest", "/icons/icon.svg"];
+
+/** Matches /review, /de/review, /en/review, ... — any locale prefix. */
+function isReviewPage(url) {
+  return url.pathname.endsWith("/review");
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -74,14 +88,36 @@ self.addEventListener("fetch", (event) => {
   if (isOnlineOnly(url)) return;
 
   if (request.mode === "navigate") {
+    const cacheReviewPage = isReviewPage(url);
     event.respondWith(
-      fetch(request).catch(async () => {
-        const cached = await caches.match(OFFLINE_URL);
-        return (
-          cached ??
-          new Response("Offline", { status: 503, headers: { "content-type": "text/plain" } })
-        );
-      }),
+      fetch(request)
+        .then((response) => {
+          if (cacheReviewPage && response.ok) {
+            const copy = response.clone();
+            void caches.open(PAGE_CACHE).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(async () => {
+          if (cacheReviewPage) {
+            const cache = await caches.open(PAGE_CACHE);
+            // The request that actually hits the network is often the
+            // unprefixed shortcut/fallback link (/review); the cached copy
+            // is keyed by whatever localized URL she last loaded it from
+            // (/de/review). Match on the shared last path segment.
+            const exact = await cache.match(request);
+            if (exact) return exact;
+            const keys = await cache.keys();
+            const key = keys.find((cached) => isReviewPage(new URL(cached.url)));
+            if (key) return cache.match(key);
+          }
+
+          const cached = await caches.match(OFFLINE_URL);
+          return (
+            cached ??
+            new Response("Offline", { status: 503, headers: { "content-type": "text/plain" } })
+          );
+        }),
     );
     return;
   }
