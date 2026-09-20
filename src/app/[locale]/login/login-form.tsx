@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,15 @@ function SubmitButton({ labels }: { labels: Labels }) {
 
 export function LoginForm({ labels }: { labels: Labels }) {
   const [state, action] = useActionState<LoginState, FormData>(login, {});
+  const [email, setEmail] = useState("");
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (state.error) {
+      if (state.email !== undefined) setEmail(state.email);
+      passwordRef.current?.focus();
+    }
+  }, [state.error, state.email]);
 
   return (
     <form action={action} className="flex flex-col gap-5">
@@ -41,6 +50,8 @@ export function LoginForm({ labels }: { labels: Labels }) {
           inputMode="email"
           autoCapitalize="none"
           required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           aria-describedby={state.error ? "login-error" : undefined}
         />
       </div>
@@ -52,6 +63,7 @@ export function LoginForm({ labels }: { labels: Labels }) {
           type="password"
           autoComplete="current-password"
           required
+          ref={passwordRef}
           aria-describedby={state.error ? "login-error" : undefined}
         />
       </div>
