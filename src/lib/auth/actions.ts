@@ -11,7 +11,10 @@ import { logger } from "@/lib/logger";
 import { hashPassword, verifyPassword } from "./password";
 import { SESSION_COOKIE, createSession, destroySession } from "./session";
 
-export type LoginState = { error?: "invalidCredentials" | "missingFields" | "unexpectedError" };
+export type LoginState = {
+  error?: "invalidCredentials" | "missingFields" | "unexpectedError";
+  email?: string;
+};
 
 const loginSchema = z.object({
   email: z.string().email().max(320),
@@ -29,11 +32,12 @@ async function getDummyHash(): Promise<string> {
 }
 
 export async function login(_prev: LoginState, formData: FormData): Promise<LoginState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const parsed = loginSchema.safeParse({
-    email: String(formData.get("email") ?? "").trim().toLowerCase(),
+    email,
     password: String(formData.get("password") ?? ""),
   });
-  if (!parsed.success) return { error: "missingFields" };
+  if (!parsed.success) return { error: "missingFields", email };
 
   try {
     const [user] = await db
@@ -47,7 +51,7 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
 
     if (!ok || !user?.passwordHash) {
       logger.warn({ email: parsed.data.email }, "failed login");
-      return { error: "invalidCredentials" };
+      return { error: "invalidCredentials", email: parsed.data.email };
     }
 
     const headerList = await headers();
@@ -63,7 +67,7 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
     });
   } catch (error) {
     logger.error({ err: error }, "login failed unexpectedly");
-    return { error: "unexpectedError" };
+    return { error: "unexpectedError", email: parsed.data.email };
   }
 
   redirect("/");
