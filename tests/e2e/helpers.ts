@@ -47,8 +47,13 @@ export async function answerOneCard(page: Page): Promise<void> {
     await show.click();
   }
 
-  // The four ratings only appear once the answer is showing.
-  const again = page.getByRole("button", { name: "Nochmal", exact: true });
+  /*
+   * The four ratings only appear once the answer is showing. Each carries a
+   * second line — the accessible name is "Nochmal — Wusste ich nicht", not
+   * "Nochmal" — so these match on the prefix. An exact match silently finds
+   * nothing and the test dies waiting for a button that is on the screen.
+   */
+  const again = page.getByRole("button", { name: /^Nochmal/ });
   await expect(again).toBeVisible();
   await again.click();
 }

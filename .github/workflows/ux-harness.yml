@@ -1,0 +1,84 @@
+# Boots the app on a real database and photographs it, one scenario at a time.
+#
+# Not part of `ci`: it needs a browser, a Postgres service and a production
+# build, which is minutes rather than seconds, and nothing here gates a merge.
+# It exists so a reviewer — human or agent — can look at the app instead of
+# only at the diff.
+name: ux-harness
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenarios:
+        description: "Space-separated scenarios, or blank for all five"
+        required: false
+        type: string
+  # Callable from the nightly agent, which runs the audit and files what it finds.
+  workflow_call:
+    inputs:
+      scenarios:
+        required: false
+        type: string
+    outputs:
+      artifact:
+        description: "Name of the uploaded report artifact"
+        value: ux-report
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: slo
+          POSTGRES_PASSWORD: slo
+          POSTGRES_DB: dober_dan_ux
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # A throwaway database, and one the scenario seeder is willing to own.
+      DATABASE_URL: postgres://slo:slo@127.0.0.1:5432/dober_dan_ux
+      SESSION_SECRET: ux-harness-placeholder-secret-at-least-32-characters
+      MEDIA_ROOT: ./media
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Only Chromium: the app is built for one phone, and the other engines
+      # would be minutes spent photographing browsers nobody here uses.
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - name: Walk the app
+        run: pnpm ux:harness ${{ inputs.scenarios }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ux-report
+          path: ux-report/
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          for readme in ux-report/*/README.md; do
+            [ -f "$readme" ] || continue
+            cat "$readme" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          done

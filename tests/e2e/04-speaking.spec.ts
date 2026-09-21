@@ -32,7 +32,7 @@ test.describe("speaking", () => {
       } else if (await show.isVisible().catch(() => false)) {
         await show.click();
       }
-      await page.getByRole("button", { name: "Gut", exact: true }).click();
+      await page.getByRole("button", { name: /^Gut/ }).click();
     }
 
     test.skip(!found, "no speaking card came up in this session");
@@ -42,7 +42,7 @@ test.describe("speaking", () => {
     await page.getByRole("button", { name: /fertig|stopp/i }).click();
 
     // Whatever the recogniser makes of it, she is the one who rates the card.
-    await expect(page.getByRole("button", { name: "Gut", exact: true })).toBeVisible({
+    await expect(page.getByRole("button", { name: /^Gut/ })).toBeVisible({
       timeout: 30_000,
     });
   });
