@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { OfflineProvider } from "@/components/offline-provider";
+import { currentUser } from "@/lib/auth";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -82,6 +83,8 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
+  const hasSession = Boolean(await currentUser());
+
   return (
     <html
       lang={locale}
@@ -93,7 +96,7 @@ export default async function LocaleLayout({
       </head>
       <body className="min-h-dvh antialiased">
         <NextIntlClientProvider>
-          <OfflineProvider>{children}</OfflineProvider>
+          <OfflineProvider hasSession={hasSession}>{children}</OfflineProvider>
         </NextIntlClientProvider>
       </body>
     </html>

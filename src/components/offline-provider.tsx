@@ -28,7 +28,14 @@ const OfflineContext = createContext<OfflineState>({
 
 export const useOffline = () => useContext(OfflineContext);
 
-export function OfflineProvider({ children }: { children: React.ReactNode }) {
+export function OfflineProvider({
+  children,
+  hasSession,
+}: {
+  children: React.ReactNode;
+  /** Skips the drain/refresh network calls on public pages like /login, where they'd only 401. */
+  hasSession: boolean;
+}) {
   const [online, setOnline] = useState(true);
   const [queued, setQueued] = useState(0);
   const [syncing, setSyncing] = useState(false);
@@ -50,6 +57,7 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
   }, [refreshQueue]);
 
   const drain = useCallback(async () => {
+    if (!hasSession) return;
     setSyncing(true);
     try {
       await syncPending();
@@ -60,7 +68,7 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
       setSyncing(false);
       refreshQueue();
     }
-  }, [refreshQueue]);
+  }, [hasSession, refreshQueue]);
 
   useEffect(() => {
     function goOnline() {
