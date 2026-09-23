@@ -37,6 +37,12 @@ ts-fsrs (FSRS-5) · next-intl (German default, English fallback) · Piper for TT
 faster-whisper for ASR · Anthropic API for teacher-side content drafting ·
 Vitest and Playwright.
 
+`next dev`/`next build` print a `Failed to find font override values for font
+"Atkinson Hyperlegible Next"` warning — `next/font`'s bundled metrics database
+doesn't have this (fairly new) Google Font yet, so it skips generating an
+automatic fallback font. Cosmetic build noise, not an app bug; safe to ignore
+until Next.js ships metrics for it.
+
 ## Getting started
 
 Requires Node 22+ and pnpm (`corepack enable`), plus a PostgreSQL 17 database.
