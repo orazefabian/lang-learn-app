@@ -428,6 +428,28 @@
       "askedDaysAgo": "asked {days} days ago",
       "toInbox": "To the questions",
       "weeksTitle": "Earlier weeks"
+    },
+    "progress": {
+      "title": "Her progress",
+      "navSubtitle": "Where she stands right now.",
+      "subtitle": "Where {name} stands right now — not the weekly retrospective.",
+      "noLearner": "No learner account yet.",
+      "canSay": "Can say",
+      "lessonsCompleted": "Lessons",
+      "lessonsProgress": "{done} of {total}",
+      "overdue": "Overdue",
+      "neverActive": "Never active yet.",
+      "lastToday": "Last active: today.",
+      "lastDaysAgo": "Last active: {days} days ago.",
+      "openSession": "A session is open, not finished.",
+      "currentLesson": "Currently on: {title}",
+      "noCurrentLesson": "Every lesson is done.",
+      "unitsTitle": "Lessons",
+      "lessonStatus": {
+        "not_started": "New",
+        "in_progress": "Started",
+        "completed": "Done"
+      }
     }
   },
   "offline": {
