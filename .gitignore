@@ -24,3 +24,5 @@ CLAUDE.md
 
 # Compiled by pnpm ops:build during the image build.
 /scripts/dist/
+
+/ux-report/
