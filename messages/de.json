@@ -41,6 +41,7 @@
     "canSayEmpty": "Hier sammelt sich, was du sicher sagen kannst.",
     "canSayAll": "Alles ansehen",
     "answeredTitle": "Antworten für dich",
+    "answeredEmpty": "Noch keine Antworten — sobald er etwas beantwortet, taucht es hier auf.",
     "answeredCount": "{count, plural, =1 {Eine Frage wurde beantwortet} other {# Fragen wurden beantwortet}}",
     "answeredOpen": "Ansehen"
   },

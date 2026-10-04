@@ -41,6 +41,7 @@
     "canSayEmpty": "This is where the things you can say for sure collect.",
     "canSayAll": "See all",
     "answeredTitle": "Answers for you",
+    "answeredEmpty": "No answers yet — as soon as he answers something, it will show up here.",
     "answeredCount": "{count, plural, =1 {One question was answered} other {# questions were answered}}",
     "answeredOpen": "Look"
   },
