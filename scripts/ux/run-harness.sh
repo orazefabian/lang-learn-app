@@ -17,11 +17,28 @@ cd "$(dirname "$0")/../.."
 
 # The pnpm scripts each load .env themselves; this script reads DATABASE_URL and
 # friends directly too, so it needs them in its own environment as well.
+#
+# Fill-in only: a variable already in the environment wins, and a blank value
+# in the file means "not set". That is what `node --env-file` does for the pnpm
+# scripts, and sourcing the file instead would let a .env quietly override a
+# DATABASE_URL a caller set on purpose — scripts/ux/verify.sh does exactly that
+# when it points the harness at its own throwaway database.
+#
+# Written with plain ifs on purpose: under `set -e`, a `[ … ] && export` whose
+# test fails leaves a non-zero status behind, and a blank value on the last
+# line was enough to end the script before it printed anything.
 if [ -f .env ]; then
-  set -a
-  # shellcheck disable=SC1091
-  . ./.env
-  set +a
+  while IFS= read -r line || [ -n "$line" ]; do
+    if [[ "$line" =~ ^[[:space:]]*([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]]; then
+      key="${BASH_REMATCH[1]}"
+      value="${BASH_REMATCH[2]}"
+      value="${value%\"}"
+      value="${value#\"}"
+      if [ -z "${!key+x}" ] && [ -n "$value" ]; then
+        export "$key=$value"
+      fi
+    fi
+  done < .env
 fi
 
 SCENARIOS=("$@")
