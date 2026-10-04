@@ -82,7 +82,7 @@ export default async function ProgressPage({ params }: { params: Promise<{ local
                   {capability.contextNote}
                 </p>
               ) : null}
-              <p className="text-[0.7rem] text-muted-foreground/70">
+              <p className="text-[0.7rem] text-muted-foreground">
                 {t("sinceLabel", {
                   date: format.dateTime(capability.reachedAt, {
                     day: "numeric",
