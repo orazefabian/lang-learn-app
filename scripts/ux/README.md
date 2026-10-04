@@ -50,6 +50,8 @@ fixtures. Thirty-nine lessons in a list is a layout problem; one lesson is not.
   speaking is the first skill the brief names.
 - **`capture.ts`** — the walk itself.
 - **`run-harness.sh`** — migrate, seed, build, boot, walk, repeat.
+- **`verify.sh`** and **`axe-diff.mjs`** — before/after snapshots of a change,
+  and the comparison between them. See below.
 
 ### What the stubs do and do not do
 
@@ -82,10 +84,42 @@ then re-records against it.
 A state marked ⚠ is one the walk could not get past. That is a finding, not a
 harness failure — the run records where it stopped and carries on.
 
+## Checking a change
+
+The tests can say whether a change broke the code. They cannot say whether the
+screen it was meant to fix now looks right. `verify.sh` takes the same walk
+before and after a change and compares the two:
+
+```bash
+pnpm ux:verify snapshot before steady    # before touching anything
+# …make the change…
+pnpm ux:verify snapshot after steady
+pnpm ux:verify diff before after         # markdown, ready for a PR description
+```
+
+The diff lists every screen where an accessibility failure went away or
+appeared, counted in failing elements — `26 → 0` means twenty-six things nobody
+could read are now readable — plus any journey that stopped completing. What
+did not move is folded away. Snapshots land in `ux-verify/<name>/`, screenshots
+included, for the part a count cannot settle.
+
+It brings its own database. With `DATABASE_URL` set (environment or `.env`) it
+uses that; without, it starts a throwaway PGlite for the length of the snapshot
+and deletes it afterwards. That is what lets the nightly agent run it in a job
+that has no Postgres service. Each snapshot rebuilds the app, so expect a few
+minutes apiece.
+
+Two honest limits. The review and speaking screens show whichever card the
+session dealt, so a change on those screens can be a different card rather
+than a different app — the diff says so at the bottom. And everything is
+captured in light mode only.
+
 ## Notes
 
 - The harness never fails a build. It reports.
-- `ux-report/` is generated; it is not committed.
+- `ux-report/` and `ux-verify/` are generated; neither is committed.
+- `.env` fills in what the environment leaves unset; it never overrides it, the
+  same rule `node --env-file` follows for the pnpm scripts.
 - In CI it runs against a Postgres service container
   (`.github/workflows/ux-harness.yml`). Locally `pnpm dev:db` is enough — the
   run-harness script stops the app around each reseed, because PGlite serves

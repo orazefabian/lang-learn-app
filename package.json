@@ -34,7 +34,8 @@
     "ux:stubs": "node scripts/ux/stub-speech.mjs",
     "ux:seed": "tsx --env-file-if-exists=.env scripts/ux/seed-scenario.ts",
     "ux:capture": "tsx --env-file-if-exists=.env scripts/ux/capture.ts",
-    "ux:harness": "bash scripts/ux/run-harness.sh"
+    "ux:harness": "bash scripts/ux/run-harness.sh",
+    "ux:verify": "bash scripts/ux/verify.sh"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.0",

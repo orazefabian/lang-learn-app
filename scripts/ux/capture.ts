@@ -49,6 +49,12 @@ type AxeFinding = {
   helpUrl: string;
   /** The offending markup, trimmed — enough to find it, not enough to drown in. */
   nodes: string[];
+  /**
+   * How many elements fail, before `nodes` was trimmed. A list of thirty
+   * low-contrast dates is four nodes long above, and a before/after comparison
+   * that counted those would call twenty-six remaining failures a fix.
+   */
+  nodeCount: number;
 };
 
 type Capture = {
@@ -122,6 +128,7 @@ async function runAxe(page: Page): Promise<AxeFinding[]> {
         help: violation.help,
         helpUrl: violation.helpUrl,
         nodes: violation.nodes.slice(0, 4).map((node) => node.html.slice(0, 220)),
+        nodeCount: violation.nodes.length,
       }));
     });
     return violations as AxeFinding[];
@@ -133,6 +140,7 @@ async function runAxe(page: Page): Promise<AxeFinding[]> {
         help: `axe could not run on this page: ${error instanceof Error ? error.message : String(error)}`,
         helpUrl: "",
         nodes: [],
+        nodeCount: 0,
       },
     ];
   }
@@ -337,17 +345,55 @@ await journey("Review", page, async () => {
   await page.waitForLoadState("networkidle").catch(() => undefined);
   await shot(page, "review-start", "Review — first card", "The session the backlog cap produces. Nothing here may report the true backlog.");
 
+  /*
+   * The answer step only exists on cards she types or reveals. The session
+   * interleaves exercise types, so the card it deals first is sometimes a
+   * speaking card, and this screen used to go uncaptured on those nights
+   * without anything saying so. Speaking cards have no skip control, so the
+   * walk records its way past them until a card with an answer step turns up —
+   * and says so plainly if none does.
+   *
+   * The screen keeps one id whichever kind of card produced it, so that two
+   * runs can be compared screen by screen.
+   */
   const show = page.getByRole("button", { name: "Zeigen", exact: true });
   const check = page.getByRole("button", { name: "Prüfen", exact: true });
-  if (await check.isVisible().catch(() => false)) {
-    await page.getByRole("textbox").first().fill("dober dan");
-    await check.click();
-    await page.waitForTimeout(600);
-    await shot(page, "review-checked", "Review — answer checked", "How a typed answer is judged, and how a wrong one is spoken about.");
-  } else if (await show.isVisible().catch(() => false)) {
-    await show.click();
-    await page.waitForTimeout(600);
-    await shot(page, "review-revealed", "Review — answer revealed", "The rating step: four choices, and how much reading they need.");
+  const recordButton = page.getByRole("button", { name: /aufnehmen/i }).first();
+  let answered = false;
+  let passed = 0;
+  for (let step = 0; step < 6 && !answered; step += 1) {
+    if (await check.isVisible().catch(() => false)) {
+      await page.getByRole("textbox").first().fill("dober dan");
+      await check.click();
+      await page.waitForTimeout(600);
+      await shot(page, "review-answer", "Review — answer checked", "How a typed answer is judged, and how a wrong one is spoken about.", {
+        notes: passed ? [`reached after recording past ${passed} speaking card(s)`] : [],
+      });
+      answered = true;
+    } else if (await show.isVisible().catch(() => false)) {
+      await show.click();
+      await page.waitForTimeout(600);
+      await shot(page, "review-answer", "Review — answer revealed", "The rating step: four choices, and how much reading they need.", {
+        notes: passed ? [`reached after recording past ${passed} speaking card(s)`] : [],
+      });
+      answered = true;
+    } else if (await recordButton.isVisible().catch(() => false)) {
+      await setTranscript("", "off");
+      await record(page);
+      const rate = page.getByRole("button", { name: /^Gut/ });
+      if (!(await rate.isVisible().catch(() => false))) break;
+      await rate.click();
+      await page.waitForTimeout(500);
+      passed += 1;
+    } else {
+      break;
+    }
+  }
+  if (!answered) {
+    await shot(page, "review-answer", "Review — answer step not reached", "The rating step: four choices, and how much reading they need.", {
+      status: "blocked",
+      notes: [`no typed or revealed card came up within 6 cards (recorded past ${passed} speaking card(s))`],
+    });
   }
 
   const stuck = page.getByRole("button", { name: "Verstehe ich nicht" });
