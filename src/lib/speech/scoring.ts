@@ -186,5 +186,33 @@ export function diffWords(target: string, transcript: string): WordDiffSegment[]
     }
   }
 
-  return segments;
+  return groupChangedRuns(segments);
+}
+
+/**
+ * Within each stretch between matching words, list every missing word before
+ * every extra one. Alignment alone can interleave the two (target, heard,
+ * target, heard…) when they share nothing, which reads as a third sentence.
+ */
+function groupChangedRuns(segments: WordDiffSegment[]): WordDiffSegment[] {
+  const grouped: WordDiffSegment[] = [];
+  let missing: WordDiffSegment[] = [];
+  let extra: WordDiffSegment[] = [];
+  const flush = () => {
+    grouped.push(...missing, ...extra);
+    missing = [];
+    extra = [];
+  };
+  for (const segment of segments) {
+    if (segment.kind === "same") {
+      flush();
+      grouped.push(segment);
+    } else if (segment.kind === "missing") {
+      missing.push(segment);
+    } else {
+      extra.push(segment);
+    }
+  }
+  flush();
+  return grouped;
 }
