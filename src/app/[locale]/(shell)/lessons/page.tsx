@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { db } from "@/db/client";
 import { Link } from "@/i18n/navigation";
+import { ScrollToNext } from "@/components/scroll-to-next";
 import { requireUser } from "@/lib/auth";
 import { listUnits } from "@/lib/lessons/service";
 import { cn } from "@/lib/utils";
@@ -14,9 +15,20 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
   const t = await getTranslations("lessons");
   const unitList = await listUnits(db, user.id);
 
+  // The lesson to continue with: one she has started, else the first not done.
+  const allLessons = unitList.flatMap((unit) => unit.lessons);
+  const nextId = (
+    allLessons.find((lesson) => lesson.status === "in_progress") ??
+    allLessons.find((lesson) => lesson.status !== "completed")
+  )?.id;
+
   return (
     <main className="mx-auto flex w-full max-w-md flex-col gap-10 px-5 pb-10 pt-8">
       <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+
+      {nextId !== undefined && allLessons.some((l) => l.status === "completed") ? (
+        <ScrollToNext targetId="next-lesson" />
+      ) : null}
 
       {unitList.length === 0 ? (
         <p className="text-muted-foreground">{t("empty")}</p>
@@ -41,7 +53,7 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
 
           <ul className="flex flex-col divide-y divide-border border-y border-border">
             {unit.lessons.map((lesson) => (
-              <li key={lesson.id}>
+              <li key={lesson.id} id={lesson.id === nextId ? "next-lesson" : undefined} className="scroll-mt-24">
                 {/*
                   Every lesson is openable. Order is a suggestion; the warning
                   about skipping lives inside the lesson, not on a locked door.
@@ -77,6 +89,12 @@ export default async function LessonsPage({ params }: { params: Promise<{ locale
                       })}
                     </span>
                   </span>
+
+                  {lesson.id === nextId ? (
+                    <span className="shrink-0 rounded-full bg-primary px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-primary-foreground">
+                      {t("next")}
+                    </span>
+                  ) : null}
 
                   {lesson.teachesDual ? (
                     <span className="dual-mark shrink-0 rounded-full bg-accent-soft px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-accent-foreground">

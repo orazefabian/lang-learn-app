@@ -167,6 +167,7 @@
     },
     "meta": "{minutes} min · {count, plural, =1 {1 item} other {# items}}",
     "dualBadge": "Dual",
+    "next": "Next",
     "start": "Start",
     "resume": "Continue",
     "again": "Look again",
