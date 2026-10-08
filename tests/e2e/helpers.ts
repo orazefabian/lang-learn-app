@@ -49,7 +49,7 @@ export async function answerOneCard(page: Page): Promise<void> {
 
   /*
    * The four ratings only appear once the answer is showing. Each carries a
-   * second line — the accessible name is "Nochmal — Wusste ich nicht", not
+   * second line — the accessible name is "Nochmal — Nicht gewusst", not
    * "Nochmal" — so these match on the prefix. An exact match silently finds
    * nothing and the test dies waiting for a button that is on the screen.
    */

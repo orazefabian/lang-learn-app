@@ -457,7 +457,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
                     <span className="text-sm font-medium">
                       {t(`rating.${rating}` as "rating.good")}
                     </span>
-                    <span className="text-[0.7rem] font-normal opacity-70">
+                    <span className="text-balance break-words text-center text-[0.7rem] font-normal opacity-70">
                       {t(`ratingHint.${rating}` as "ratingHint.good")}
                     </span>
                   </Button>
