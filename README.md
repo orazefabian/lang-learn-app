@@ -119,6 +119,9 @@ volume, the database on `db-data`.
 Migrations run automatically at server startup (`src/instrumentation.ts`) and are
 idempotent. Set `RUN_MIGRATIONS_ON_START=false` to manage them yourself.
 
+A `backup` service comes up alongside `db` and dumps it nightly into the
+`backups` volume — see [Backups](#backups) below.
+
 ### The home cluster
 
 The real target is a k3s cluster running ArgoCD, and the manifests for it live
@@ -187,7 +190,11 @@ readable with `pg_restore --list`, and prunes anything older than
 into place only on success — a crash or a full disk must never leave a
 truncated file that looks like a good backup.
 
-Under compose or on a host:
+Under compose, the `backup` service runs it automatically — once at startup
+and every 24h after — into the `backups` volume, using the `postgres:17-alpine`
+image for a matching `pg_dump`. Set `BACKUP_RETENTION_DAYS` to override the
+30-day default. To run it by hand instead, on a host or in any container with
+`pg_dump`:
 
 ```bash
 DATABASE_URL=postgres://... BACKUP_DIR=/backups scripts/ops/backup.sh
@@ -598,10 +605,13 @@ The teacher gets a count on the inbox and a badge on his tab.
   probes on closed ports, rolling updates on RWO volumes), and that test was
   itself verified by breaking each of those things on purpose. That is not the
   same as a cluster accepting them.
-- **The backup scripts have not been run against a real database.** There is no
-  `pg_dump` here. Their guards — missing variables, absent dump file, the
-  refusal to restore without `CONFIRM_RESTORE=yes`, password redaction in
-  output — have been exercised; the dump and restore paths have not.
+- **The backup and restore scripts have been run against a real database.**
+  Earlier drafts of this note said only their guards were exercised, without
+  `pg_dump` available to test the dump/restore paths themselves. Since then,
+  `scripts/ops/backup.sh` produced a verified dump from a live
+  `postgres:17-alpine` container (as the compose `backup` service now does
+  automatically, see [Backups](#backups)), and `scripts/ops/restore.sh`
+  restored it into a fresh database with the original row intact.
 - **Offline mode has not been exercised in a real browser.** The sync
   contract — idempotency, ordering, timestamps, rejection — is covered by
   integration tests and was driven end to end against the running server, but

@@ -125,7 +125,36 @@ services:
       # Bound to localhost; put your existing reverse proxy in front of this.
       - "127.0.0.1:${APP_PORT:-3000}:3000"
 
+  backup:
+    # Runs scripts/ops/backup.sh out of the postgres image, which already has
+    # pg_dump at exactly the right version — the same approach the k8s
+    # CronJob uses, so compose isn't left without any automated backup.
+    image: postgres:17-alpine
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-slo}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-dober_dan}
+      BACKUP_DIR: /backups
+      RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+    volumes:
+      - backups:/backups
+      - ./scripts/ops/backup.sh:/backup.sh:ro
+    # A sleep loop rather than real cron: it runs once at startup and every
+    # 24h after, which is enough for a single host and needs nothing beyond
+    # what the image already has. A failed run is logged and retried on the
+    # next cycle rather than crash-looping the container.
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        while true; do
+          sh /backup.sh || echo "backup failed, will retry in 24h" >&2
+          sleep 86400
+        done
+
 volumes:
   db-data:
   media:
   whisper-models:
+  backups:
