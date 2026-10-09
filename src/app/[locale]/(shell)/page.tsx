@@ -96,7 +96,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="mt-2 text-sm text-muted-foreground">{t("nothingDueHint")}</p>
           ) : null}
 
-          <Button asChild size="lg" block className="mt-4">
+          <Button
+            asChild
+            size="lg"
+            variant={overview.displayedDue > 0 ? "default" : "outline"}
+            block
+            className="mt-4"
+          >
             <Link href="/review">{t("reviewCta")}</Link>
           </Button>
 
@@ -109,7 +115,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         {nextLesson ? (
           <Link
             href={`/lessons/${nextLesson.slug}`}
-            className="group flex items-center gap-4 rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary"
+            className={cn(
+              "group flex items-center gap-4 rounded-lg border bg-card p-5 transition-colors hover:border-primary",
+              // With nothing due, learning something new is the suggested next step.
+              overview.displayedDue === 0 ? "border-primary" : "border-border",
+            )}
           >
             <div className="flex flex-1 flex-col gap-1">
               <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
