@@ -168,6 +168,7 @@
     },
     "meta": "{minutes} Min · {count, plural, =1 {1 Sache} other {# Sachen}}",
     "dualBadge": "Dvojina",
+    "next": "Weiter",
     "start": "Anfangen",
     "resume": "Weitermachen",
     "again": "Nochmal ansehen",
