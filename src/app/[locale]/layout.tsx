@@ -25,6 +25,9 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+// Triggers a "Failed to find font override values" build/dev warning —
+// next/font's bundled metrics database doesn't have this font yet, so it
+// skips the automatic fallback font. Cosmetic; see README's Stack section.
 const atkinson = Atkinson_Hyperlegible_Next({
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700"],
