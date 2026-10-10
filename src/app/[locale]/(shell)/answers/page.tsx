@@ -34,7 +34,7 @@ export default async function AnswersPage({
 
       {answers.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border px-5 py-8 text-center text-sm text-muted-foreground">
-          {tAsk("hint")}
+          {t("answeredEmpty")}
         </p>
       ) : (
         <ul className="flex flex-col gap-5">
