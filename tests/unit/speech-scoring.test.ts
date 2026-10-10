@@ -160,6 +160,22 @@ describe("word diff for the visual comparison", () => {
   });
 });
 
+describe("diffWords with no shared words", () => {
+  it("lists the target words, then the heard words, instead of interleaving", () => {
+    const diff = diffWords("Kako se reče to", "ne razumem tega");
+    expect(diff.map((s) => s.kind)).toEqual([
+      "missing",
+      "missing",
+      "missing",
+      "missing",
+      "extra",
+      "extra",
+      "extra",
+    ]);
+    expect(diff.map((s) => s.text).join(" ")).toBe("kako se reče to ne razumem tega");
+  });
+});
+
 describe("tokenisation", () => {
   it("splits on whitespace and drops punctuation", () => {
     expect(toWords("Dober dan, kako si?")).toEqual(["dober", "dan", "kako", "si"]);
