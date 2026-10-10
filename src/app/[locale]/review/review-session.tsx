@@ -304,7 +304,11 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
 
         {!isSpeaking && isAudioFirst ? (
           <>
-            <p className="text-center text-sm text-muted-foreground">{t("listenPrompt")}</p>
+            {card.prompt ? (
+              <p className="text-center text-sm text-muted-foreground">{t("listenPrompt")}</p>
+            ) : (
+              <h1 className="text-center text-sm text-muted-foreground">{t("listenPrompt")}</h1>
+            )}
             <AudioPlayer
               sources={card.audio}
               labels={audioLabels}
@@ -315,14 +319,14 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
         ) : null}
 
         {!isSpeaking && card.prompt ? (
-          <p
+          <h1
             className={cn(
               "text-balance text-center font-semibold tracking-tight",
               card.prompt.length > 40 ? "text-2xl" : "text-3xl",
             )}
           >
             {card.prompt}
-          </p>
+          </h1>
         ) : null}
 
         {!isSpeaking && card.register !== "standard" ? (

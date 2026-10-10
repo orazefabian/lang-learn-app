@@ -117,7 +117,7 @@ export function SpeakingCard({
   return (
     <div className="flex flex-col gap-6">
       <p className="text-center text-sm text-muted-foreground">{t("speaking.prompt")}</p>
-      <p className="text-balance text-center text-2xl font-semibold tracking-tight">{prompt}</p>
+      <h1 className="text-balance text-center text-2xl font-semibold tracking-tight">{prompt}</h1>
 
       {!result ? (
         <SpeechRecorder
