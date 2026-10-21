@@ -135,6 +135,9 @@ export function LessonPlayer({
 
         {step.kind === "item" ? (
           <ItemStep
+            // Keyed per item so the card — and the audio element inside it —
+            // starts fresh rather than being reconciled onto the previous one.
+            key={step.index}
             item={lesson.items[step.index] as LessonView["items"][number]}
             autoplayAudio={autoplayAudio}
             label={t("newItems")}
