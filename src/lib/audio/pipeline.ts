@@ -29,24 +29,56 @@ export type EnsureAudioResult = {
 };
 
 /**
+ * How much slower the reference rendition is.
+ *
+ * Re-synthesised rather than stretched in the player. Piper lengthens the
+ * vowels and the consonant transitions, where `playbackRate` stretches the
+ * silences and the plosive bursts too — and Slovene vowel length is exactly
+ * what a beginner is trying to hear.
+ */
+const SLOW_LENGTH_SCALE = 1.35;
+
+/**
  * Opus for size, mp3 alongside it for players that need it. Both are generated
  * up front — discovering at playback time that the fallback is missing would
- * mean a silent card.
+ * mean a silent card. A slower copy is rendered alongside them for the turtle
+ * button; unlike the other two it is optional, and the player falls back to
+ * slowing the normal one when it is absent.
  */
 async function synthesizePair(
   client: TtsClient,
   text: string,
   voice: string,
   hash: string,
-): Promise<{ path: string; fallbackPath: string; byteSize: number }> {
+): Promise<{ path: string; fallbackPath: string; slowPath: string; byteSize: number }> {
   const primary = ttsPath(hash, "opus");
   const fallback = ttsPath(hash, "mp3");
+  const slow = ttsPath(hash, "slow.opus");
 
   let byteSize = 0;
 
   if (!(await mediaExists(primary))) {
     const result = await client.synthesize({ text, format: "opus", voice });
     byteSize = await writeMedia(primary, result.audio);
+  }
+
+  let slowPath = slow;
+  if (!(await mediaExists(slow))) {
+    try {
+      const result = await client.synthesize({
+        text,
+        format: "opus",
+        voice,
+        lengthScale: SLOW_LENGTH_SCALE,
+      });
+      await writeMedia(slow, result.audio);
+    } catch (error) {
+      // An engine that ignores length_scale, or one that fails on it, should
+      // cost the turtle button its nicer audio and nothing else.
+      logger.warn({ err: error, text }, "slow rendition could not be generated");
+      await deleteMedia(slow);
+      slowPath = "";
+    }
   }
 
   if (!(await mediaExists(fallback))) {
@@ -58,11 +90,11 @@ async function synthesizePair(
       // everywhere that matters. Leave the primary in place and say so.
       logger.warn({ err: error, text }, "mp3 fallback could not be generated");
       await deleteMedia(fallback);
-      return { path: primary, fallbackPath: "", byteSize };
+      return { path: primary, fallbackPath: "", slowPath, byteSize };
     }
   }
 
-  return { path: primary, fallbackPath: fallback, byteSize };
+  return { path: primary, fallbackPath: fallback, slowPath, byteSize };
 }
 
 /**
@@ -92,7 +124,21 @@ export async function ensureTtsAudio(
   const existing = await db.select().from(mediaAssets).where(where);
 
   const current = existing.find((asset) => asset.contentHash === hash);
-  if (current && !options.force && (await mediaExists(current.path))) {
+
+  /*
+   * "Already done" means every file is on disk, the slow one included. An
+   * asset generated before the turtle button had its own rendition would
+   * otherwise be reused forever and never get one. Falling through is cheap:
+   * synthesizePair skips whatever already exists, so only the missing file is
+   * actually rendered.
+   */
+  const complete =
+    current &&
+    (await mediaExists(current.path)) &&
+    Boolean(current.slowPath) &&
+    (await mediaExists(current.slowPath as string));
+
+  if (complete && !options.force) {
     return { status: "reused", mediaAssetId: current.id };
   }
 
@@ -113,6 +159,7 @@ export async function ensureTtsAudio(
         .set({
           path: files.path,
           fallbackPath: files.fallbackPath || null,
+          slowPath: files.slowPath || null,
           byteSize: files.byteSize || current.byteSize,
         })
         .where(eq(mediaAssets.id, current.id));
@@ -128,6 +175,7 @@ export async function ensureTtsAudio(
         speakerLabel: voice,
         path: files.path,
         fallbackPath: files.fallbackPath || null,
+        slowPath: files.slowPath || null,
         mimeType: "audio/ogg",
         byteSize: files.byteSize || null,
         contentHash: hash,

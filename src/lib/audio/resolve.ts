@@ -17,6 +17,11 @@ export type PlayableAudio = {
   src: string;
   /** mp3 twin for players that will not take Opus. */
   fallbackSrc: string | null;
+  /**
+   * A slower rendition of the same text, when one exists. Generated speech
+   * gets one; a human recording does not, and is slowed in the player.
+   */
+  slowSrc: string | null;
   speakerLabel: string | null;
   durationMs: number | null;
 };
@@ -31,6 +36,7 @@ function toPlayable(asset: typeof mediaAssets.$inferSelect): PlayableAudio {
     kind: asset.kind,
     src: mediaUrl(asset.path),
     fallbackSrc: asset.fallbackPath ? mediaUrl(asset.fallbackPath) : null,
+    slowSrc: asset.slowPath ? mediaUrl(asset.slowPath) : null,
     speakerLabel: asset.speakerLabel,
     durationMs: asset.durationMs,
   };

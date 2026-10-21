@@ -246,6 +246,13 @@ export const mediaAssets = pgTable(
     mimeType: text("mime_type").notNull(),
     /** mp3 twin of an Opus/WebM asset, for browsers that need it. */
     fallbackPath: text("fallback_path"),
+    /**
+     * A second, slower rendition of the same text, for the turtle button.
+     * Re-synthesised rather than stretched, so the vowels lengthen and the
+     * pauses do not. Only generated speech has one; a human recording is
+     * slowed in the player as before.
+     */
+    slowPath: text("slow_path"),
     durationMs: integer("duration_ms"),
     byteSize: integer("byte_size"),
     /** Hash of the text the audio voices, so edits invalidate the cache. */

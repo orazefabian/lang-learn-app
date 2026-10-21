@@ -93,7 +93,99 @@ describe("generating audio", () => {
     expect(asset?.fallbackPath).toMatch(/\.mp3$/);
     expect(await storage.mediaExists(asset!.path)).toBe(true);
     expect(await storage.mediaExists(asset!.fallbackPath as string)).toBe(true);
-    expect(tts.calls.map((c) => c.format)).toEqual(["opus", "mp3"]);
+
+    // Three renditions: the normal one, a slower copy for the turtle button,
+    // and the mp3 twin. The slow one is the same text at a longer length
+    // scale, not the normal one stretched.
+    expect(tts.calls.map((c) => c.format)).toEqual(["opus", "opus", "mp3"]);
+    const slowCall = tts.calls.find((c) => c.lengthScale !== undefined);
+    expect(slowCall?.lengthScale).toBeGreaterThan(1);
+    expect(slowCall?.text).toBe("Dober tek!");
+
+    expect(asset?.slowPath).toMatch(/\.slow\.opus$/);
+    expect(await storage.mediaExists(asset!.slowPath as string)).toBe(true);
+  });
+
+  it("offers the slow copy to the player, and only for generated speech", async () => {
+    const playable = await resolve.getAudioForItem(db, { phraseId });
+    const generated = playable.find((asset) => asset.kind === "tts");
+
+    expect(generated?.slowSrc).toMatch(/\.slow\.opus$/);
+  });
+
+  /**
+   * A length scale the engine will not take costs the turtle button its nicer
+   * audio and nothing else — the card still has its normal voice.
+   */
+  it("keeps the asset when the slow rendition cannot be made", async () => {
+    const [phrase] = await db
+      .insert(schema.phrases)
+      .values({
+        slovene: "Brez počasne različice",
+        sloveneNormalized: "brez pocasne razlicice",
+        german: "Ohne langsame Fassung",
+        status: "active",
+      })
+      .returning({ id: schema.phrases.id });
+
+    const refuses = new StubTts();
+    const original = refuses.synthesize.bind(refuses);
+    refuses.synthesize = async (request) => {
+      if (request.lengthScale !== undefined) throw new Error("length_scale unsupported");
+      return original(request);
+    };
+
+    const result = await pipeline.ensureTtsAudio(
+      db,
+      { kind: "phrase", id: phrase!.id, text: "Brez počasne različice" },
+      { client: refuses },
+    );
+    expect(result.status).toBe("created");
+
+    const [asset] = await db
+      .select()
+      .from(schema.mediaAssets)
+      .where(drizzle.eq(schema.mediaAssets.phraseId, phrase!.id));
+
+    expect(asset?.slowPath).toBeNull();
+    expect(await storage.mediaExists(asset!.path)).toBe(true);
+  });
+
+  /**
+   * The deployment already holds a few hundred assets made before the slow
+   * rendition existed. Reuse keys on the files being present, so those get
+   * their missing copy on the next generation run instead of never.
+   */
+  it("backfills a slow copy for an asset that predates it", async () => {
+    const [asset] = await db
+      .select()
+      .from(schema.mediaAssets)
+      .where(drizzle.eq(schema.mediaAssets.phraseId, phraseId));
+
+    // Put the row back the way an older version of the app would have left it.
+    await storage.deleteMedia(asset!.slowPath as string);
+    await db
+      .update(schema.mediaAssets)
+      .set({ slowPath: null })
+      .where(drizzle.eq(schema.mediaAssets.id, asset!.id));
+
+    const before = tts.calls.length;
+    const result = await pipeline.ensureTtsAudio(
+      db,
+      { kind: "phrase", id: phraseId, text: "Dober tek!" },
+      { client: tts },
+    );
+    expect(result.status).toBe("created");
+
+    // Only the slow one is rendered; the normal and the mp3 are still on disk.
+    expect(tts.calls.slice(before).map((c) => c.lengthScale)).toEqual([1.35]);
+
+    const [updated] = await db
+      .select()
+      .from(schema.mediaAssets)
+      .where(drizzle.eq(schema.mediaAssets.id, asset!.id));
+    expect(updated?.slowPath).toMatch(/\.slow\.opus$/);
+    expect(await storage.mediaExists(updated!.slowPath as string)).toBe(true);
   });
 
   /** Audio is made once, at content-creation time — never per request. */
