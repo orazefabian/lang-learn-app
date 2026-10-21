@@ -180,7 +180,6 @@
     "goal": "Danach kannst du",
     "newItems": "Das ist neu",
     "grammarNote": "Kurz zur Grammatik",
-    "next": "Weiter",
     "back": "Zurück",
     "practice": "Kurz ausprobieren",
     "practiceHint": "Nur zum Ausprobieren — das zählt noch nicht.",
@@ -291,6 +290,24 @@
       "uploadFailed": "Die Aufnahme konnte nicht gespeichert werden.",
       "notFound": "Diesen Eintrag gibt es nicht.",
       "back": "Zurück zu den Inhalten"
+    },
+    "record": {
+      "title": "Stimmen aufnehmen",
+      "subtitle": "Eine Phrase nach der anderen. Lesen, sprechen, behalten, weiter.",
+      "speaker": "Wer spricht",
+      "speakerHint": "Steht bei der Aufnahme — „Oma“, „Papa“, „ich“. Wird für diese Sitzung gemerkt.",
+      "speakerRequired": "Sag noch, wer spricht.",
+      "remaining": "noch {count}",
+      "skip": "Überspringen",
+      "keep": "Behalten",
+      "saving": "Speichert …",
+      "saved": "Gespeichert. Das hört sie ab jetzt.",
+      "failed": "Das hat nicht geklappt. Nochmal auf Behalten tippen.",
+      "done": "Alles aufgenommen.",
+      "doneBody": "Jede aktive Phrase und jedes Wort hat eine echte Stimme. Neue Einträge landen von selbst wieder hier.",
+      "contextLabel": "Wann",
+      "phraseLabel": "Phrase",
+      "wordLabel": "Wort"
     },
     "statusLabel": {
       "draft": "Entwurf",

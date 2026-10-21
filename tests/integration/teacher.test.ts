@@ -336,3 +336,107 @@ describe("human recordings", () => {
     ).rejects.toThrow(/unsupported/);
   });
 });
+
+describe("the recording queue", () => {
+  /**
+   * Enough phrases to go past one page, because walking the whole backlog is
+   * the thing the content browser's filter cannot do: it drops recorded items
+   * *after* its own LIMIT, so the list shrinks and the tail is unreachable.
+   */
+  const QUEUE_SIZE = 40;
+
+  beforeAll(async () => {
+    await db.insert(schema.phrases).values(
+      Array.from({ length: QUEUE_SIZE }, (_, index) => ({
+        slovene: `Vrsta ${index}`,
+        sloveneNormalized: `vrsta ${index}`,
+        german: `Reihe ${index}`,
+        status: "active" as const,
+        // Ascending, so the queue order is predictable and checkable.
+        difficulty: index,
+      })),
+    );
+  });
+
+  it("offers items that have no human recording", async () => {
+    const queue = await recordings.getRecordingQueue(db, { limit: 5 });
+    expect(queue.length).toBe(5);
+    expect(queue.every((item) => item.slovene.length > 0)).toBe(true);
+  });
+
+  it("keeps offering an item that only has generated audio", async () => {
+    const [phrase] = await db
+      .insert(schema.phrases)
+      .values({
+        slovene: "Samo računalnik",
+        sloveneNormalized: "samo racunalnik",
+        german: "Nur der Computer",
+        status: "active",
+        difficulty: 0,
+      })
+      .returning({ id: schema.phrases.id });
+
+    await db.insert(schema.mediaAssets).values({
+      kind: "tts",
+      phraseId: phrase!.id,
+      path: "tts/computer.opus",
+      mimeType: "audio/ogg",
+      speakerLabel: "sl_SI-artur-medium",
+      priority: 0,
+    });
+
+    const queue = await recordings.getRecordingQueue(db, { limit: QUEUE_SIZE + 10 });
+    // A generated voice is exactly what the queue exists to replace.
+    expect(queue.some((item) => item.id === phrase!.id)).toBe(true);
+  });
+
+  it("drops an item once a person has recorded it", async () => {
+    const before = await recordings.getRecordingQueue(db, { limit: 1 });
+    const target = before[0]!;
+
+    await recordings.addHumanRecording(db, {
+      kind: target.kind,
+      itemId: target.id,
+      audio: AUDIO,
+      mimeType: "audio/webm",
+      speakerLabel: "Oma",
+      createdBy: teacherId,
+    });
+
+    const after = await recordings.getRecordingQueue(db, { limit: QUEUE_SIZE + 10 });
+    expect(after.some((item) => item.id === target.id)).toBe(false);
+  });
+
+  it("walks the whole backlog rather than one page of it", async () => {
+    const counted = await recordings.countMissingRecordings(db);
+    const seen = new Set<string>();
+
+    // Record the head of the queue repeatedly. If the queue were a filter over
+    // a fixed page, this would run dry long before the backlog did.
+    for (let step = 0; step < QUEUE_SIZE; step += 1) {
+      const [next] = await recordings.getRecordingQueue(db, { limit: 1 });
+      if (!next) break;
+      expect(seen.has(next.id)).toBe(false);
+      seen.add(next.id);
+
+      await recordings.addHumanRecording(db, {
+        kind: next.kind,
+        itemId: next.id,
+        audio: AUDIO,
+        mimeType: "audio/webm",
+        speakerLabel: "Oma",
+        createdBy: teacherId,
+      });
+    }
+
+    expect(seen.size).toBe(Math.min(QUEUE_SIZE, counted.total));
+
+    const remaining = await recordings.countMissingRecordings(db);
+    expect(remaining.total).toBe(counted.total - seen.size);
+  });
+
+  it("counts phrases and words separately", async () => {
+    const counted = await recordings.countMissingRecordings(db);
+    expect(counted.total).toBe(counted.phrases + counted.lexemes);
+  });
+});

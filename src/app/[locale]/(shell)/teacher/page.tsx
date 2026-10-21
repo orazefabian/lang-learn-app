@@ -1,4 +1,4 @@
-import { CalendarRange, FileCheck2, Inbox, Library, Sparkles, TrendingUp } from "lucide-react";
+import { CalendarRange, FileCheck2, Inbox, Library, Mic, Sparkles, TrendingUp } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { db } from "@/db/client";
 import { Link } from "@/i18n/navigation";
@@ -6,7 +6,7 @@ import { countPendingProposals } from "@/lib/ai/review";
 import { requireTeacher } from "@/lib/auth";
 import { isAiConfigured } from "@/lib/env";
 import { getInboxCounts } from "@/lib/questions/service";
-import { searchContent } from "@/lib/teacher/content";
+import { countMissingRecordings } from "@/lib/teacher/recordings";
 import { QuickCapture } from "./quick-capture";
 
 export default async function TeacherPage({
@@ -23,7 +23,7 @@ export default async function TeacherPage({
   // The working list: what she will hear in a computer voice until someone
   // records it.
   const [missingVoice, inbox, pendingDrafts] = await Promise.all([
-    searchContent(db, { status: "active", missingHumanAudio: true, limit: 5 }),
+    countMissingRecordings(db),
     getInboxCounts(db),
     countPendingProposals(db),
   ]);
@@ -128,25 +128,24 @@ export default async function TeacherPage({
           </Link>
         ) : null}
 
-        {missingVoice.length ? (
-          <div className="flex flex-col gap-3 rounded-lg border border-border p-5">
-            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-              {t("browser.missingVoice")}
-            </p>
-            <ul className="flex flex-col divide-y divide-border">
-              {missingVoice.map((item) => (
-                <li key={`${item.kind}-${item.id}`} className="py-2 first:pt-0 last:pb-0">
-                  <Link
-                    href={`/teacher/items/${item.kind}/${item.id}`}
-                    className="flex flex-col gap-0.5 hover:text-primary"
-                  >
-                    <span className="slovene">{item.slovene}</span>
-                    <span className="text-sm text-muted-foreground">{item.german}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/*
+          A door into the recording session rather than five links to five
+          editor pages. The backlog is a few hundred items long, so what the
+          teacher needs is somewhere to sit down and work through it.
+        */}
+        {missingVoice.total > 0 ? (
+          <Link
+            href="/teacher/record"
+            className="flex items-center gap-4 rounded-lg border border-border bg-card p-5 transition-colors hover:border-primary"
+          >
+            <Mic className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+            <span className="flex flex-1 flex-col">
+              <span className="font-medium">{t("record.title")}</span>
+              <span className="text-sm text-muted-foreground">
+                {t("record.remaining", { count: missingVoice.total })}
+              </span>
+            </span>
+          </Link>
         ) : null}
       </section>
     </main>

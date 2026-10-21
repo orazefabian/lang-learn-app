@@ -180,7 +180,6 @@
     "goal": "After this you can",
     "newItems": "This is new",
     "grammarNote": "A note on grammar",
-    "next": "Next",
     "back": "Back",
     "practice": "Quick try",
     "practiceHint": "Just trying it out — this does not count yet.",
@@ -291,6 +290,24 @@
       "uploadFailed": "The recording could not be saved.",
       "notFound": "There is no such entry.",
       "back": "Back to content"
+    },
+    "record": {
+      "title": "Record voices",
+      "subtitle": "One phrase at a time. Read it, say it, keep it, next.",
+      "speaker": "Who is speaking",
+      "speakerHint": "Shown with the recording — “Oma”, “Papa”, “me”. Remembered for this sitting.",
+      "speakerRequired": "Say who is speaking first.",
+      "remaining": "{count} left",
+      "skip": "Skip",
+      "keep": "Keep",
+      "saving": "Saving …",
+      "saved": "Kept. This is what she hears from now on.",
+      "failed": "That did not go through. Tap Keep again.",
+      "done": "Everything is recorded.",
+      "doneBody": "Every active phrase and word has a real voice on it. New entries show up here on their own.",
+      "contextLabel": "When",
+      "phraseLabel": "Phrase",
+      "wordLabel": "Word"
     },
     "statusLabel": {
       "draft": "Draft",
