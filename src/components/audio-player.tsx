@@ -10,6 +10,8 @@ export type AudioSource = {
   kind: "tts" | "human_recording";
   src: string;
   fallbackSrc: string | null;
+  /** A separately rendered slow version, when the engine produced one. */
+  slowSrc: string | null;
   speakerLabel: string | null;
 };
 
@@ -42,6 +44,7 @@ export function AudioPlayer({
   className?: string;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const slowRef = useRef<HTMLAudioElement>(null);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -65,6 +68,8 @@ export function AudioPlayer({
   const play = useCallback(async (rate = 1) => {
     const element = audioRef.current;
     if (!element) return;
+    // Never two voices at once.
+    slowRef.current?.pause();
     element.playbackRate = rate;
     element.currentTime = 0;
     try {
@@ -75,8 +80,32 @@ export function AudioPlayer({
     }
   }, []);
 
+  /**
+   * The turtle button.
+   *
+   * A separately rendered slow copy when there is one — the synthesiser
+   * lengthens the vowels, where `playbackRate` stretches the silences too.
+   * Human recordings have no such copy, so they are slowed in the player as
+   * before.
+   */
+  const playSlow = useCallback(async () => {
+    const element = slowRef.current;
+    if (!element) {
+      void play(0.75);
+      return;
+    }
+    audioRef.current?.pause();
+    element.currentTime = 0;
+    try {
+      await element.play();
+    } catch {
+      void play(0.75);
+    }
+  }, [play]);
+
   const src = current?.src ?? "";
   const fallbackSrc = current?.fallbackSrc ?? "";
+  const slowSrc = current?.slowSrc ?? "";
 
   useEffect(() => {
     const element = audioRef.current;
@@ -90,11 +119,13 @@ export function AudioPlayer({
      * clip it ever loaded — the next item's audio would be the previous one's.
      */
     element.load();
+    // Same contract for the slow copy, which is a media element of its own.
+    slowRef.current?.load();
 
     const requested = playOnLoad.current;
     playOnLoad.current = false;
     if (autoplay || requested) void play();
-  }, [autoplay, fallbackSrc, play, src]);
+  }, [autoplay, fallbackSrc, play, slowSrc, src]);
 
   if (!current) {
     return (
@@ -123,6 +154,10 @@ export function AudioPlayer({
         {current.fallbackSrc ? <source src={current.fallbackSrc} /> : null}
       </audio>
 
+      {current.slowSrc ? (
+        <audio ref={slowRef} preload="none" src={current.slowSrc} />
+      ) : null}
+
       <div className="flex items-center gap-3">
         <Button
           type="button"
@@ -150,7 +185,7 @@ export function AudioPlayer({
           type="button"
           size="icon"
           variant="outline"
-          onClick={() => void play(0.75)}
+          onClick={() => void playSlow()}
           aria-label={labels.slow}
         >
           <Turtle />

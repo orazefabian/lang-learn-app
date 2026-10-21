@@ -13,7 +13,14 @@ Endpoints:
   GET  /health          -> {"status": "ok", "voice": ...}
   GET  /voices          -> installed voices
   POST /synthesize      -> audio bytes
-       {"text": "...", "format": "opus"|"mp3"|"wav", "length_scale": 1.0}
+       {"text": "...", "format": "opus"|"mp3"|"wav",
+        "voice": "sl_SI-artur-medium", "length_scale": 1.0}
+
+`voice` defaults to PIPER_VOICE and must name an installed voice.
+`length_scale` above 1 is slower: the app renders a second, slower copy of
+each phrase with it, which is phonetically truer than stretching the audio
+in the player because the synthesiser lengthens the vowels rather than the
+silences.
 """
 
 from __future__ import annotations
@@ -45,20 +52,36 @@ CONTENT_TYPES = {
     "mp3": "audio/mpeg",
 }
 
-_voice: PiperVoice | None = None
+# Loaded voices, by name. The app asks for a voice per request, so this is a
+# cache rather than a single slot: switching voice must not mean reloading the
+# previous one on the next phrase.
+_voices: dict[str, PiperVoice] = {}
 
 
-def load_voice() -> PiperVoice:
-    global _voice
-    if _voice is None:
-        model = os.path.join(DATA_DIR, f"{VOICE_NAME}.onnx")
+def installed_voices() -> list[str]:
+    return sorted(f[:-5] for f in os.listdir(DATA_DIR) if f.endswith(".onnx"))
+
+
+def load_voice(name: str | None = None) -> PiperVoice:
+    """
+    Loads one voice by name, defaulting to PIPER_VOICE.
+
+    An unknown name is refused rather than quietly served as the default: the
+    audio store keys its files on the voice it asked for, so silently
+    substituting another one would cache the wrong voice under the right name.
+    """
+    wanted = name or VOICE_NAME
+    if wanted not in _voices:
+        if wanted != VOICE_NAME and wanted not in installed_voices():
+            raise LookupError(f"voice {wanted} is not installed")
+        model = os.path.join(DATA_DIR, f"{wanted}.onnx")
         LOG.info("loading voice %s", model)
-        _voice = PiperVoice.load(model)
-    return _voice
+        _voices[wanted] = PiperVoice.load(model)
+    return _voices[wanted]
 
 
-def synthesize_wav(text: str, length_scale: float | None) -> bytes:
-    voice = load_voice()
+def synthesize_wav(text: str, length_scale: float | None, voice_name: str | None = None) -> bytes:
+    voice = load_voice(voice_name)
     buffer = io.BytesIO()
     with wave.open(buffer, "wb") as wav_file:
         kwargs: dict[str, Any] = {}
@@ -117,12 +140,7 @@ class Handler(BaseHTTPRequestHandler):
         if self.path.startswith("/health"):
             self._send_json(200, {"status": "ok", "voice": VOICE_NAME})
         elif self.path.startswith("/voices"):
-            names = [
-                f[:-5]
-                for f in sorted(os.listdir(DATA_DIR))
-                if f.endswith(".onnx")
-            ]
-            self._send_json(200, {"voices": names, "default": VOICE_NAME})
+            self._send_json(200, {"voices": installed_voices(), "default": VOICE_NAME})
         else:
             self._send_json(404, {"error": "not found"})
 
@@ -152,8 +170,17 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         length_scale = payload.get("length_scale")
+        # The app has always sent this; until now it was read and ignored, so
+        # every request came back in the default voice whatever it asked for.
+        voice_name = (payload.get("voice") or "").strip() or None
+
         try:
-            audio = encode(synthesize_wav(text, length_scale), target)
+            audio = encode(synthesize_wav(text, length_scale, voice_name), target)
+        except LookupError as error:
+            self._send_json(
+                400, {"error": str(error), "voices": installed_voices()}
+            )
+            return
         except Exception as error:  # noqa: BLE001 - report, never crash the server
             LOG.exception("synthesis failed")
             self._send_json(500, {"error": str(error)[:500]})
@@ -172,7 +199,7 @@ def self_test() -> None:
     a healthy-looking container that fails on her first listening card. Better
     to find out here.
     """
-    audio = synthesize_wav("Dober dan.", None)
+    audio = synthesize_wav("Dober dan.", None, None)
     if len(audio) < 1024:
         raise RuntimeError("synthesis produced no audio")
     LOG.info("self-test ok (%d bytes of WAV)", len(audio))

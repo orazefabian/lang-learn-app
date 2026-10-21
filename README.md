@@ -299,7 +299,12 @@ Audio is generated when content is created or edited, never while she is
 waiting for a card. Files live on the media volume, addressed by a hash of
 (engine, voice, text) — so the same phrase is never synthesised twice, and an
 edited phrase gets a new path automatically. Opus is stored for size with an
-mp3 twin for compatibility.
+mp3 twin for compatibility, plus a second, slower rendition at a longer
+`length_scale` for the turtle button — re-synthesised rather than stretched,
+because Piper lengthens the vowels where `playbackRate` would stretch the
+silences too, and Slovene vowel length is exactly what a beginner is straining
+to hear. It is the one optional file of the three: an engine that will not take
+a length scale costs the turtle button its nicer audio and nothing else.
 
 ```bash
 pnpm audio:generate            # active content
@@ -317,7 +322,9 @@ synthesises once at startup and refuses to start if that fails, so a broken
 image surfaces at deploy time rather than on her first listening card.
 
 Listening cards show no text at all until she answers — the audio is the whole
-prompt — and every card with audio keeps a replay and a 0.75x control.
+prompt — and every card with audio keeps a replay and a slow control. The slow
+control plays the separately rendered copy when there is one and falls back to
+0.75x playback otherwise, which is what human recordings always use.
 
 ## Speaking
 

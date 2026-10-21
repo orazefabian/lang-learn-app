@@ -29,6 +29,13 @@
       "when": 1788700665725,
       "tag": "0003_offline_sync_idempotency",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792605853545,
+      "tag": "0004_add_slow_audio_path",
+      "breakpoints": true
     }
   ]
 }
