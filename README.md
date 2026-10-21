@@ -316,6 +316,14 @@ what plays; the generated voice becomes an alternate she can flick to. Hearing
 the actual voices of the people she will talk to is the point, not a
 nice-to-have.
 
+Which is why `/teacher/record` exists: Piper ships exactly one Slovene voice
+(`sl_SI-artur-medium`, medium quality, single speaker — there is no better tier
+to switch to), so the only real upgrade is a person. The screen deals out
+whatever still has no human recording, one item at a time, and asks for the
+speaker label once rather than once per phrase. The queue is a SQL
+`NOT EXISTS`, not the content browser's `voice=missing` filter — that one
+filters after its own LIMIT, so it cannot walk a backlog of a few hundred.
+
 The TTS service (`docker/piper`) is a thin HTTP wrapper around Piper that also
 encodes, which keeps ffmpeg out of the deliberately slim Next.js image. It
 synthesises once at startup and refuses to start if that fails, so a broken

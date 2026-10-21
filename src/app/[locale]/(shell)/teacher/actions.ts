@@ -10,8 +10,10 @@ import { captureItem } from "@/lib/teacher/capture";
 import { setArchived, updateContentItem } from "@/lib/teacher/content";
 import {
   addHumanRecording,
+  getRecordingQueue,
   promoteRecording,
   removeRecording,
+  type RecordingQueueItem,
 } from "@/lib/teacher/recordings";
 
 const registerSchema = z.enum(["standard", "colloquial", "regional", "formal"]);
@@ -193,7 +195,22 @@ export async function uploadRecording(formData: FormData): Promise<{ ok: true }>
   });
 
   revalidatePath(`/teacher/items/${kind}/${itemId}`);
+  // The item has just left the recording queue, so both the queue and the
+  // "still needs a voice" list on the teacher home are now stale.
+  revalidatePath("/teacher/record");
+  revalidatePath("/teacher");
   return { ok: true };
+}
+
+/**
+ * The next items still waiting for a voice.
+ *
+ * The recording screen asks for a fresh batch rather than paging, because a
+ * recorded item drops out of the queue and the head is always what is next.
+ */
+export async function fetchRecordingQueue(): Promise<RecordingQueueItem[]> {
+  await requireTeacher();
+  return getRecordingQueue(db, { limit: 25 });
 }
 
 const assetSchema = z.object({ assetId: z.string().uuid() });
