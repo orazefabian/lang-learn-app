@@ -45,8 +45,22 @@ export function AudioPlayer({
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
+  /** Set when the next source change came from her tapping a voice. */
+  const playOnLoad = useRef(false);
 
-  const current = sources[index];
+  /*
+   * Reset to the first voice when the sources themselves change. Without this a
+   * card offering one voice, reached from a card where she had selected the
+   * second, would find nothing at `index` and report itself unavailable.
+   */
+  const sourceIds = sources.map((source) => source.id).join("|");
+  const [knownSourceIds, setKnownSourceIds] = useState(sourceIds);
+  if (sourceIds !== knownSourceIds) {
+    setKnownSourceIds(sourceIds);
+    setIndex(0);
+  }
+
+  const current = sources[index] ?? sources[0];
 
   const play = useCallback(async (rate = 1) => {
     const element = audioRef.current;
@@ -61,11 +75,26 @@ export function AudioPlayer({
     }
   }, []);
 
+  const src = current?.src ?? "";
+  const fallbackSrc = current?.fallbackSrc ?? "";
+
   useEffect(() => {
+    const element = audioRef.current;
+    if (!element || !src) return;
+
     setFailed(false);
-    if (!autoplay || !current) return;
-    void play();
-  }, [autoplay, current, play]);
+    /*
+     * A media element resolves its `<source>` children once and then holds on
+     * to what it loaded. React updates the attributes when the card or the
+     * voice changes, but without this the element would keep playing the first
+     * clip it ever loaded — the next item's audio would be the previous one's.
+     */
+    element.load();
+
+    const requested = playOnLoad.current;
+    playOnLoad.current = false;
+    if (autoplay || requested) void play();
+  }, [autoplay, fallbackSrc, play, src]);
 
   if (!current) {
     return (
@@ -138,8 +167,14 @@ export function AudioPlayer({
               key={source.id}
               type="button"
               onClick={() => {
+                // Re-tapping the selected voice is a replay; a new voice has to
+                // wait for the element to load it, which the effect handles.
+                if (position === index) {
+                  void play();
+                  return;
+                }
+                playOnLoad.current = true;
                 setIndex(position);
-                setTimeout(() => void play(), 0);
               }}
               className={cn(
                 "rounded-full border px-3 py-1 text-xs transition-colors",
