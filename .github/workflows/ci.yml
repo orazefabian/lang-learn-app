@@ -21,6 +21,16 @@ jobs:
       - run: pnpm typecheck
       # Hook rules, async client components, raw <img>/<a>: what tsc cannot see.
       - run: pnpm lint
+      # A schema edit without `pnpm db:generate` ships code that expects columns
+      # the boot-time migration never creates. Generating offline must be a no-op.
+      - name: Migrations match the schema
+        run: |
+          pnpm db:generate
+          if [ -n "$(git status --porcelain drizzle/)" ]; then
+            git status --porcelain drizzle/
+            echo "::error::src/db/schema changed without a migration. Run pnpm db:generate and commit drizzle/."
+            exit 1
+          fi
       # Scheduling, scoring, the backlog cap, config parsing, the manifests,
       # and the German/English message catalogs staying in step.
       - run: pnpm test
