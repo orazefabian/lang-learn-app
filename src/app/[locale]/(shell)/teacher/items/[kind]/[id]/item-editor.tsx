@@ -234,7 +234,6 @@ export function ItemEditor({ item }: { item: ContentDetail }) {
                     </span>
                   ) : null}
                 </div>
-                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <audio controls preload="none" className="h-9 w-full">
                   <source src={mediaUrl(asset.path)} />
                   {asset.fallbackPath ? <source src={mediaUrl(asset.fallbackPath)} /> : null}

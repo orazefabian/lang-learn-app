@@ -148,7 +148,6 @@ export function SpeechRecorder({
       {previewUrl && !recording ? (
         <div className="flex flex-col items-center gap-1">
           <p className="text-xs text-muted-foreground">{labels.listenBack}</p>
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <audio src={previewUrl} controls className="h-9" />
         </div>
       ) : null}

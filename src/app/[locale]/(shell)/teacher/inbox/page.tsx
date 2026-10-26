@@ -100,7 +100,6 @@ export default async function InboxPage({
                     <p className="text-sm leading-relaxed">{question.answerText}</p>
                   ) : null}
                   {question.answerAudioPath ? (
-                    // eslint-disable-next-line jsx-a11y/media-has-caption
                     <audio controls preload="none" className="h-9 w-full">
                       <source src={`/api/media/${question.answerAudioPath}`} />
                     </audio>

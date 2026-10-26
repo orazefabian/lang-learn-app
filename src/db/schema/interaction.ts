@@ -12,7 +12,7 @@ import {
 import { users } from "./auth";
 import { lessons, lexemes, mediaAssets, phrases } from "./content";
 import { cards } from "./learning";
-import { contentStatusEnum, questionStatusEnum } from "./enums";
+import { questionStatusEnum } from "./enums";
 
 /**
  * "Verstehe ich nicht" on a card. Filing one never blocks her session; the

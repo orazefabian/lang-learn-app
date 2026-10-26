@@ -134,7 +134,7 @@ self.addEventListener("fetch", (event) => {
             cache.put(request, response.clone());
           }
           return response;
-        } catch (error) {
+        } catch {
           return new Response(null, { status: 504 });
         }
       }),

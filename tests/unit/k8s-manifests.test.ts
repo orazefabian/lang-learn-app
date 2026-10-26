@@ -13,6 +13,8 @@ import { describe, expect, it } from "vitest";
  */
 const DIR = path.join(process.cwd(), "k8s");
 
+// Parsed YAML is walked by path; typing every manifest shape would be the test.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Doc = Record<string, any>;
 
 function loadOne(file: string): Doc {

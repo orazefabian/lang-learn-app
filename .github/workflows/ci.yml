@@ -19,7 +19,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
-      # Scheduling, scoring, the backlog cap, config parsing, the manifests.
+      # Hook rules, async client components, raw <img>/<a>: what tsc cannot see.
+      - run: pnpm lint
+      # Scheduling, scoring, the backlog cap, config parsing, the manifests,
+      # and the German/English message catalogs staying in step.
       - run: pnpm test
       # PGlite over its wire protocol: no service containers needed.
       - run: pnpm test:integration
