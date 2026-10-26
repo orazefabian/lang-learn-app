@@ -8,6 +8,7 @@ import { getNextLesson } from "@/lib/lessons/service";
 import { getCapabilities, getProgressSummary } from "@/lib/progress/service";
 import { getUnseenAnswers } from "@/lib/questions/service";
 import { getSessionOverview } from "@/lib/session/service";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { OfflineReady } from "@/components/offline-ready";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -192,6 +193,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </p>
         )}
       </section>
+
+      <LanguageSwitcher />
     </main>
   );
 }

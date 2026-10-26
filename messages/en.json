@@ -12,6 +12,9 @@
     "settings": "Settings",
     "signOut": "Sign out"
   },
+  "language": {
+    "label": "Language"
+  },
   "auth": {
     "signInTitle": "Sign in",
     "signInSubtitle": "Two accounts, no audience.",
