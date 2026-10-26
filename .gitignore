@@ -15,9 +15,8 @@ next-env.d.ts
 
 /.seed-cache/
 
-# Written by next dev on every start.
-AGENTS.md
-CLAUDE.md
+# Personal Claude Code overrides; .claude/settings.json and skills are shared.
+.claude/settings.local.json
 
 # Filled in from k8s/secret.example.yaml.
 /k8s/secret.yaml
