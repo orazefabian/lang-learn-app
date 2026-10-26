@@ -12,6 +12,9 @@
     "settings": "Einstellungen",
     "signOut": "Abmelden"
   },
+  "language": {
+    "label": "Sprache"
+  },
   "auth": {
     "signInTitle": "Anmelden",
     "signInSubtitle": "Zwei Konten, kein Publikum.",
