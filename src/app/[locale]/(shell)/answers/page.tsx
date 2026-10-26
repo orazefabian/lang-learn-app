@@ -62,7 +62,6 @@ export default async function AnswersPage({
                   <p className="text-sm leading-relaxed">{answer.answerText}</p>
                 ) : null}
                 {answer.answerAudioPath ? (
-                  // eslint-disable-next-line jsx-a11y/media-has-caption
                   <audio controls preload="none" className="h-9 w-full">
                     <source src={`/api/media/${answer.answerAudioPath}`} />
                   </audio>

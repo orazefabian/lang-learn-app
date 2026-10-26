@@ -112,7 +112,6 @@ export function AnswerForm({
             {t("recordAnswer")}
           </Button>
           {voice ? (
-            // eslint-disable-next-line jsx-a11y/media-has-caption
             <audio controls src={previewRef.current ?? undefined} className="h-9 flex-1" />
           ) : null}
         </div>

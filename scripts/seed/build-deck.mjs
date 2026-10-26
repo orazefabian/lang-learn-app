@@ -1,8 +1,6 @@
-import { createReadStream } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
-import readline from "node:readline";
 
 /**
  * Builds the versioned frequency deck from three openly licensed sources:

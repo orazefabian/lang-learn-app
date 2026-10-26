@@ -685,12 +685,26 @@ content than a seeded one.
 ## Development
 
 ```bash
+pnpm check            # typecheck + lint + unit tests, the pre-commit gate
 pnpm typecheck        # tsc --noEmit, strict
+pnpm lint             # ESLint with Next's config (`next lint` is gone in 16)
 pnpm test             # Vitest unit tests
 pnpm test:integration # service layer against a real Postgres (PGlite)
 pnpm test:e2e         # Playwright critical paths (from step 12)
-pnpm db:generate   # regenerate SQL migrations after a schema change
+pnpm db:generate --name add_thing  # SQL migration after a schema change
 ```
+
+CI also fails when `src/db/schema` changed without a committed migration, and
+`tests/unit/migration-safety.test.ts` fails on any destructive statement
+(DROP, RENAME, a type change, SET NOT NULL…) that is not explicitly
+acknowledged with a reason — migrations run unattended at boot against the
+only copy of her history.
+
+[`CLAUDE.md`](./CLAUDE.md) is the working guide for coding agents (and a
+compact one for people): the product rules as checkable statements, the
+layering, and the gotchas. The recipes it points to live in
+[`.claude/skills/`](./.claude/skills) — a feature slice, a schema change,
+copy, curriculum content, UX verification and the pre-PR check.
 
 Unit tests run the checked-in migrations against a real Postgres (PGlite,
 in-process), so schema changes are validated without a running server. The

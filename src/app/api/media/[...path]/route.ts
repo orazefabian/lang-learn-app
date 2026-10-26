@@ -44,7 +44,7 @@ export async function GET(
   let absolute: string;
   try {
     absolute = resolveMediaPath(relativePath);
-  } catch (error) {
+  } catch {
     logger.warn({ relativePath }, "rejected media path outside the root");
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }

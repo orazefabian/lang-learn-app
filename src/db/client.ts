@@ -16,7 +16,6 @@ declare global {
    * global, each bundle opens its own pool and the app quietly holds twice the
    * connections it reports.
    */
-  // eslint-disable-next-line no-var
   var __sloveneSql: Sql | undefined;
 }
 
