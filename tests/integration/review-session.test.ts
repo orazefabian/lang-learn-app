@@ -246,3 +246,16 @@ describe("the home screen never reports the raw backlog", () => {
     expect(session.queue.length).toBeGreaterThan(0);
   });
 });
+
+describe("silent mode", () => {
+  it("writes and reads the autoplay preference, creating the row on first use", async () => {
+    await db.delete(schema.userSettings).where(drizzle.eq(schema.userSettings.userId, learnerId));
+    expect((await service.getSettings(db, learnerId)).autoplayAudio).toBe(true);
+
+    await service.setAutoplayAudio(db, learnerId, false);
+    expect((await service.getSettings(db, learnerId)).autoplayAudio).toBe(false);
+
+    await service.setAutoplayAudio(db, learnerId, true);
+    expect((await service.getSettings(db, learnerId)).autoplayAudio).toBe(true);
+  });
+});

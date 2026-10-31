@@ -585,6 +585,12 @@ The teacher gets a count on the inbox and a badge on his tab.
 
 ## Known limitations
 
+- **Silent mode is a home-screen switch only.** It writes
+  `userSettings.autoplayAudio` (the first write path to that table) and only stops
+  audio from starting by itself; play, replay and slow buttons are unchanged.
+  There is no in-session mute button yet, and the switch needs a connection: offline
+  it snaps back rather than queueing the change. Not tested in a real browser
+  beyond the UX harness screenshot.
 - **The scheduler is FSRS-6, not FSRS-5.** The brief asked for FSRS-5, but
   ts-fsrs 5.4.2 ships FSRS-6 as its default parameter set (21 weights instead of
   17). FSRS-6 is the successor from the same authors and is better calibrated,

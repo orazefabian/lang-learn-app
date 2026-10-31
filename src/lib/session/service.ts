@@ -58,6 +58,23 @@ export async function getSettings(db: Db, userId: string): Promise<SessionSettin
   };
 }
 
+/**
+ * Upserts the silent-mode preference. The row may not exist yet — nothing else
+ * writes userSettings, and getSettings() falls back to defaults without one —
+ * so this must create it on first use rather than update nothing.
+ */
+export async function setAutoplayAudio(
+  db: Db,
+  userId: string,
+  autoplayAudio: boolean,
+  now = new Date(),
+) {
+  await db
+    .insert(userSettings)
+    .values({ userId, autoplayAudio, updatedAt: now })
+    .onConflictDoUpdate({ target: userSettings.userId, set: { autoplayAudio, updatedAt: now } });
+}
+
 /** New items already introduced today, so the daily limit survives app restarts. */
 export async function countNewIntroducedToday(db: Db, userId: string, now = new Date()) {
   const startOfDay = new Date(now);
