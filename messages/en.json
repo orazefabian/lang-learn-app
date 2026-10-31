@@ -23,6 +23,11 @@
     "missingFields": "Please enter an email and a password.",
     "unexpectedError": "Something went wrong. Please try again."
   },
+  "silentMode": {
+    "label": "Sound",
+    "on": "Sound plays by itself",
+    "off": "Sound plays only when you tap play"
+  },
   "home": {
     "greeting": "Hello, {name}",
     "welcomeBack": "Good to see you.",

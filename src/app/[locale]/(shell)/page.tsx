@@ -7,7 +7,8 @@ import { currentUser } from "@/lib/auth";
 import { getNextLesson } from "@/lib/lessons/service";
 import { getCapabilities, getProgressSummary } from "@/lib/progress/service";
 import { getUnseenAnswers } from "@/lib/questions/service";
-import { getSessionOverview } from "@/lib/session/service";
+import { getSessionOverview, getSettings } from "@/lib/session/service";
+import { AutoplayToggle } from "@/components/autoplay-toggle";
 import { OfflineReady } from "@/components/offline-ready";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -21,12 +22,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const t = await getTranslations("home");
 
-  const [overview, nextLesson, summary, capabilities, answers] = await Promise.all([
+  const [overview, nextLesson, summary, capabilities, answers, settings] = await Promise.all([
     getSessionOverview(db, user.id),
     getNextLesson(db, user.id),
     getProgressSummary(db, user.id),
     getCapabilities(db, user.id, 3),
     getUnseenAnswers(db, user.id),
+    getSettings(db, user.id),
   ]);
 
   return (
@@ -192,6 +194,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </p>
         )}
       </section>
+
+      <AutoplayToggle initial={settings.autoplayAudio} />
     </main>
   );
 }

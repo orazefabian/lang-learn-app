@@ -23,6 +23,11 @@
     "missingFields": "Bitte E-Mail und Passwort eingeben.",
     "unexpectedError": "Etwas ist schiefgelaufen. Bitte nochmal versuchen."
   },
+  "silentMode": {
+    "label": "Ton",
+    "on": "Ton spielt von allein",
+    "off": "Ton spielt nur, wenn du auf Abspielen tippst"
+  },
   "home": {
     "greeting": "Hallo, {name}",
     "welcomeBack": "Schön, dass du da bist.",
