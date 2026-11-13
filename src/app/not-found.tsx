@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import "./globals.css";
 
@@ -14,7 +15,7 @@ export default function NotFound() {
     <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col items-center justify-center gap-6 px-6 text-center">
       <p className="text-lg">Diese Seite gibt es nicht.</p>
       <Button asChild size="lg">
-        <a href="/">Start</a>
+        <Link href="/">Start</Link>
       </Button>
     </main>
   );
