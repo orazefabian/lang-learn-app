@@ -47,11 +47,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     capabilities.map((capability) => capability.phraseId),
   );
 
+  /*
+   * Everything above the two actions has to fit one phone screen, or "Weiter
+   * lernen" slides under the tab bar. On a day with an answer waiting, one
+   * newest phrase is enough; the Satzbuch has the rest.
+   */
+  const newest = capabilities.slice(0, answers.length ? 1 : 2);
+
   const minutes = Math.max(1, Math.round((overview.displayedDue * SECONDS_PER_CARD) / 60));
   const firstAnswer = answers[0];
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pb-4 pt-7">
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-4 px-5 pb-4 pt-5">
       <header className="flex flex-col gap-1.5">
         <div className="flex min-h-7 items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">
@@ -60,7 +67,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {/* Answers "will this work on the train" before she is on the train. */}
           <OfflineReady />
         </div>
-        <h1 lang="sl" className="slovene mt-1 text-4xl font-semibold leading-tight">
+        <h1 lang="sl" className="slovene text-[2rem] font-semibold leading-tight">
           {t("greeting", { name: user.displayName })}
         </h1>
         {/* Never "you were away for 12 days". */}
@@ -107,7 +114,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </Link>
           </div>
           <ul className="flex flex-col divide-y divide-border rounded-2xl bg-card">
-            {capabilities.map((capability) => (
+            {newest.map((capability) => (
               <li key={capability.phraseId} className="flex items-center gap-3 py-3 pl-4 pr-3">
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <span

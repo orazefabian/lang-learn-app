@@ -139,7 +139,7 @@ function CurrentUnit({
                       : t("meta", { minutes: lesson.estimatedMinutes, count: lesson.itemCount })}
                   </span>
                 </span>
-                <DualBadge lesson={lesson} t={t} />
+                <DualBadge lesson={lesson} t={t} onAccent />
               </div>
               <Link
                 href={`/lessons/${lesson.slug}`}
@@ -210,10 +210,19 @@ function LessonRow({ lesson, t }: { lesson: LessonSummary; t: Translate }) {
   );
 }
 
-function DualBadge({ lesson, t }: { lesson: LessonSummary; t: Translate }) {
+function DualBadge({
+  lesson,
+  t,
+  onAccent,
+}: {
+  lesson: LessonSummary;
+  t: Translate;
+  /** Inside the highlighted row, whose background is already accent-soft. */
+  onAccent?: boolean;
+}) {
   if (!lesson.teachesDual) return null;
   return (
-    <span className="shrink-0 rounded-full bg-accent-soft px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-accent-soft-foreground">
+    <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wide text-accent-soft-foreground", onAccent ? "bg-card" : "bg-accent-soft")}>
       {t("dualBadge")}
     </span>
   );

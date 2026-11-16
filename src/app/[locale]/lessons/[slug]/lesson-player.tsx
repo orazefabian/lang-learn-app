@@ -169,7 +169,7 @@ export function LessonPlayer({
 
         {step.kind === "done" ? (
           <div className="flex flex-col items-center gap-4 text-center">
-            <h2 className="text-2xl font-semibold tracking-tight">{t("finished.title")}</h2>
+            <h1 className="text-2xl font-semibold tracking-tight">{t("finished.title")}</h1>
             <p className="text-muted-foreground">
               {t("finished.body", { count: cardsCreated ?? lesson.items.length })}
             </p>
@@ -291,9 +291,9 @@ function ItemStep({
         <p className="rounded-full bg-accent-soft px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-accent-soft-foreground">
           {label}
         </p>
-        <p lang="sl" className="slovene mt-1.5 text-balance text-5xl font-semibold leading-[1.05]">
+        <h1 lang="sl" className="slovene mt-1.5 text-balance text-5xl font-semibold leading-[1.05]">
           {item.slovene}
-        </p>
+        </h1>
         <p className="text-xl text-muted-foreground">{item.german}</p>
       </div>
 
@@ -372,7 +372,7 @@ function PracticeStep({
         <p className="text-xs text-muted-foreground">{labels.hint}</p>
       </div>
 
-      <p className="slovene text-balance text-center text-2xl leading-snug">{blanked}</p>
+      <h1 lang="sl" className="slovene text-balance text-center text-2xl leading-snug">{blanked}</h1>
       <p className="text-center text-muted-foreground">{item.german}</p>
 
       <Input
