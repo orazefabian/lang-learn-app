@@ -4,13 +4,14 @@
     "tagline": "Slovene for real conversations"
   },
   "nav": {
-    "home": "Home",
+    "home": "Today",
     "review": "Review",
     "lessons": "Lessons",
-    "progress": "I can say",
+    "progress": "Phrasebook",
     "teacher": "Teacher",
     "settings": "Settings",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "label": "Main navigation"
   },
   "language": {
     "label": "Language"
@@ -27,7 +28,7 @@
     "unexpectedError": "Something went wrong. Please try again."
   },
   "home": {
-    "greeting": "Hello, {name}",
+    "greeting": "Dober dan, {name}.",
     "welcomeBack": "Good to see you.",
     "dueToday": "Due today",
     "dueTodayCount": "{count, plural, =1 {One card} other {# cards}}",
@@ -39,14 +40,15 @@
     "lessonMeta": "{minutes} min · {count, plural, =1 {1 item} other {# items}}",
     "allLessonsDone": "You have finished every lesson.",
     "browseLessons": "All lessons",
-    "canSayTitle": "What I can say",
+    "canSayTitle": "New in your phrasebook",
     "canSayCount": "{count, plural, =0 {Nothing yet — it will come} =1 {One sentence} other {# sentences}}",
     "canSayEmpty": "This is where the things you can say for sure collect.",
-    "canSayAll": "See all",
+    "canSayAll": "All {count}",
     "answeredTitle": "Answers for you",
     "answeredEmpty": "No answers yet — as soon as he answers something, it will show up here.",
     "answeredCount": "{count, plural, =1 {One question was answered} other {# questions were answered}}",
-    "answeredOpen": "Look"
+    "answeredOpen": "Look",
+    "dueMinutes": "about {minutes} min"
   },
   "common": {
     "loading": "Loading …",
@@ -57,7 +59,8 @@
       "learner": "Learner",
       "teacher": "Teacher"
     },
-    "done": "done"
+    "done": "done",
+    "listen": "Play {phrase}"
   },
   "errors": {
     "notFound": "This page does not exist.",
@@ -107,10 +110,13 @@
       "formal": "formal"
     },
     "done": {
-      "title": "That's it for now",
+      "title": "That’s it for now.",
       "body": "{count, plural, =1 {One card} other {# cards}} reviewed.",
-      "home": "Back home",
-      "again": "Keep reviewing"
+      "home": "Done",
+      "again": "Keep reviewing",
+      "saved": "Everything is saved — offline too.",
+      "more": "Up for more? · {minutes} min",
+      "continueLesson": "Continue with “{title}”"
     },
     "listen": "Listen",
     "listenPrompt": "What does this mean?",
@@ -122,7 +128,8 @@
       "slow": "Play slower",
       "otherVoices": "another voice",
       "generatedVoice": "computer voice",
-      "unavailable": "There is no audio for this card yet."
+      "unavailable": "There is no audio for this card yet.",
+      "slowShort": "Slow"
     },
     "speaking": {
       "prompt": "Say it in Slovene",
@@ -147,7 +154,10 @@
       "pendingScore": "It will be scored later.",
       "failed": "Scoring did not work. The recording is saved anyway.",
       "retry": "Record again",
-      "skipSpeaking": "Skip"
+      "skipSpeaking": "Skip",
+      "listenFirst": "Listen first",
+      "cantSpeak": "Can’t speak right now",
+      "startHint": "Tap and speak"
     },
     "ask": {
       "button": "I don't get this",
@@ -159,7 +169,13 @@
       "failed": "Could not be sent.",
       "cancel": "Cancel",
       "answerTitle": "Answer"
-    }
+    },
+    "close": "Pause — continue later",
+    "dontKnow": "Don’t know",
+    "diacritics": "Insert special characters",
+    "suggestedHint": "Suggestion highlighted — one tap is enough.",
+    "translate": "In German",
+    "suggestedShort": "Suggested"
   },
   "lessons": {
     "title": "Lessons",
@@ -197,19 +213,31 @@
       "next": "Next lesson",
       "home": "Back home"
     },
-    "empty": "No lessons have been released yet."
+    "empty": "No lessons have been released yet.",
+    "subtitle": "No fixed order — jump wherever you like.",
+    "unitLabel": "Unit {position}",
+    "doneUnits": "{count, plural, =1 {1 unit done} other {# units done}}",
+    "lessonCount": "{count, plural, =1 {1 lesson} other {# lessons}}",
+    "inProgressMeta": "Started · {minutes} min",
+    "leave": "Leave lesson"
   },
   "progress": {
     "title": "What I can say",
     "intro": "Sentences that stick. The list grows on its own.",
     "empty": "The list is still empty. After a few reviews the first sentence turns up here.",
     "emptyAction": "First lesson",
-    "countLabel": "sentences",
+    "countLabel": "sentences stick",
     "wordsLabel": "words met",
     "lessonsLabel": "lessons",
     "dualLabel": "of them using the dual",
     "wordsTitle": "Words you have met",
-    "sinceLabel": "since {date}"
+    "sinceLabel": "since {date}",
+    "searchLabel": "Search the phrasebook",
+    "searchPlaceholder": "Search German or Slovene",
+    "filterLabel": "Filter",
+    "filterAll": "All",
+    "filterDual": "Dual",
+    "noMatches": "Nothing like that in the phrasebook yet."
   },
   "teacher": {
     "title": "Teacher area",
@@ -480,6 +508,7 @@
     "waiting": "{count, plural, =1 {1 answer waiting for a connection} other {# answers waiting for a connection}}",
     "readyTitle": "Ready to go",
     "readyBody": "{count, plural, =1 {1 card is on the device} other {# cards are on the device}}. Practising works without a connection.",
-    "preparing": "Preparing …"
+    "preparing": "Preparing …",
+    "readyShort": "Ready offline"
   }
 }

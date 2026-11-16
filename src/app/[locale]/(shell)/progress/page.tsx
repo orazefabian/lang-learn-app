@@ -1,10 +1,12 @@
+import { ChevronDown } from "lucide-react";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 import { db } from "@/db/client";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
+import { getAudioForPhrases } from "@/lib/audio/resolve";
 import { getCapabilities, getProgressSummary, getWordsMet } from "@/lib/progress/service";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { PhrasebookList, type PhrasebookEntry } from "./phrasebook-list";
 
 export default async function ProgressPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -19,95 +21,90 @@ export default async function ProgressPage({ params }: { params: Promise<{ local
     getCapabilities(db, user.id),
     getWordsMet(db, user.id, 60),
   ]);
+  const audio = await getAudioForPhrases(
+    db,
+    capabilities.map((capability) => capability.phraseId),
+  );
+
+  const entries: PhrasebookEntry[] = capabilities.map((capability) => ({
+    phraseId: capability.phraseId,
+    slovene: capability.slovene,
+    german: capability.german,
+    contextNote: capability.contextNote,
+    isDual: capability.isDual,
+    unitTitle: capability.unit?.title ?? null,
+    since: format.dateTime(capability.reachedAt, { day: "numeric", month: "long" }),
+    audio: audio.get(capability.phraseId) ?? [],
+  }));
+
+  // Topic chips in course order, only for units she has phrases from.
+  const units = [
+    ...new Map(
+      capabilities
+        .flatMap((capability) => (capability.unit ? [capability.unit] : []))
+        .sort((a, b) => a.position - b.position)
+        .map((unit) => [unit.title, unit.title]),
+    ).values(),
+  ];
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-8 px-5 pb-10 pt-8">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground">{t("intro")}</p>
+    <main className="mx-auto flex w-full max-w-md flex-col gap-5 px-5 pb-8 pt-7">
+      <header className="flex flex-col gap-3">
+        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+
+        {/*
+          Counts, not scores. Nothing here is a target, a streak or a
+          percentage — they are descriptions of what has accumulated.
+        */}
+        <dl className="grid grid-cols-3 gap-2.5">
+          {[
+            { value: summary.canSay, label: t("countLabel") },
+            { value: summary.wordsMet, label: t("wordsLabel") },
+            { value: summary.lessonsCompleted, label: t("lessonsLabel") },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col-reverse gap-1 rounded-2xl bg-card px-3.5 py-3"
+            >
+              <dt className="text-xs leading-tight text-muted-foreground">{stat.label}</dt>
+              <dd className="slovene text-3xl font-semibold tabular-nums leading-none">
+                {stat.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </header>
 
-      {/*
-        Counts, not scores. Nothing here is a target, a streak or a percentage —
-        they are descriptions of what has accumulated.
-      */}
-      <dl className="grid grid-cols-3 gap-3">
-        {[
-          { value: summary.canSay, label: t("countLabel") },
-          { value: summary.wordsMet, label: t("wordsLabel") },
-          { value: summary.lessonsCompleted, label: t("lessonsLabel") },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="flex flex-col gap-1 rounded-lg border border-border bg-card px-3 py-4"
-          >
-            <dt className="sr-only">{stat.label}</dt>
-            <dd className="text-2xl font-semibold tabular-nums leading-none">{stat.value}</dd>
-            <p aria-hidden className="text-[0.7rem] leading-tight text-muted-foreground">
-              {stat.label}
-            </p>
-          </div>
-        ))}
-      </dl>
-
-      {summary.dualMastered > 0 ? (
-        <p className="dual-mark text-sm text-muted-foreground">
-          {summary.dualMastered} {t("dualLabel")}
-        </p>
-      ) : null}
-
       {capabilities.length === 0 ? (
-        <div className="flex flex-col items-center gap-5 rounded-lg border border-dashed border-border px-5 py-10 text-center">
+        <div className="flex flex-col items-center gap-5 rounded-2xl border border-dashed border-border px-5 py-10 text-center">
           <p className="text-sm text-muted-foreground">{t("empty")}</p>
           <Button asChild>
             <Link href="/lessons">{t("emptyAction")}</Link>
           </Button>
         </div>
       ) : (
-        /*
-         * The phrasebook page. Slovene large in its own face, the German a
-         * whisper beneath it, newest at the top so returning shows growth.
-         */
-        <ul className="flex flex-col divide-y divide-border border-y border-border">
-          {capabilities.map((capability) => (
-            <li key={capability.phraseId} className="flex flex-col gap-1.5 py-5">
-              <p
-                className={cn("slovene text-2xl leading-snug", capability.isDual && "dual-mark")}
-              >
-                {capability.slovene}
-              </p>
-              <p className="text-sm text-muted-foreground">{capability.german}</p>
-              {capability.contextNote ? (
-                <p className="mt-1 border-l-2 border-accent pl-3 text-sm text-muted-foreground">
-                  {capability.contextNote}
-                </p>
-              ) : null}
-              <p className="text-[0.7rem] text-muted-foreground/70">
-                {t("sinceLabel", {
-                  date: format.dateTime(capability.reachedAt, {
-                    day: "numeric",
-                    month: "long",
-                  }),
-                })}
-              </p>
-            </li>
-          ))}
-        </ul>
+        <PhrasebookList entries={entries} units={units} />
       )}
 
       {words.length ? (
-        <section className="flex flex-col gap-3">
-          <h2 className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-            {t("wordsTitle")}
-          </h2>
-          <ul className="flex flex-wrap gap-2">
+        <details className="group rounded-2xl bg-card">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+            <span className="flex-1 font-bold">{t("wordsTitle")}</span>
+            <ChevronDown
+              className="size-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+              aria-hidden
+            />
+          </summary>
+          <ul className="flex flex-wrap gap-2 px-4 pb-4">
             {words.map((word) => (
               <li
                 key={word.id}
                 className="rounded-full border border-border px-3 py-1.5 text-sm"
                 title={word.german.join(", ")}
               >
-                <span className="slovene">{word.slovene}</span>
+                <span lang="sl" className="slovene">
+                  {word.slovene}
+                </span>
                 {word.gender ? (
                   <span className="ml-1.5 text-[0.7rem] uppercase text-muted-foreground">
                     {word.gender}
@@ -116,7 +113,7 @@ export default async function ProgressPage({ params }: { params: Promise<{ local
               </li>
             ))}
           </ul>
-        </section>
+        </details>
       ) : null}
     </main>
   );

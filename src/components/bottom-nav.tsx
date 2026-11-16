@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, GraduationCap, House, MessageSquareQuote, PenLine } from "lucide-react";
+import { BookText, Route, Sun, PenLine } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -8,12 +8,14 @@ import { cn } from "@/lib/utils";
 /**
  * Bottom navigation, because the whole app is used one-handed on a phone and
  * the top of a phone is the part a thumb cannot reach.
+ *
+ * Three places, not four: reviewing is something she *starts* from Heute, a
+ * full-screen session with its own way out, not a place she browses to.
  */
 const LEARNER_ITEMS = [
-  { href: "/", key: "home", Icon: House },
-  { href: "/lessons", key: "lessons", Icon: GraduationCap },
-  { href: "/review", key: "review", Icon: BookOpen },
-  { href: "/progress", key: "progress", Icon: MessageSquareQuote },
+  { href: "/", key: "home", Icon: Sun },
+  { href: "/lessons", key: "lessons", Icon: Route },
+  { href: "/progress", key: "progress", Icon: BookText },
 ] as const;
 
 /**
@@ -36,11 +38,11 @@ export function BottomNav({
 
   return (
     <nav
-      aria-label={t("home")}
-      className="sticky bottom-0 z-10 border-t border-border bg-background/90 backdrop-blur"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      aria-label={t("label")}
+      className="sticky bottom-0 z-10 border-t border-border bg-card/95 backdrop-blur"
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 0.5rem)" }}
     >
-      <ul className="mx-auto flex w-full max-w-md items-stretch">
+      <ul className="mx-auto flex w-full max-w-md items-stretch px-2 pt-1.5">
         {items.map(({ href, key, Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
@@ -49,27 +51,25 @@ export function BottomNav({
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-1 px-2 py-2 text-[0.7rem] transition-colors",
+                  "flex min-h-13 flex-col items-center justify-center gap-1 px-1 py-1 text-xs font-semibold transition-colors",
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <span className="relative">
-                  <Icon className="size-5" aria-hidden />
+                {/* Never colour alone: the active tab also gets a filled pill. */}
+                <span
+                  className={cn(
+                    "relative flex h-8 w-14 items-center justify-center rounded-full transition-colors",
+                    active && "bg-primary-soft",
+                  )}
+                >
+                  <Icon className="size-[22px]" aria-hidden />
                   {key === "teacher" && openQuestions > 0 ? (
-                    <span className="absolute -right-2 -top-1 flex size-4 items-center justify-center rounded-full bg-accent text-[0.6rem] font-bold tabular-nums text-accent-foreground">
+                    <span className="absolute -top-1 right-1 flex size-4 items-center justify-center rounded-full bg-accent text-[0.6rem] font-bold tabular-nums text-accent-foreground">
                       {openQuestions > 9 ? "9+" : openQuestions}
                     </span>
                   ) : null}
                 </span>
-                <span className="font-medium">{t(key as "home")}</span>
-                {/* Never colour alone: the active tab also carries a marker. */}
-                <span
-                  aria-hidden
-                  className={cn(
-                    "h-0.5 w-6 rounded-full transition-colors",
-                    active ? "bg-primary" : "bg-transparent",
-                  )}
-                />
+                <span>{t(key as "home")}</span>
               </Link>
             </li>
           );

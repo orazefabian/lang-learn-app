@@ -12,7 +12,8 @@ test("she works through a lesson and its items land in her deck", async ({ page 
   await login(page, LEARNER);
 
   await page.goto("/lessons");
-  const firstLesson = page.getByRole("link").filter({ hasText: /min/ }).first();
+  // The lesson she is up to carries the one big button on the page.
+  const firstLesson = page.getByRole("link", { name: /^(anfangen|weitermachen)/i }).first();
   await expect(firstLesson).toBeVisible();
   await firstLesson.click();
 

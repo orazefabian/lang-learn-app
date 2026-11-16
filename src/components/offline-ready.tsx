@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download } from "lucide-react";
+import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { loadBundle } from "@/lib/offline/store";
 import { useOffline } from "./offline-provider";
 
 /**
- * A quiet line on the home screen saying the next session is already here.
+ * A quiet chip on the home screen saying the next session is already here.
  *
  * It exists so that "will this work on the train" is answered before she is on
  * the train. It never asks her to do anything — the download happens on its
@@ -36,9 +36,13 @@ export function OfflineReady() {
   if (!count) return null;
 
   return (
-    <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-      <Download className="size-3.5" aria-hidden />
-      {t("readyBody", { count })}
+    <p
+      className="flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-primary"
+      title={t("readyBody", { count })}
+    >
+      <Check className="size-3.5" strokeWidth={3} aria-hidden />
+      {t("readyShort")}
+      <span className="sr-only">{t("readyBody", { count })}</span>
     </p>
   );
 }

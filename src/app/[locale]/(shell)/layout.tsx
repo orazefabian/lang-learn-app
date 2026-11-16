@@ -18,7 +18,8 @@ export default async function ShellLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-dvh flex-col">
       <OfflineBanner />
-      <div className="flex-1">{children}</div>
+      {/* A flex column, so a page can push its actions down into thumb reach. */}
+      <div className="flex flex-1 flex-col">{children}</div>
       <BottomNav role={user.role} openQuestions={inbox?.open ?? 0} />
     </div>
   );

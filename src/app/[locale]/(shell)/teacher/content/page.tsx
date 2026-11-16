@@ -129,7 +129,7 @@ export default async function ContentPage({
                         row.status === "active"
                           ? "bg-secondary"
                           : row.status === "draft"
-                            ? "bg-accent-soft text-accent-foreground"
+                            ? "bg-accent-soft text-accent-soft-foreground"
                             : "bg-muted line-through",
                       )}
                     >

@@ -108,25 +108,34 @@ export function LessonPlayer({
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pb-8 pt-4">
+    <main
+      className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pt-4"
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)" }}
+    >
       <header className="flex items-center gap-3">
         <Link
           href="/lessons"
-          aria-label={t("back")}
-          className="text-muted-foreground transition-colors hover:text-foreground"
+          aria-label={t("leave")}
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-secondary"
         >
           <X className="size-5" />
         </Link>
-        <div aria-hidden className="h-1 flex-1 overflow-hidden rounded-full bg-secondary">
+        <div aria-hidden className="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
           <div
             className="h-full rounded-full bg-primary transition-all duration-300"
             style={{ width: `${(position / (steps.length - 1)) * 100}%` }}
           />
         </div>
-        <span className="text-xs tabular-nums text-muted-foreground">
-          {position + 1}/{steps.length}
+        <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
+          {position + 1} / {steps.length}
         </span>
       </header>
+
+      {lesson.unit && step.kind !== "intro" ? (
+        <p className="mt-5 text-sm text-muted-foreground">
+          {lesson.titleDe} · {lesson.unit.titleDe}
+        </p>
+      ) : null}
 
       <div className="flex flex-1 flex-col justify-center py-8">
         {step.kind === "intro" ? (
@@ -171,7 +180,7 @@ export function LessonPlayer({
       <footer className="flex flex-col gap-3">
         {step.kind === "done" ? (
           <>
-            <Button asChild size="lg" block>
+            <Button asChild size="lg" block className="h-14 rounded-2xl font-bold">
               <Link href="/review">{t("finished.review")}</Link>
             </Button>
             <Button variant="ghost" block onClick={() => router.push("/lessons")}>
@@ -183,6 +192,7 @@ export function LessonPlayer({
             <Button
               variant="outline"
               size="icon"
+              className="size-14 rounded-2xl border-0 bg-card"
               onClick={() => go(position - 1)}
               disabled={position === 0}
               aria-label={t("back")}
@@ -191,11 +201,20 @@ export function LessonPlayer({
             </Button>
 
             {position === steps.length - 2 ? (
-              <Button size="lg" className="flex-1" onClick={complete} disabled={pending}>
+              <Button
+                size="lg"
+                className="h-14 flex-1 rounded-2xl font-bold"
+                onClick={complete}
+                disabled={pending}
+              >
                 {t("finish")}
               </Button>
             ) : (
-              <Button size="lg" className="flex-1" onClick={() => go(position + 1)}>
+              <Button
+                size="lg"
+                className="h-14 flex-1 rounded-2xl font-bold"
+                onClick={() => go(position + 1)}
+              >
                 {t("next")}
                 <ArrowRight />
               </Button>
@@ -267,11 +286,16 @@ function ItemStep({
   const t = useTranslations("review");
 
   return (
-    <div className="flex flex-col items-center gap-5 text-center">
-      <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
-
-      <p className="slovene text-balance text-4xl leading-tight">{item.slovene}</p>
-      <p className="text-lg text-muted-foreground">{item.german}</p>
+    <div className="flex flex-col items-center gap-7 text-center">
+      <div className="flex flex-col items-center gap-2.5">
+        <p className="rounded-full bg-accent-soft px-2.5 py-1 text-xs font-bold uppercase tracking-[0.1em] text-accent-soft-foreground">
+          {label}
+        </p>
+        <p lang="sl" className="slovene mt-1.5 text-balance text-5xl font-semibold leading-[1.05]">
+          {item.slovene}
+        </p>
+        <p className="text-xl text-muted-foreground">{item.german}</p>
+      </div>
 
       {item.register !== "standard" ? (
         <p className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">
@@ -288,6 +312,7 @@ function ItemStep({
           pause: t("audio.pause"),
           replay: t("audio.replay"),
           slow: t("audio.slow"),
+          slowShort: t("audio.slowShort"),
           otherVoices: t("audio.otherVoices"),
           generatedVoice: t("audio.generatedVoice"),
           unavailable: t("audio.unavailable"),
@@ -295,17 +320,24 @@ function ItemStep({
       />
 
       {/* The context note is the thing that makes a phrase memorable. */}
-      {item.contextNote ? (
-        <p className="border-l-2 border-accent pl-3 text-left text-sm text-muted-foreground">
-          {item.contextNote}
-        </p>
+      {item.contextNote || item.teachingNoteDe || item.notes ? (
+        <div className="flex w-full flex-col gap-1.5 rounded-2xl bg-card px-4.5 py-4 text-left">
+          {item.contextNote ? (
+            <>
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                {t("context")}
+              </p>
+              <p className="leading-relaxed">{item.contextNote}</p>
+            </>
+          ) : null}
+          {item.teachingNoteDe ? (
+            <p className="text-sm leading-relaxed text-muted-foreground">{item.teachingNoteDe}</p>
+          ) : null}
+          {item.notes ? (
+            <p className="text-sm leading-relaxed text-muted-foreground">{item.notes}</p>
+          ) : null}
+        </div>
       ) : null}
-
-      {item.teachingNoteDe ? (
-        <p className="text-sm text-muted-foreground">{item.teachingNoteDe}</p>
-      ) : null}
-
-      {item.notes ? <p className="text-sm text-muted-foreground">{item.notes}</p> : null}
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { LEARNER, login } from "./helpers";
 test("she signs in and lands on her own home screen", async ({ page }) => {
   await login(page, LEARNER);
 
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(/hallo/i);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(/dober dan/i);
   // Welcome, never "you were away for 12 days".
   await expect(page.getByText(/schön, dass du da bist/i)).toBeVisible();
   await expect(page.getByRole("link", { name: /wiederholen/i }).first()).toBeVisible();
