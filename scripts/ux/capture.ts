@@ -426,7 +426,9 @@ await journey("Speaking", page, async () => {
   await record(page);
   await shot(page, "speaking-off", "Speaking — not understood", "The worst outcome. The brief is emphatic that this must not read as a verdict on her.");
 
-  const revealed = (await page.locator("p.text-2xl").last().textContent().catch(() => ""))?.trim() ?? "";
+  // The revealed target is the last Slovene text on the card; selected by
+  // language rather than by a size class, so a restyle does not lose it.
+  const revealed = (await page.locator('[lang="sl"]').last().textContent().catch(() => ""))?.trim() ?? "";
 
   const retry = page.getByRole("button", { name: /nochmal aufnehmen/i });
   if (revealed && (await retry.isVisible().catch(() => false))) {
