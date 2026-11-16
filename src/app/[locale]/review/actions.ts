@@ -40,7 +40,11 @@ export async function submitAnswer(input: SubmitAnswerInput): Promise<{ finished
   });
 
   logger.debug({ cardId: parsed.cardId, rating: parsed.rating }, "review recorded");
-  revalidatePath("/review");
+  /*
+   * Only the home screen, not /review: revalidating the page she is on
+   * re-renders it at once, and after the last card the server render is the
+   * empty state — which replaced the done screen before she ever saw it.
+   */
   revalidatePath("/");
   return { finished: result.finished };
 }

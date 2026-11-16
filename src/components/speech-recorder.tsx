@@ -13,6 +13,8 @@ export type RecordingResult = {
 
 type Labels = {
   start: string;
+  /** Visible line under the idle button; the button keeps `start` as its name. */
+  startHint?: string;
   stop: string;
   recording: string;
   permissionDenied: string;
@@ -133,16 +135,21 @@ export function SpeechRecorder({
         type="button"
         size="icon"
         variant={recording ? "destructive" : "default"}
-        className={cn("size-20 rounded-full", recording && "animate-pulse")}
+        className={cn(
+          "size-[104px] rounded-full [&_svg]:size-9",
+          recording
+            ? "shadow-[0_0_0_10px_rgb(163_64_43/0.15)]"
+            : "shadow-[0_10px_28px_rgb(45_106_74/0.32)]",
+        )}
         onClick={() => (recording ? stop() : void start())}
         disabled={disabled}
         aria-label={recording ? labels.stop : labels.start}
       >
-        {recording ? <Square className="size-8" /> : <Mic className="size-8" />}
+        {recording ? <Square className="fill-current" /> : <Mic />}
       </Button>
 
-      <p className="text-sm text-muted-foreground" aria-live="polite">
-        {recording ? `${labels.recording} · ${elapsed}s` : labels.start}
+      <p className="font-bold" aria-live="polite">
+        {recording ? `${labels.recording} · ${elapsed}s` : (labels.startHint ?? labels.start)}
       </p>
 
       {previewUrl && !recording ? (

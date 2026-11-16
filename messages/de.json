@@ -4,13 +4,14 @@
     "tagline": "Slowenisch für echte Gespräche"
   },
   "nav": {
-    "home": "Start",
+    "home": "Heute",
     "review": "Wiederholen",
     "lessons": "Lektionen",
-    "progress": "Meine Sätze",
+    "progress": "Satzbuch",
     "teacher": "Lehrbereich",
     "settings": "Einstellungen",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "label": "Hauptnavigation"
   },
   "language": {
     "label": "Sprache"
@@ -27,7 +28,7 @@
     "unexpectedError": "Etwas ist schiefgelaufen. Bitte nochmal versuchen."
   },
   "home": {
-    "greeting": "Hallo, {name}",
+    "greeting": "Dober dan, {name}.",
     "welcomeBack": "Schön, dass du da bist.",
     "dueToday": "Heute dran",
     "dueTodayCount": "{count, plural, =1 {Eine Karte} other {# Karten}}",
@@ -39,14 +40,15 @@
     "lessonMeta": "{minutes} Min · {count, plural, =1 {1 Sache} other {# Sachen}}",
     "allLessonsDone": "Du hast alle Lektionen durch.",
     "browseLessons": "Alle Lektionen",
-    "canSayTitle": "Was ich sagen kann",
+    "canSayTitle": "Neu in deinem Satzbuch",
     "canSayCount": "{count, plural, =0 {Noch nichts — das kommt} =1 {Ein Satz} other {# Sätze}}",
     "canSayEmpty": "Hier sammelt sich, was du sicher sagen kannst.",
-    "canSayAll": "Alles ansehen",
+    "canSayAll": "Alle {count}",
     "answeredTitle": "Antworten für dich",
     "answeredEmpty": "Noch keine Antworten — sobald er etwas beantwortet, taucht es hier auf.",
     "answeredCount": "{count, plural, =1 {Eine Frage wurde beantwortet} other {# Fragen wurden beantwortet}}",
-    "answeredOpen": "Ansehen"
+    "answeredOpen": "Ansehen",
+    "dueMinutes": "etwa {minutes} Min"
   },
   "common": {
     "loading": "Lädt …",
@@ -57,7 +59,8 @@
       "learner": "Lernende",
       "teacher": "Lehrer"
     },
-    "done": "erledigt"
+    "done": "erledigt",
+    "listen": "{phrase} anhören"
   },
   "errors": {
     "notFound": "Diese Seite gibt es nicht.",
@@ -107,10 +110,13 @@
       "formal": "förmlich"
     },
     "done": {
-      "title": "Das war's für jetzt",
+      "title": "Das war’s für jetzt.",
       "body": "{count, plural, =1 {Eine Karte} other {# Karten}} wiederholt.",
-      "home": "Zur Startseite",
-      "again": "Weiter wiederholen"
+      "home": "Fertig",
+      "again": "Weiter wiederholen",
+      "saved": "Alles ist gespeichert — auch offline.",
+      "more": "Noch Lust? · {minutes} Min",
+      "continueLesson": "Weiter mit „{title}“"
     },
     "listen": "Hör zu",
     "listenPrompt": "Was heißt das?",
@@ -122,7 +128,8 @@
       "slow": "Langsamer abspielen",
       "otherVoices": "andere Stimme",
       "generatedVoice": "Computerstimme",
-      "unavailable": "Für diese Karte gibt es noch kein Audio."
+      "unavailable": "Für diese Karte gibt es noch kein Audio.",
+      "slowShort": "Langsam"
     },
     "speaking": {
       "prompt": "Sag es auf Slowenisch",
@@ -147,7 +154,10 @@
       "pendingScore": "Wird später ausgewertet.",
       "failed": "Die Auswertung hat nicht geklappt. Die Aufnahme ist trotzdem gespeichert.",
       "retry": "Nochmal aufnehmen",
-      "skipSpeaking": "Überspringen"
+      "skipSpeaking": "Überspringen",
+      "listenFirst": "Erst anhören",
+      "cantSpeak": "Kann gerade nicht sprechen",
+      "startHint": "Tippen und sprechen"
     },
     "ask": {
       "button": "Verstehe ich nicht",
@@ -159,7 +169,13 @@
       "failed": "Konnte nicht abgeschickt werden.",
       "cancel": "Abbrechen",
       "answerTitle": "Antwort"
-    }
+    },
+    "close": "Pause — später weitermachen",
+    "dontKnow": "Weiß nicht",
+    "diacritics": "Sonderzeichen einfügen",
+    "suggestedHint": "Vorschlag markiert — ein Tipp genügt.",
+    "translate": "Auf Deutsch",
+    "suggestedShort": "Vorschlag"
   },
   "lessons": {
     "title": "Lektionen",
@@ -197,19 +213,31 @@
       "next": "Nächste Lektion",
       "home": "Zur Startseite"
     },
-    "empty": "Es sind noch keine Lektionen freigegeben."
+    "empty": "Es sind noch keine Lektionen freigegeben.",
+    "subtitle": "Keine Pflichtreihenfolge — spring, wohin du willst.",
+    "unitLabel": "Einheit {position}",
+    "doneUnits": "{count, plural, =1 {1 Einheit fertig} other {# Einheiten fertig}}",
+    "lessonCount": "{count, plural, =1 {1 Lektion} other {# Lektionen}}",
+    "inProgressMeta": "Angefangen · {minutes} Min",
+    "leave": "Lektion verlassen"
   },
   "progress": {
     "title": "Was ich sagen kann",
     "intro": "Sätze, die sitzen. Die Liste wächst von allein.",
     "empty": "Noch ist die Liste leer. Nach ein paar Wiederholungen taucht hier der erste Satz auf.",
     "emptyAction": "Erste Lektion",
-    "countLabel": "Sätze",
+    "countLabel": "Sätze sitzen",
     "wordsLabel": "Wörter begegnet",
     "lessonsLabel": "Lektionen",
     "dualLabel": "davon mit Dvojina",
     "wordsTitle": "Wörter, die du getroffen hast",
-    "sinceLabel": "seit {date}"
+    "sinceLabel": "seit {date}",
+    "searchLabel": "Satzbuch durchsuchen",
+    "searchPlaceholder": "Deutsch oder Slowenisch suchen",
+    "filterLabel": "Filter",
+    "filterAll": "Alle",
+    "filterDual": "Dvojina",
+    "noMatches": "Dazu ist noch nichts im Satzbuch."
   },
   "teacher": {
     "title": "Lehrbereich",
@@ -480,6 +508,7 @@
     "waiting": "{count, plural, =1 {1 Antwort wartet auf Netz} other {# Antworten warten auf Netz}}",
     "readyTitle": "Für unterwegs bereit",
     "readyBody": "{count, plural, =1 {1 Karte liegt auf dem Gerät} other {# Karten liegen auf dem Gerät}}. Üben geht auch ohne Netz.",
-    "preparing": "Wird vorbereitet …"
+    "preparing": "Wird vorbereitet …",
+    "readyShort": "Offline bereit"
   }
 }

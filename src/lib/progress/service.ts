@@ -1,6 +1,15 @@
 import { and, count, desc, eq, gte, inArray, isNotNull, sql } from "drizzle-orm";
 import type { Db } from "@/db/client";
-import { cards, lessonProgress, lexemes, phrases, reviewLogs } from "@/db/schema";
+import {
+  cards,
+  lessonItems,
+  lessonProgress,
+  lessons,
+  lexemes,
+  phrases,
+  reviewLogs,
+  units,
+} from "@/db/schema";
 
 /**
  * Progress, expressed as capability.
@@ -27,6 +36,8 @@ export type Capability = {
   /** When she first reached the threshold, so the list reads chronologically. */
   reachedAt: Date;
   isDual: boolean;
+  /** The unit that introduced it, for the phrasebook's topic filter. */
+  unit: { title: string; position: number } | null;
 };
 
 export async function getCapabilities(
@@ -42,9 +53,14 @@ export async function getCapabilities(
       contextNote: phrases.contextNote,
       tags: phrases.tags,
       reachedAt: cards.lastReview,
+      unitTitle: units.titleDe,
+      unitPosition: units.position,
     })
     .from(cards)
     .innerJoin(phrases, eq(phrases.id, cards.phraseId))
+    .leftJoin(lessonItems, eq(lessonItems.phraseId, phrases.id))
+    .leftJoin(lessons, eq(lessons.id, lessonItems.lessonId))
+    .leftJoin(units, eq(units.id, lessons.unitId))
     .where(
       and(
         eq(cards.userId, userId),
@@ -64,6 +80,10 @@ export async function getCapabilities(
       contextNote: row.contextNote,
       reachedAt: row.reachedAt ?? new Date(0),
       isDual: (row.tags ?? []).includes("dvojina"),
+      unit:
+        row.unitTitle != null
+          ? { title: row.unitTitle, position: row.unitPosition ?? 0 }
+          : null,
     }))
     .sort((a, b) => b.reachedAt.getTime() - a.reachedAt.getTime())
     .slice(0, limit);

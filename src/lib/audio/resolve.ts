@@ -1,4 +1,4 @@
-import { desc, eq, or } from "drizzle-orm";
+import { desc, eq, inArray, or } from "drizzle-orm";
 import type { Db } from "@/db/client";
 import { mediaAssets } from "@/db/schema";
 
@@ -55,6 +55,33 @@ export function sortAudio(assets: (typeof mediaAssets.$inferSelect)[]): Playable
       return b.createdAt.getTime() - a.createdAt.getTime();
     })
     .map(toPlayable);
+}
+
+/**
+ * Audio for a whole list of phrases in one query, keyed by phrase id. For the
+ * phrasebook, where a lookup per row would be one query per sentence she knows.
+ */
+export async function getAudioForPhrases(
+  db: Db,
+  phraseIds: string[],
+): Promise<Map<string, PlayableAudio[]>> {
+  const result = new Map<string, PlayableAudio[]>();
+  if (!phraseIds.length) return result;
+
+  const assets = await db
+    .select()
+    .from(mediaAssets)
+    .where(inArray(mediaAssets.phraseId, phraseIds));
+
+  const grouped = new Map<string, (typeof mediaAssets.$inferSelect)[]>();
+  for (const asset of assets) {
+    if (!asset.phraseId) continue;
+    const list = grouped.get(asset.phraseId) ?? [];
+    list.push(asset);
+    grouped.set(asset.phraseId, list);
+  }
+  for (const [phraseId, list] of grouped) result.set(phraseId, sortAudio(list));
+  return result;
 }
 
 export async function getAudioForItem(

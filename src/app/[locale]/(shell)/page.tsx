@@ -1,18 +1,29 @@
-import { ArrowRight, MessageCircle } from "lucide-react";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ArrowRight, ChevronRight, MessageCircle, Route } from "lucide-react";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { db } from "@/db/client";
 import { Link } from "@/i18n/navigation";
 import { currentUser } from "@/lib/auth";
+import { getAudioForPhrases } from "@/lib/audio/resolve";
 import { getNextLesson } from "@/lib/lessons/service";
 import { getCapabilities, getProgressSummary } from "@/lib/progress/service";
 import { getUnseenAnswers } from "@/lib/questions/service";
 import { getSessionOverview } from "@/lib/session/service";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { OfflineReady } from "@/components/offline-ready";
-import { Button } from "@/components/ui/button";
+import { PlayButton } from "@/components/play-button";
 import { cn } from "@/lib/utils";
 
+/** A rough pace for the "etwa N Min" hint: half a minute a card. */
+const SECONDS_PER_CARD = 30;
+
+/**
+ * Heute.
+ *
+ * Laid out for one thumb: the things to read sit at the top, the things to tap
+ * sit at the bottom, right above the tab bar. Before, the main button was in
+ * the middle of a stack of cards and the phrasebook pushed it off-screen.
+ */
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -21,19 +32,35 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   if (!user) redirect("/login");
 
   const t = await getTranslations("home");
+  const tCommon = await getTranslations("common");
+  const format = await getFormatter();
 
   const [overview, nextLesson, summary, capabilities, answers] = await Promise.all([
     getSessionOverview(db, user.id),
     getNextLesson(db, user.id),
     getProgressSummary(db, user.id),
-    getCapabilities(db, user.id, 3),
+    getCapabilities(db, user.id, 2),
     getUnseenAnswers(db, user.id),
   ]);
+  const audio = await getAudioForPhrases(
+    db,
+    capabilities.map((capability) => capability.phraseId),
+  );
+
+  const minutes = Math.max(1, Math.round((overview.displayedDue * SECONDS_PER_CARD) / 60));
+  const firstAnswer = answers[0];
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-8 px-5 pb-10 pt-8">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-5 px-5 pb-4 pt-7">
+      <header className="flex flex-col gap-1.5">
+        <div className="flex min-h-7 items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            {format.dateTime(new Date(), { weekday: "long", day: "numeric", month: "long" })}
+          </p>
+          {/* Answers "will this work on the train" before she is on the train. */}
+          <OfflineReady />
+        </div>
+        <h1 className="slovene mt-1 text-4xl font-semibold leading-tight">
           {t("greeting", { name: user.displayName })}
         </h1>
         {/* Never "you were away for 12 days". */}
@@ -44,157 +71,165 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         Something she asked about has come back. This is the one notification
         the app has, and it only ever carries good news.
       */}
-      {answers.length ? (
-        <section className="flex flex-col gap-3 rounded-lg border border-accent bg-accent-soft/30 p-5">
-          <p className="flex items-center gap-2 text-xs uppercase tracking-[0.14em] text-muted-foreground">
-            <MessageCircle className="size-4" aria-hidden />
-            {t("answeredTitle")}
-          </p>
-          <p className="text-sm">{t("answeredCount", { count: answers.length })}</p>
-          <ul className="flex flex-col gap-3">
-            {answers.slice(0, 2).map((answer) => (
-              <li key={answer.id} className="flex flex-col gap-1">
-                <p className="slovene text-lg leading-snug">{answer.item.slovene}</p>
-                {answer.answerText ? (
-                  <p className="text-sm text-muted-foreground">{answer.answerText}</p>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-          <Button asChild variant="outline" size="sm" block>
-            <Link href="/answers">{t("answeredOpen")}</Link>
-          </Button>
-        </section>
+      {firstAnswer ? (
+        <Link
+          href="/answers"
+          className="flex items-center gap-3.5 rounded-2xl bg-accent-soft px-4 py-3.5 text-accent-soft-foreground"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+            <MessageCircle className="size-5" aria-hidden />
+          </span>
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="text-sm font-bold">
+              {t("answeredCount", { count: answers.length })}
+            </span>
+            <span className="slovene truncate text-lg">{firstAnswer.item.slovene}</span>
+          </span>
+          <ChevronRight className="size-5 shrink-0" aria-hidden />
+        </Link>
       ) : null}
 
       {/*
-        Two ways in, always both available: reviews never depend on lessons and
-        lessons never depend on reviews.
+        The signature of the whole app: progress as accumulated speech. Only the
+        newest two here — the full phrasebook is its own tab.
       */}
-      <section className="flex flex-col gap-3">
-        <div className="rounded-lg border border-border bg-card p-5">
-          <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-            {t("dueToday")}
-          </p>
-          <p
-            className={cn(
-              "mt-1 tracking-tight",
-              overview.displayedDue > 0
-                ? "text-3xl font-semibold tabular-nums"
-                : "text-xl text-muted-foreground",
-            )}
-          >
-            {/*
-              The capped number and nothing else. The real backlog exists in the
-              database for the weekly digest; it never reaches this screen.
-            */}
-            {overview.displayedDue > 0 ? t("dueTodayCount", { count: overview.displayedDue }) : t("nothingDue")}
-          </p>
-          {overview.hasMoreThanShown ? (
-            <p className="mt-2 text-sm text-muted-foreground">{t("moreLater")}</p>
-          ) : null}
-          {overview.displayedDue === 0 ? (
-            <p className="mt-2 text-sm text-muted-foreground">{t("nothingDueHint")}</p>
-          ) : null}
-
-          <Button
-            asChild
-            size="lg"
-            variant={overview.displayedDue > 0 ? "default" : "outline"}
-            block
-            className="mt-4"
-          >
-            <Link href="/review">{t("reviewCta")}</Link>
-          </Button>
-
-          {/* Answers "will this work on the train" before she is on the train. */}
-          <div className="mt-3">
-            <OfflineReady />
+      {capabilities.length ? (
+        <section className="flex flex-col gap-1">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
+              {t("canSayTitle")}
+            </h2>
+            <Link
+              href="/progress"
+              className="py-2.5 text-sm font-bold text-primary underline-offset-4 hover:underline"
+            >
+              {t("canSayAll", { count: summary.canSay })}
+            </Link>
           </div>
-        </div>
-
-        {nextLesson ? (
-          <Link
-            href={`/lessons/${nextLesson.slug}`}
-            className={cn(
-              "group flex items-center gap-4 rounded-lg border bg-card p-5 transition-colors hover:border-primary",
-              // With nothing due, learning something new is the suggested next step.
-              overview.displayedDue === 0 ? "border-primary" : "border-border",
-            )}
-          >
-            <div className="flex flex-1 flex-col gap-1">
-              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                {t("continueLesson")}
-              </p>
-              <p className="text-lg font-semibold tracking-tight">{nextLesson.titleDe}</p>
-              <p className="text-sm text-muted-foreground">
-                {t("lessonMeta", {
-                  minutes: nextLesson.estimatedMinutes,
-                  count: nextLesson.itemCount,
-                })}
-              </p>
-            </div>
-            <ArrowRight
-              className="size-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
-              aria-hidden
-            />
-          </Link>
-        ) : (
-          <div className="rounded-lg border border-border bg-card p-5">
-            <p className="text-muted-foreground">{t("allLessonsDone")}</p>
-            <Button asChild variant="outline" block className="mt-4">
-              <Link href="/lessons">{t("browseLessons")}</Link>
-            </Button>
-          </div>
-        )}
-      </section>
-
-      {/*
-        The signature of the whole app: progress as accumulated speech. A
-        phrasebook page filling up, never a streak or a percentage.
-      */}
-      <section className="flex flex-col gap-4">
-        <div className="flex items-baseline justify-between gap-4">
-          <h2 className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-            {t("canSayTitle")}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            {t("canSayCount", { count: summary.canSay })}
-          </p>
-        </div>
-
-        {capabilities.length ? (
-          <>
-            <ul className="flex flex-col divide-y divide-border border-y border-border">
-              {capabilities.map((capability) => (
-                <li key={capability.phraseId} className="flex flex-col gap-1 py-4">
-                  <p
+          <ul className="flex flex-col divide-y divide-border rounded-2xl bg-card">
+            {capabilities.map((capability) => (
+              <li key={capability.phraseId} className="flex items-center gap-3 py-3 pl-4 pr-3">
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span
+                    lang="sl"
                     className={cn(
                       "slovene text-xl leading-snug",
                       capability.isDual && "dual-mark",
                     )}
                   >
                     {capability.slovene}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{capability.german}</p>
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/progress"
-              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-            >
-              {t("canSayAll")}
-            </Link>
-          </>
+                  </span>
+                  <span className="text-sm text-muted-foreground">{capability.german}</span>
+                </span>
+                <PlayButton
+                  sources={audio.get(capability.phraseId) ?? []}
+                  label={tCommon("listen", { phrase: capability.slovene })}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : (
+        <p className="rounded-2xl border border-dashed border-border px-5 py-6 text-center text-sm text-muted-foreground">
+          {t("canSayEmpty")}
+        </p>
+      )}
+
+      <div className="flex-1" />
+
+      {/*
+        Two ways in, always both available: reviews never depend on lessons and
+        lessons never depend on reviews. Both sit where the thumb already is.
+      */}
+      <section className="flex flex-col gap-2.5" aria-label={t("dueToday")}>
+        <div className="flex flex-col gap-4 rounded-3xl bg-card p-5 shadow-[0_1px_2px_rgb(28_37_48/0.06),0_8px_24px_rgb(28_37_48/0.06)]">
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex flex-col gap-0.5">
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                {t("dueToday")}
+              </p>
+              {/*
+                The capped number and nothing else. The real backlog exists in
+                the database for the weekly digest; it never reaches this screen.
+              */}
+              <p
+                className={cn(
+                  "tracking-tight",
+                  overview.displayedDue > 0
+                    ? "text-3xl font-bold tabular-nums"
+                    : "text-xl text-muted-foreground",
+                )}
+              >
+                {overview.displayedDue > 0
+                  ? t("dueTodayCount", { count: overview.displayedDue })
+                  : t("nothingDue")}
+              </p>
+            </div>
+            {overview.displayedDue > 0 ? (
+              <p className="mb-1.5 text-muted-foreground">{t("dueMinutes", { minutes })}</p>
+            ) : null}
+          </div>
+
+          {overview.hasMoreThanShown ? (
+            <p className="-mt-2 text-sm text-muted-foreground">{t("moreLater")}</p>
+          ) : null}
+          {overview.displayedDue === 0 ? (
+            <p className="-mt-2 text-sm text-muted-foreground">{t("nothingDueHint")}</p>
+          ) : null}
+
+          {/* With nothing due, the lesson below is the suggested step instead. */}
+          <Link
+            href="/review"
+            className={cn(
+              "flex h-14 items-center justify-center gap-2.5 rounded-2xl text-lg font-bold transition-colors",
+              overview.displayedDue > 0
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "border border-input bg-card text-foreground hover:bg-secondary",
+            )}
+          >
+            {t("reviewCta")}
+            <ArrowRight className="size-5" aria-hidden />
+          </Link>
+        </div>
+
+        {nextLesson ? (
+          <Link
+            href={`/lessons/${nextLesson.slug}`}
+            className={cn(
+              "flex items-center gap-3.5 rounded-2xl bg-card px-4 py-3.5 transition-colors hover:bg-secondary",
+              // With nothing due, learning something new is the suggested next step.
+              overview.displayedDue === 0 && "ring-2 ring-primary",
+            )}
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-soft-foreground">
+              <Route className="size-5" aria-hidden />
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="text-sm text-muted-foreground">
+                {t("continueLesson")} ·{" "}
+                {t("lessonMeta", {
+                  minutes: nextLesson.estimatedMinutes,
+                  count: nextLesson.itemCount,
+                })}
+              </span>
+              <span className="truncate text-lg font-bold">{nextLesson.titleDe}</span>
+            </span>
+            <ChevronRight className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+          </Link>
         ) : (
-          <p className="rounded-lg border border-dashed border-border px-5 py-8 text-center text-sm text-muted-foreground">
-            {t("canSayEmpty")}
-          </p>
+          <Link
+            href="/lessons"
+            className="flex items-center justify-between gap-3 rounded-2xl bg-card px-4 py-4 text-muted-foreground"
+          >
+            {t("allLessonsDone")}
+            <ChevronRight className="size-5 shrink-0" aria-hidden />
+          </Link>
         )}
       </section>
 
-      <LanguageSwitcher />
+      <div className="flex justify-center pt-1">
+        <LanguageSwitcher />
+      </div>
     </main>
   );
 }

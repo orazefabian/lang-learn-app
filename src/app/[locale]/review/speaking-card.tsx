@@ -4,6 +4,7 @@ import { useCallback, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { AudioPlayer, type AudioSource } from "@/components/audio-player";
 import { SpeechRecorder, type RecordingResult } from "@/components/speech-recorder";
+import { PlayButton } from "@/components/play-button";
 import { Button } from "@/components/ui/button";
 import { newEventId, queueSpeech } from "@/lib/offline/store";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,8 @@ type Props = {
   /** Offline the recording is kept and scored on reconnect. */
   online: boolean;
   onResult: (suggested: CardRating | null) => void;
+  /** She cannot speak right now (train, office): show the answer instead. */
+  onSkip: () => void;
 };
 
 /**
@@ -38,9 +41,11 @@ export function SpeakingCard({
   audio,
   online,
   onResult,
+  onSkip,
 }: Props) {
   const t = useTranslations("review");
   const [result, setResult] = useState<SpeechAttemptResponse | null>(null);
+  const [skipped, setSkipped] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const audioLabels = {
@@ -48,6 +53,7 @@ export function SpeakingCard({
     pause: t("audio.pause"),
     replay: t("audio.replay"),
     slow: t("audio.slow"),
+    slowShort: t("audio.slowShort"),
     otherVoices: t("audio.otherVoices"),
     generatedVoice: t("audio.generatedVoice"),
     unavailable: t("audio.unavailable"),
@@ -115,23 +121,60 @@ export function SpeakingCard({
   );
 
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-center text-sm text-muted-foreground">{t("speaking.prompt")}</p>
-      <h1 className="text-balance text-center text-2xl font-semibold tracking-tight">{prompt}</h1>
+    <div className="flex flex-1 flex-col gap-6">
+      <div className="flex flex-1 flex-col items-center justify-center gap-3.5 px-2 text-center">
+        <p className="text-sm font-bold uppercase tracking-[0.08em] text-muted-foreground">
+          {t("speaking.prompt")}
+        </p>
+        <h1 className="text-balance text-[2rem] font-bold leading-tight tracking-tight">{prompt}</h1>
+        {!result && !skipped ? (
+          <PlayButton
+            sources={audio}
+            label={t("speaking.listenFirst")}
+            text={t("speaking.listenFirst")}
+            className="mt-2"
+          />
+        ) : null}
+      </div>
 
-      {!result ? (
-        <SpeechRecorder
-          disabled={pending}
-          onRecorded={handleRecorded}
-          labels={{
-            start: t("speaking.start"),
-            stop: t("speaking.stop"),
-            recording: t("speaking.recording"),
-            permissionDenied: t("speaking.permissionDenied"),
-            unsupported: t("speaking.unsupported"),
-            listenBack: t("speaking.listenBack"),
-          }}
-        />
+      {skipped ? (
+        <div className="flex flex-col items-center gap-4 rounded-3xl bg-card px-5 py-6 text-center">
+          <p lang="sl" className="slovene text-4xl font-semibold leading-tight">
+            {slovene}
+          </p>
+          {audio.length ? <AudioPlayer sources={audio} labels={audioLabels} /> : null}
+        </div>
+      ) : null}
+
+      {/* The recorder lives at the bottom, under the thumb. */}
+      {!result && !skipped ? (
+        <div className="flex flex-col items-center gap-2">
+          <SpeechRecorder
+            disabled={pending}
+            onRecorded={handleRecorded}
+            labels={{
+              start: t("speaking.start"),
+              startHint: t("speaking.startHint"),
+              stop: t("speaking.stop"),
+              recording: t("speaking.recording"),
+              permissionDenied: t("speaking.permissionDenied"),
+              unsupported: t("speaking.unsupported"),
+              listenBack: t("speaking.listenBack"),
+            }}
+          />
+          {!pending ? (
+            <button
+              type="button"
+              onClick={() => {
+                setSkipped(true);
+                onSkip();
+              }}
+              className="min-h-11 px-3 text-[0.95rem] font-bold text-primary underline-offset-4 hover:underline"
+            >
+              {t("speaking.cantSpeak")}
+            </button>
+          ) : null}
+        </div>
       ) : null}
 
       {pending ? (
@@ -141,8 +184,10 @@ export function SpeakingCard({
       ) : null}
 
       {result ? (
-        <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5">
-          <p className="text-center text-2xl font-semibold tracking-tight">{slovene}</p>
+        <div className="flex flex-col gap-4 rounded-3xl bg-card p-5">
+          <p lang="sl" className="slovene text-center text-4xl font-semibold leading-tight">
+            {slovene}
+          </p>
 
           {result.status === "scored" ? (
             <>

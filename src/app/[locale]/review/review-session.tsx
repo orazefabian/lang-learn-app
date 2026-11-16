@@ -14,6 +14,7 @@ import {
 } from "@/lib/offline/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Check, ChevronRight, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import type { CardPrompt } from "@/lib/session/service";
@@ -31,15 +32,31 @@ const TYPED_EXERCISES = new Set(["production", "cloze", "dictation", "listening"
 /** Exercises where the audio is the prompt, so nothing is shown until she answers. */
 const AUDIO_FIRST_EXERCISES = new Set(["listening", "dictation"]);
 
+/** Exercises whose typed answer is Slovene — those get the č/š/ž keys. */
+const SLOVENE_ANSWER_EXERCISES = new Set(["production", "cloze", "dictation"]);
+
+const DIACRITICS = ["č", "š", "ž"] as const;
+
+export type NextLessonLink = { slug: string; title: string; minutes: number };
+
 type Props = {
   sessionId: string;
   initialCard: CardPrompt | null;
   cursor: number;
   total: number;
   autoplayAudio: boolean;
+  /** Offered on the done screen, for when she has time left. */
+  nextLesson: NextLessonLink | null;
 };
 
-export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayAudio }: Props) {
+export function ReviewSession({
+  sessionId,
+  initialCard,
+  cursor,
+  total,
+  autoplayAudio,
+  nextLesson,
+}: Props) {
   const t = useTranslations("review");
 
   const audioLabels = {
@@ -47,6 +64,7 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
     pause: t("audio.pause"),
     replay: t("audio.replay"),
     slow: t("audio.slow"),
+    slowShort: t("audio.slowShort"),
     otherVoices: t("audio.otherVoices"),
     generatedVoice: t("audio.generatedVoice"),
     unavailable: t("audio.unavailable"),
@@ -59,6 +77,9 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
   const [result, setResult] = useState<CheckAnswerResult | null>(null);
   /** What the speech recogniser would suggest. She still taps the rating. */
   const [speechSuggestion, setSpeechSuggestion] = useState<CardRating | null>(null);
+  /** "Weiß nicht": revealed without an attempt, so "Nochmal" is suggested. */
+  const [gaveUp, setGaveUp] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [answered, setAnswered] = useState(0);
   const [finished, setFinished] = useState(!initialCard);
   const [pending, startTransition] = useTransition();
@@ -116,6 +137,8 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
     setTyped("");
     setResult(null);
     setSpeechSuggestion(null);
+    setGaveUp(false);
+    setShowHint(false);
   }, []);
 
   const advance = useCallback(() => {
@@ -239,13 +262,54 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [rate, revealed]);
 
-  if (finished || !card) {
+  if ((finished || !card) && answered === 0) {
+    // Arrived with nothing due. Not an achievement screen — just a kind exit.
     return (
       <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center gap-6 px-6 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("done.title")}</h1>
-        <p className="text-muted-foreground">{t("done.body", { count: answered })}</p>
-        <div className="flex w-full flex-col gap-3">
-          <Button asChild size="lg" block>
+        <p className="text-lg text-muted-foreground">{t("empty")}</p>
+        <Button asChild size="lg" className="h-14 rounded-2xl px-8 font-bold">
+          <Link href="/">{t("emptyAction")}</Link>
+        </Button>
+      </main>
+    );
+  }
+
+  if (finished || !card) {
+    return (
+      <main
+        className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pt-4"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)" }}
+      >
+        <section className="flex flex-1 flex-col justify-center gap-3">
+          <span
+            aria-hidden
+            className="flex size-14 items-center justify-center rounded-full bg-primary-soft text-primary"
+          >
+            <Check className="size-7" strokeWidth={2.5} />
+          </span>
+          <h1 className="slovene mt-2 text-4xl font-semibold leading-tight">{t("done.title")}</h1>
+          <p className="text-lg text-muted-foreground">
+            {t("done.body", { count: answered })} {t("done.saved")}
+          </p>
+        </section>
+        <div className="flex flex-col gap-2.5">
+          {nextLesson ? (
+            <Link
+              href={`/lessons/${nextLesson.slug}`}
+              className="flex items-center gap-3.5 rounded-2xl bg-card px-4 py-3.5 transition-colors hover:bg-secondary"
+            >
+              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="text-sm text-muted-foreground">
+                  {t("done.more", { minutes: nextLesson.minutes })}
+                </span>
+                <span className="truncate text-lg font-bold">
+                  {t("done.continueLesson", { title: nextLesson.title })}
+                </span>
+              </span>
+              <ChevronRight className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+            </Link>
+          ) : null}
+          <Button asChild size="lg" block className="h-14 rounded-2xl font-bold">
             <Link href="/">{t("done.home")}</Link>
           </Button>
         </div>
@@ -256,32 +320,55 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
   const isTyped = TYPED_EXERCISES.has(card.exerciseType);
   const isAudioFirst = AUDIO_FIRST_EXERCISES.has(card.exerciseType);
   const isSpeaking = card.exerciseType === "speaking";
-  const suggestedRating = result?.suggestedRating ?? speechSuggestion;
+  const answersInSlovene = SLOVENE_ANSWER_EXERCISES.has(card.exerciseType);
+  const suggestedRating =
+    result?.suggestedRating ?? speechSuggestion ?? (gaveUp ? ("again" as const) : null);
+
+  const insert = (character: string) => {
+    const input = inputRef.current;
+    const startAt = input?.selectionStart ?? typed.length;
+    const endAt = input?.selectionEnd ?? typed.length;
+    setTyped(typed.slice(0, startAt) + character + typed.slice(endAt));
+    // Keep the keyboard up and the caret after the inserted letter.
+    requestAnimationFrame(() => {
+      input?.focus();
+      input?.setSelectionRange(startAt + 1, startAt + 1);
+    });
+  };
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pb-8 pt-4">
-      <header className="flex items-center justify-between text-sm text-muted-foreground">
-        <span aria-live="polite">
+    <main
+      className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pt-4"
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)" }}
+    >
+      <header className="flex items-center gap-3">
+        {/* Leaving is pausing: the cursor lives on the server. */}
+        <Link
+          href="/"
+          aria-label={t("close")}
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-secondary"
+        >
+          <X className="size-5" />
+        </Link>
+        <div aria-hidden className="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
+          <div
+            className="h-full rounded-full bg-primary transition-all"
+            style={{ width: `${(position / total) * 100}%` }}
+          />
+        </div>
+        <span aria-live="polite" className="shrink-0 text-sm tabular-nums text-muted-foreground">
           {t("progress", { current: Math.min(position + 1, total), total })}
         </span>
-        {card.isNew ? (
-          <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-            {t("newBadge")}
-          </span>
-        ) : null}
+        <AskButton key={card.cardId} cardId={card.cardId} />
       </header>
 
-      <div
-        aria-hidden
-        className="mt-3 h-1 w-full overflow-hidden rounded-full bg-secondary"
-      >
-        <div
-          className="h-full rounded-full bg-primary transition-all"
-          style={{ width: `${(position / total) * 100}%` }}
-        />
-      </div>
+      {card.isNew ? (
+        <p className="mt-4 self-center rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-[0.1em] text-accent-soft-foreground">
+          {t("newBadge")}
+        </p>
+      ) : null}
 
-      <section className="flex flex-1 flex-col justify-center gap-6 py-8">
+      <section className="flex flex-1 flex-col justify-center gap-5 py-6">
         {isSpeaking ? (
           <SpeakingCard
             key={card.cardId}
@@ -295,72 +382,56 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
               setSpeechSuggestion(suggested);
               setRevealed(true);
             }}
+            onSkip={() => setRevealed(true)}
           />
         ) : null}
 
-        {!isSpeaking && card.exerciseType === "cloze" ? (
-          <p className="text-center text-sm text-muted-foreground">{t("cloze")}</p>
-        ) : null}
+        {!isSpeaking && !revealed ? (
+          <div className="flex flex-col items-center gap-3.5 px-2 text-center">
+            {/* The screen's heading is the prompt; with no prompt, the instruction. */}
+            <PromptLabel asHeading={!card.prompt}>
+              {card.exerciseType === "cloze"
+                ? t("cloze")
+                : isAudioFirst
+                  ? t("listenPrompt")
+                  : answersInSlovene
+                    ? t("typeSlovene")
+                    : t("translate")}
+            </PromptLabel>
 
-        {!isSpeaking && isAudioFirst ? (
-          <>
+            {isAudioFirst ? (
+              <AudioPlayer
+                sources={card.audio}
+                labels={audioLabels}
+                autoplay={autoplayAudio}
+                key={card.cardId}
+              />
+            ) : null}
+
             {card.prompt ? (
-              <p className="text-center text-sm text-muted-foreground">{t("listenPrompt")}</p>
-            ) : (
-              <h1 className="text-center text-sm text-muted-foreground">{t("listenPrompt")}</h1>
-            )}
-            <AudioPlayer
-              sources={card.audio}
-              labels={audioLabels}
-              autoplay={autoplayAudio}
-              key={card.cardId}
-            />
-          </>
-        ) : null}
+              <h1
+                lang={card.exerciseType === "recognition" || card.exerciseType === "cloze" ? "sl" : undefined}
+                className={cn(
+                  "text-balance font-bold leading-tight tracking-tight",
+                  card.exerciseType === "recognition" || card.exerciseType === "cloze"
+                    ? "slovene font-semibold"
+                    : "",
+                  card.prompt.length > 40 ? "text-2xl" : "text-[2rem]",
+                )}
+              >
+                {card.prompt}
+              </h1>
+            ) : null}
 
-        {!isSpeaking && card.prompt ? (
-          <h1
-            className={cn(
-              "text-balance text-center font-semibold tracking-tight",
-              card.prompt.length > 40 ? "text-2xl" : "text-3xl",
-            )}
-          >
-            {card.prompt}
-          </h1>
-        ) : null}
+            {card.register !== "standard" ? (
+              <p className="text-sm text-muted-foreground">
+                {t(`register.${card.register}` as "register.colloquial")}
+                {card.regionLabel ? ` · ${card.regionLabel}` : ""}
+              </p>
+            ) : null}
 
-        {!isSpeaking && card.register !== "standard" ? (
-          <p className="text-center text-sm text-muted-foreground">
-            {t(`register.${card.register}` as "register.colloquial")}
-            {card.regionLabel ? ` · ${card.regionLabel}` : ""}
-          </p>
-        ) : null}
-
-        {!isSpeaking && isTyped && !revealed ? (
-          <div className="flex flex-col gap-3">
-            <label className="sr-only" htmlFor="answer">
-              {isAudioFirst ? t("typeGerman") : t("typeSlovene")}
-            </label>
-            <Input
-              id="answer"
-              ref={inputRef}
-              value={typed}
-              onChange={(event) => setTyped(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  check();
-                }
-              }}
-              placeholder={isAudioFirst ? t("typeGerman") : t("typeAnswer")}
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="none"
-              spellCheck={false}
-              className="text-center text-xl"
-            />
-            {card.hintDe ? (
-              <p className="text-center text-sm text-muted-foreground">
+            {showHint && card.hintDe ? (
+              <p className="rounded-xl bg-accent-soft px-3.5 py-2 text-sm text-accent-soft-foreground">
                 {t("hint")}: {card.hintDe}
               </p>
             ) : null}
@@ -368,105 +439,213 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
         ) : null}
 
         {revealed && !isSpeaking ? (
-          <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5">
+          <>
             {result ? (
               <p
                 className={cn(
-                  "text-center text-sm font-medium",
-                  result.verdict === "wrong" ? "text-destructive" : "text-foreground",
+                  "flex items-center gap-2 self-center rounded-full px-3.5 py-2 text-[0.95rem] font-bold",
+                  result.verdict === "correct" && "bg-primary-soft text-primary",
+                  result.verdict === "almost" && "bg-accent-soft text-accent-soft-foreground",
+                  result.verdict === "wrong" && "bg-secondary text-foreground",
                 )}
               >
                 {/* Never colour alone: the wording carries the verdict too. */}
-                {result.verdict === "correct"
-                  ? `✓ ${t("verdict.correct")}`
-                  : result.verdict === "almost"
-                    ? `≈ ${t("verdict.almost")}`
-                    : `– ${t("verdict.wrong")}`}
+                <span aria-hidden>
+                  {result.verdict === "correct" ? "✓" : result.verdict === "almost" ? "≈" : "–"}
+                </span>
+                {t(`verdict.${result.verdict}` as "verdict.correct")}
               </p>
             ) : null}
 
-            <p className="text-center text-2xl font-semibold tracking-tight">{card.slovene}</p>
-            <p className="text-center text-lg text-muted-foreground">{card.german}</p>
-
-            {/* After answering, the audio stays available to imitate. */}
-            {card.audio.length && !isAudioFirst ? (
-              <AudioPlayer sources={card.audio} labels={audioLabels} key={`${card.cardId}-after`} />
-            ) : null}
-
-            {result?.diacriticsOnly ? (
-              <p className="text-center text-sm text-muted-foreground">{t("diacriticsHint")}</p>
-            ) : null}
-
-            {card.contextNote ? (
-              <p className="border-t border-border pt-4 text-center text-sm text-muted-foreground">
-                {card.contextNote}
-              </p>
-            ) : null}
-
-            {/*
-              Answers stay on the card from then on. Asking once should pay off
-              every time she meets the item again.
-            */}
-            {card.answers.map((answer) => (
-              <div
-                key={answer.questionId}
-                className="flex flex-col gap-2 border-t border-border pt-4"
-              >
-                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-                  {t("ask.answerTitle")}
+            <div className="flex flex-col items-center gap-3.5 rounded-3xl bg-card px-5 py-6 text-center">
+              {result && result.verdict !== "correct" && typed.trim() ? (
+                <p className="text-[0.95rem] text-muted-foreground">
+                  {t("yourAnswer")}:{" "}
+                  <span lang={answersInSlovene ? "sl" : undefined} className={cn("text-foreground", answersInSlovene && "slovene")}>
+                    {typed}
+                  </span>
                 </p>
-                {answer.answerText ? (
-                  <p className="text-sm leading-relaxed">{answer.answerText}</p>
-                ) : null}
-                {answer.answerAudioPath ? (
-                  <audio controls preload="none" className="h-9 w-full">
-                    <source src={mediaUrl(answer.answerAudioPath)} />
-                  </audio>
-                ) : null}
-              </div>
-            ))}
-          </div>
+              ) : null}
+
+              <h1 lang="sl" className="slovene text-balance text-4xl font-semibold leading-tight">
+                {card.slovene}
+              </h1>
+              <p className="text-lg text-muted-foreground">{card.german}</p>
+
+              {/* After answering, the audio stays available to imitate. */}
+              {card.audio.length ? (
+                <AudioPlayer sources={card.audio} labels={audioLabels} key={`${card.cardId}-after`} />
+              ) : null}
+
+              {result?.diacriticsOnly ? (
+                <p className="text-sm text-muted-foreground">{t("diacriticsHint")}</p>
+              ) : null}
+
+              {card.contextNote ? (
+                <p className="w-full border-t border-border pt-3.5 text-[0.95rem] leading-relaxed text-muted-foreground">
+                  {card.contextNote}
+                </p>
+              ) : null}
+
+              {/*
+                Answers stay on the card from then on. Asking once should pay
+                off every time she meets the item again.
+              */}
+              {card.answers.map((answer) => (
+                <div
+                  key={answer.questionId}
+                  className="flex w-full flex-col gap-2 border-t border-border pt-3.5 text-left"
+                >
+                  <p className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                    {t("ask.answerTitle")}
+                  </p>
+                  {answer.answerText ? (
+                    <p className="text-sm leading-relaxed">{answer.answerText}</p>
+                  ) : null}
+                  {answer.answerAudioPath ? (
+                    <audio controls preload="none" className="h-9 w-full">
+                      <source src={mediaUrl(answer.answerAudioPath)} />
+                    </audio>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </>
         ) : null}
       </section>
 
-      <footer className="flex flex-col gap-3">
-        <AskButton key={card.cardId} cardId={card.cardId} />
-
+      <footer className="flex flex-col gap-2.5">
         {!revealed ? (
           isSpeaking ? null : isTyped ? (
-            <Button size="lg" block onClick={check} disabled={pending}>
-              {t("check")}
-            </Button>
+            <>
+              <label
+                htmlFor="answer"
+                className="text-sm font-bold text-muted-foreground"
+              >
+                {t("yourAnswer")}
+              </label>
+              <Input
+                id="answer"
+                ref={inputRef}
+                lang={answersInSlovene ? "sl" : undefined}
+                value={typed}
+                onChange={(event) => setTyped(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    check();
+                  }
+                }}
+                placeholder={isAudioFirst ? t("typeGerman") : t("typeAnswer")}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
+                className={cn(
+                  "h-[60px] rounded-2xl border-2 border-primary px-4.5 text-2xl",
+                  answersInSlovene && "slovene",
+                )}
+              />
+              <div className="flex gap-2" role="group" aria-label={t("diacritics")}>
+                {answersInSlovene
+                  ? DIACRITICS.map((character) => (
+                      <button
+                        key={character}
+                        type="button"
+                        // Keep focus (and the phone keyboard) in the input.
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => insert(character)}
+                        className="slovene h-12 flex-1 rounded-xl border border-input bg-card text-2xl transition-colors hover:bg-secondary"
+                      >
+                        {character}
+                      </button>
+                    ))
+                  : null}
+                {card.hintDe && !showHint ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowHint(true)}
+                    className="h-12 flex-[1.6] rounded-xl px-3 text-[0.95rem] font-bold text-primary transition-colors hover:bg-secondary"
+                  >
+                    {t("showHint")}
+                  </button>
+                ) : null}
+              </div>
+              <div className="mt-1.5 flex gap-2.5">
+                <Button
+                  variant="outline"
+                  className="h-14 rounded-2xl border-0 bg-card px-5 font-bold"
+                  onClick={() => {
+                    setGaveUp(true);
+                    setRevealed(true);
+                  }}
+                  disabled={pending}
+                >
+                  {t("dontKnow")}
+                </Button>
+                <Button
+                  size="lg"
+                  className="h-14 flex-1 rounded-2xl font-bold"
+                  onClick={check}
+                  disabled={pending}
+                >
+                  {t("check")}
+                </Button>
+              </div>
+            </>
           ) : (
-            <Button size="lg" block onClick={() => setRevealed(true)} disabled={pending}>
+            <Button
+              size="lg"
+              block
+              className="h-14 rounded-2xl font-bold"
+              onClick={() => setRevealed(true)}
+              disabled={pending}
+            >
               {t("show")}
             </Button>
           )
         ) : (
           <>
-            <p className="text-center text-sm text-muted-foreground">{t("howWasIt")}</p>
-            <div className="grid grid-cols-4 gap-2">
+            <p id="how-was-it" className="text-center text-sm font-bold text-muted-foreground">
+              {t("howWasIt")}
+            </p>
+            <div role="group" aria-labelledby="how-was-it" className="grid grid-cols-4 gap-2">
               {RATINGS.map((rating) => {
                 const suggested = suggestedRating === rating;
                 return (
-                  <Button
+                  <button
                     key={rating}
-                    variant={suggested ? "default" : "outline"}
-                    className="h-auto flex-col gap-1 px-2 py-3"
+                    type="button"
                     onClick={() => rate(rating)}
                     disabled={pending}
-                    aria-label={`${t(`rating.${rating}` as "rating.good")} — ${t(`ratingHint.${rating}` as "ratingHint.good")}`}
+                    aria-describedby={`rating-hint-${rating}`}
+                    className={cn(
+                      "flex h-[72px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 text-center transition-colors disabled:opacity-50",
+                      suggested
+                        ? "bg-primary text-primary-foreground shadow-[0_6px_16px_rgb(45_106_74/0.25)]"
+                        : "border border-border bg-card text-foreground hover:bg-secondary",
+                    )}
                   >
-                    <span className="text-sm font-medium">
+                    <span className="text-base font-bold">
                       {t(`rating.${rating}` as "rating.good")}
                     </span>
-                    <span className="text-balance break-words text-center text-[0.7rem] font-normal opacity-70">
-                      {t(`ratingHint.${rating}` as "ratingHint.good")}
+                    <span
+                      id={`rating-hint-${rating}`}
+                      className={cn(
+                        "text-balance break-words text-xs leading-tight",
+                        suggested ? "font-bold" : "text-muted-foreground",
+                      )}
+                    >
+                      {suggested ? t("suggestedShort") : t(`ratingHint.${rating}` as "ratingHint.good")}
                     </span>
-                  </Button>
+                  </button>
                 );
               })}
             </div>
+
+            {suggestedRating ? (
+              <p className="text-center text-sm text-muted-foreground">{t("suggestedHint")}</p>
+            ) : null}
 
             {isSpeaking && speechSuggestion && speechSuggestion !== "good" ? (
               <Button
@@ -483,5 +662,22 @@ export function ReviewSession({ sessionId, initialCard, cursor, total, autoplayA
         )}
       </footer>
     </main>
+  );
+}
+
+const PROMPT_LABEL_CLASS =
+  "text-sm font-bold uppercase tracking-[0.08em] text-muted-foreground";
+
+function PromptLabel({
+  asHeading,
+  children,
+}: {
+  asHeading: boolean;
+  children: React.ReactNode;
+}) {
+  return asHeading ? (
+    <h1 className={PROMPT_LABEL_CLASS}>{children}</h1>
+  ) : (
+    <p className={PROMPT_LABEL_CLASS}>{children}</p>
   );
 }

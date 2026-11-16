@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play, RotateCcw, Turtle, Users } from "lucide-react";
+import { Pause, Play, Turtle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,8 @@ type Labels = {
   pause: string;
   replay: string;
   slow: string;
+  /** Visible text on the slow button; the icon alone when absent. */
+  slowShort?: string;
   otherVoices: string;
   generatedVoice: string;
   unavailable: string;
@@ -158,37 +160,29 @@ export function AudioPlayer({
         <audio ref={slowRef} preload="none" src={current.slowSrc} />
       ) : null}
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3.5">
+        {/* Play always starts from the top, so it doubles as replay. */}
         <Button
           type="button"
           size="icon"
           variant="default"
-          className="size-16 rounded-full"
+          className="size-[72px] rounded-full shadow-[0_6px_18px_rgb(45_106_74/0.28)] [&_svg]:size-7"
           onClick={() => (playing ? audioRef.current?.pause() : void play())}
           aria-label={playing ? labels.pause : labels.play}
         >
-          {playing ? <Pause className="size-7" /> : <Play className="size-7" />}
-        </Button>
-
-        <Button
-          type="button"
-          size="icon"
-          variant="outline"
-          onClick={() => void play()}
-          aria-label={labels.replay}
-        >
-          <RotateCcw />
+          {playing ? <Pause /> : <Play className="fill-current" />}
         </Button>
 
         {/* Slow playback: the single most useful control for a beginner. */}
         <Button
           type="button"
-          size="icon"
           variant="outline"
+          className="h-12 min-h-12 rounded-full px-4 text-[0.95rem] font-bold"
           onClick={() => void playSlow()}
           aria-label={labels.slow}
         >
           <Turtle />
+          {labels.slowShort ?? null}
         </Button>
       </div>
 
