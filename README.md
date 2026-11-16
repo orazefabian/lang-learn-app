@@ -364,25 +364,45 @@ readiness — the app is healthy without them, just quieter.
 
 ## The app she uses
 
-Four screens, phone-first, bottom navigation because the top of a phone is the
-part a thumb cannot reach.
+Phone-first and one-handed. Three tabs — **Heute**, **Lektionen**,
+**Satzbuch** — sit at the bottom because the top of a phone is the part a
+thumb cannot reach, and every screen keeps its actions down there too: things
+to read at the top, things to tap at the bottom.
 
-**Home** offers both ways in, always: the capped review count and the next
-lesson. Reviews never depend on lessons and lessons never depend on reviews.
-Below them sits the beginning of the capability list.
+**Heute** offers both ways in, always: the capped review count with a rough
+time ("etwa 6 Min", at half a minute a card) and the next lesson. Reviews never
+depend on lessons and lessons never depend on reviews; with nothing due, the
+lesson becomes the suggested step. Above them sit the two newest phrases from
+the Satzbuch and, when something she asked about has come back, the one
+notification the app has.
 
-**Lessons** are a short guided sequence — the item, its audio, when you would
+Reviewing is not a tab. It is started from Heute and runs full-screen, one card
+at a time, with its own way out: closing is pausing, because the queue and the
+cursor live on the server. Typed answers get č / š / ž keys under the field —
+phone keyboards hide them — and a "Weiß nicht" that shows the answer and
+suggests "Nochmal". The four ratings sit in one row with the suggested one
+filled in, so most cards take one tap; she still always taps it herself.
+Speaking cards put a large microphone under the thumb and offer "Kann gerade
+nicht sprechen" for the train, which shows the answer for her to rate instead.
+The session ends on a screen that says it is done and offers the next lesson.
+
+**Lektionen** opens on where she is: finished units fold into one line, the
+unit holding her next lesson (one she has started, else the first not done) is
+open with that lesson highlighted, and every other unit opens in place.
+A lesson is a short guided sequence — the item, its audio, when you would
 say it, then one low-stakes try that is explicitly marked as not counting.
 Finishing is what hands the items to the scheduler. Lessons are ordered but
 never gated: opening one out of sequence shows a warning that says it is fine
 and offers a way back, not a locked door.
 
-**"Was ich sagen kann"** is the progress view, and the only progress this app
-keeps. It is a phrasebook page that fills up: each sentence she can now say,
-newest first, in Slovene with its German underneath and the context note that
-made it stick. A phrase appears once its production or speaking card holds a
-week of stability — seen once is not the same as able to say it. There are no
-streaks, no daily goals and no consecutive-day counters anywhere in the app.
+**Satzbuch** ("Was ich sagen kann") is the progress view, and the only progress
+this app keeps. It is a phrasebook page that fills up: each sentence she can
+now say, newest first, in Slovene with its German underneath, a play button,
+and the context note that made it stick one tap away. Search ignores carons —
+"cas" finds "čas" — and chips filter by the unit that taught a phrase, or by
+the dual. A phrase appears once its production or speaking card holds a week of
+stability — seen once is not the same as able to say it. There are no streaks,
+no daily goals and no consecutive-day counters anywhere in the app.
 
 ### Design
 
@@ -486,7 +506,7 @@ returns.
 
 **The bundle.** While she is online and idle, the app fetches the next session
 in one response and stores it in IndexedDB, with the audio going into the Cache
-API. The home screen says so in one quiet line — the point is that "will this
+API. The home screen says so in one quiet chip — the point is that "will this
 work on the train" is answered *before* she is on the train.
 
 That bundle carries the answers, which the online path deliberately never sends

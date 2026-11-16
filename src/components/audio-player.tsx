@@ -166,7 +166,7 @@ export function AudioPlayer({
           type="button"
           size="icon"
           variant="default"
-          className="size-[72px] rounded-full shadow-[0_6px_18px_rgb(45_106_74/0.28)] [&_svg]:size-7"
+          className="size-[72px] rounded-full shadow-lg shadow-primary/30 [&_svg]:size-7"
           onClick={() => (playing ? audioRef.current?.pause() : void play())}
           aria-label={playing ? labels.pause : labels.play}
         >

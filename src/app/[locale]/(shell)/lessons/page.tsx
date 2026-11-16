@@ -101,7 +101,7 @@ function CurrentUnit({
             {t("unitProgress", { done: unit.completedCount, total: unit.lessons.length })}
           </p>
         </div>
-        <h2 id={`unit-${unit.id}`} className="slovene text-2xl font-semibold">
+        <h2 id={`unit-${unit.id}`} className="text-2xl font-bold tracking-tight">
           {unit.titleDe}
         </h2>
         <div aria-hidden className="flex gap-1">
@@ -169,7 +169,7 @@ function UnitDetails({ unit, t }: { unit: UnitSummary; t: Translate }) {
             {t("unitLabel", { position: unit.position })} ·{" "}
             {t("unitProgress", { done: unit.completedCount, total: unit.lessons.length })}
           </span>
-          <span className="slovene text-xl">{unit.titleDe}</span>
+          <span className="text-lg font-bold">{unit.titleDe}</span>
         </span>
         <ChevronDown
           className="size-5 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"

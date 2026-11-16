@@ -67,7 +67,7 @@ export default async function ProgressPage({ params }: { params: Promise<{ local
               className="flex flex-col-reverse gap-1 rounded-2xl bg-card px-3.5 py-3"
             >
               <dt className="text-xs leading-tight text-muted-foreground">{stat.label}</dt>
-              <dd className="slovene text-3xl font-semibold tabular-nums leading-none">
+              <dd className="text-3xl font-bold tabular-nums leading-none tracking-tight">
                 {stat.value}
               </dd>
             </div>

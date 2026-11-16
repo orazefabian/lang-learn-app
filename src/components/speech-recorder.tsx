@@ -138,8 +138,8 @@ export function SpeechRecorder({
         className={cn(
           "size-[104px] rounded-full [&_svg]:size-9",
           recording
-            ? "shadow-[0_0_0_10px_rgb(163_64_43/0.15)]"
-            : "shadow-[0_10px_28px_rgb(45_106_74/0.32)]",
+            ? "ring-[10px] ring-destructive/15"
+            : "shadow-xl shadow-primary/30",
         )}
         onClick={() => (recording ? stop() : void start())}
         disabled={disabled}
