@@ -296,6 +296,44 @@ describe("what she can say", () => {
     expect(summary.dualMastered).toBe(1);
   });
 
+  /** The phrasebook's topic chips filter by the unit a phrase was taught in. */
+  it("names the unit that introduced each phrase, once per phrase", async () => {
+    const capabilities = await progressService.getCapabilities(db, userId);
+    expect(capabilities.filter((c) => c.slovene === "Dober dan!")).toHaveLength(1);
+    expect(capabilities.find((c) => c.slovene === "Dober dan!")?.unit).toEqual({
+      title: "Erste Begegnung",
+      position: 1,
+    });
+  });
+
+  /** One query for the whole phrasebook, with a human voice still first. */
+  it("loads audio for a list of phrases in one go, human recordings first", async () => {
+    const resolve = await import("@/lib/audio/resolve");
+    const [withAudio, withoutAudio] = phraseIds as [string, string];
+
+    await db.insert(schema.mediaAssets).values([
+      {
+        kind: "tts",
+        phraseId: withAudio,
+        path: "tts/ab/dober-dan.opus",
+        mimeType: "audio/ogg",
+        priority: 5,
+      },
+      {
+        kind: "human_recording",
+        phraseId: withAudio,
+        speakerLabel: "Oma",
+        path: "recordings/ab/oma.webm",
+        mimeType: "audio/webm",
+      },
+    ]);
+
+    const audio = await resolve.getAudioForPhrases(db, [withAudio, withoutAudio]);
+    expect(audio.get(withAudio)?.map((a) => a.kind)).toEqual(["human_recording", "tts"]);
+    expect(audio.has(withoutAudio)).toBe(false);
+    expect((await resolve.getAudioForPhrases(db, [])).size).toBe(0);
+  });
+
   it("lists the newest first, so returning shows growth", async () => {
     const capabilities = await progressService.getCapabilities(db, userId);
     for (let i = 1; i < capabilities.length; i += 1) {

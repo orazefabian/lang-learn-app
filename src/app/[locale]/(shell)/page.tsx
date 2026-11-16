@@ -60,7 +60,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {/* Answers "will this work on the train" before she is on the train. */}
           <OfflineReady />
         </div>
-        <h1 className="slovene mt-1 text-4xl font-semibold leading-tight">
+        <h1 lang="sl" className="slovene mt-1 text-4xl font-semibold leading-tight">
           {t("greeting", { name: user.displayName })}
         </h1>
         {/* Never "you were away for 12 days". */}
@@ -142,7 +142,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         lessons never depend on reviews. Both sit where the thumb already is.
       */}
       <section className="flex flex-col gap-2.5" aria-label={t("dueToday")}>
-        <div className="flex flex-col gap-4 rounded-3xl bg-card p-5 shadow-[0_1px_2px_rgb(28_37_48/0.06),0_8px_24px_rgb(28_37_48/0.06)]">
+        <div className="flex flex-col gap-4 rounded-3xl bg-card p-5 shadow-lg shadow-foreground/5">
           <div className="flex items-end justify-between gap-4">
             <div className="flex flex-col gap-0.5">
               <p className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">

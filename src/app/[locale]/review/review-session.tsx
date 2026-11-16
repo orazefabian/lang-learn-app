@@ -287,7 +287,7 @@ export function ReviewSession({
           >
             <Check className="size-7" strokeWidth={2.5} />
           </span>
-          <h1 className="slovene mt-2 text-4xl font-semibold leading-tight">{t("done.title")}</h1>
+          <h1 className="mt-2 text-4xl font-bold leading-tight tracking-tight">{t("done.title")}</h1>
           <p className="text-lg text-muted-foreground">
             {t("done.body", { count: answered })} {t("done.saved")}
           </p>
@@ -622,7 +622,7 @@ export function ReviewSession({
                     className={cn(
                       "flex h-[72px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 text-center transition-colors disabled:opacity-50",
                       suggested
-                        ? "bg-primary text-primary-foreground shadow-[0_6px_16px_rgb(45_106_74/0.25)]"
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                         : "border border-border bg-card text-foreground hover:bg-secondary",
                     )}
                   >
